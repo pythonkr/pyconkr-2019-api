@@ -1,5 +1,12 @@
+certifi==2018.11.29
+chardet==3.0.4
+codecov==2.0.15
+coverage==4.5.2
 Django==2.1.4
 djangorestframework==3.9.0
+idna==2.7
 pytz==2018.7
+requests==2.20.1
 six==1.11.0
 unittest-xml-reporting==2.2.0
+urllib3==1.24.1
