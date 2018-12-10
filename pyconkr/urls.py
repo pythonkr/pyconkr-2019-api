@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 #from rest_framework import urls as rest_framework_urls
-from user import views
+from api import views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
