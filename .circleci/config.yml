@@ -32,7 +32,8 @@ jobs:
 
       - store_test_results:
           path: test-reports
-
+          
+      - setup_remote_docker
       - run:
           name: dockerize
           command: |
