@@ -32,3 +32,8 @@ jobs:
 
       - store_test_results:
           path: test-reports
+
+      - run:
+          name: dockerize
+          command: |
+            docker-compose build

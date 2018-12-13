@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    volumes:
+      - ${PSQL_VOLUME:-./data}:/var/lib/postgresql/data
+  web:
+    build: .
+    environment:
+      - DJANGO_SETTINGS_MODULE=pyconkr.production_settings
+    command: bash docker-entrypoint.sh
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
