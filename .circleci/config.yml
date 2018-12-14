@@ -8,8 +8,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            - v1-dependencies-
 
       - run:
           name: install dependencies
@@ -22,7 +22,11 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
- 
+      - run:
+          name: pylint
+          command: |
+            . venv/bin/activate
+            pylint pyconkr api
       - run:
           name: run tests
           command: |
@@ -32,7 +36,7 @@ jobs:
 
       - store_test_results:
           path: test-reports
-          
+
       - setup_remote_docker
       - run:
           name: dockerize

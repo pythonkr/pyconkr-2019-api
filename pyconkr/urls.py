@@ -19,6 +19,7 @@ from rest_framework import routers
 #from rest_framework import urls as rest_framework_urls
 from api import views
 
+# pylint: disable=invalid-name
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
