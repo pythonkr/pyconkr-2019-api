@@ -109,3 +109,15 @@ venv.bak/
 
 # Test report
 test-reports/
+
+\.idea/libraries/R_User_Library\.xml
+
+\.idea/misc\.xml
+
+\.idea/modules\.xml
+
+\.idea/pyconkr-api\.iml
+
+\.idea/vcs\.xml
+
+\.idea/workspace\.xml
