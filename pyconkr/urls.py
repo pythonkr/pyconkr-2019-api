@@ -15,6 +15,7 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path, include
+from graphene_django.views import GraphQLView
 from rest_framework import routers
 #from rest_framework import urls as rest_framework_urls
 from api import views
@@ -29,4 +30,5 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
     path('api/', include(router.urls), name='api'),
     path('api-auth/', include('rest_framework.urls'), name='rest_framework'),
+    path('api/programList/', GraphQLView.as_view(graphiql=True), name='programList'),
 ]
