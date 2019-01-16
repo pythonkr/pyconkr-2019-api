@@ -1,19 +1,21 @@
 import graphene
+from graphene import Schema, resolve_only_args
 from graphene_django import DjangoObjectType
-from api.models import Program
+from api.models import Presentation
 
 
-class ProgramNode(DjangoObjectType):
+class PresentationNode(DjangoObjectType):
     class Meta:
-        model = Program
+        model = Presentation
 
 
 class Query(graphene.ObjectType):
-    lists = graphene.List(ProgramNode)
+    presentations = graphene.List(PresentationNode)
 
-    def resolve_lists(self):
-        return Program.objects.all()
+    @resolve_only_args
+    def resolve_presentations(self):
+        return Presentation.objects.all()
 
 
 # pylint: disable=invalid-name
-schema = graphene.Schema(query=Query)
+schema = Schema(query=Query)
