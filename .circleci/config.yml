@@ -9,14 +9,12 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             - v1-dependencies-
-
       - run:
           name: install dependencies
           command: |
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
-
       - save_cache:
           paths:
             - ./venv
@@ -46,10 +44,9 @@ jobs:
           name: Start container and verify it's working
           command: |
             set -x
-            docker-compose build
-            # docker-compose up -d
-            # docker run --network container:contacts \
-            #   appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8000/ping
+            docker-compose up -d
+            docker run --network container:contacts \
+              appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8000/ping
 
   deploy-dev:
     docker:
@@ -61,6 +58,7 @@ jobs:
             - "53:f6:f2:c2:3d:82:3d:b6:3c:51:13:af:e6:6f:57:35"
       - run:
           command: |
+            sudo pip install fabric
             fab -H ${DEPLOY_HOST} -p -e deploy --target dev --sha1 $CIRCLE_SHA1
 
   deploy-master:
@@ -73,6 +71,7 @@ jobs:
             - "53:f6:f2:c2:3d:82:3d:b6:3c:51:13:af:e6:6f:57:35"
       - run:
           command: |
+            sudo pip install fabric
             fab -H ${DEPLOY_HOST} -p -e deploy --target www --sha1 $CIRCLE_SHA1
 
 workflows:
@@ -82,9 +81,9 @@ workflows:
       - build
       - docker
       - deploy-dev:
-          requires:
-            - build
-            - docker
+          # requires:
+          #   - build
+          #   - docker
           filters:
             branches:
               only: feature/deploy
