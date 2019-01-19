@@ -81,12 +81,12 @@ workflows:
       - build
       - docker
       - deploy-dev:
-          # requires:
-          #   - build
-          #   - docker
+          requires:
+            - build
+            - docker
           filters:
             branches:
-              only: feature/deploy
+              only: develop
       - deploy-master:
           requires:
             - build
