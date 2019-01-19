@@ -63,6 +63,8 @@ confidence=
 disable=
         # pyconkr customize
         missing-docstring,
+        no-self-use,
+        too-few-public-methods,
         # default
         print-statement,
         parameter-unpacking,

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -101,6 +102,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# GraphQl setting
+GRAPHENE = {
+    'SCHEMA': 'api.schema.schema' # Where your Graphene schema lives
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
