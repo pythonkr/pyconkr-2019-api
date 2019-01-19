@@ -27,6 +27,7 @@ router.register(r'groups', views.GroupViewSet)
 urlpatterns = [
     #url(r'^', include(router.urls)),
     #path('admin/', admin.site.urls),
+    path('robots.txt', views.robots, name='robots.txt'),
     path('api/', include(router.urls), name='api'),
     path('api-auth/', include('rest_framework.urls'), name='rest_framework'),
     path('api/programList/', GraphQLView.as_view(graphiql=True), name='programList'),
