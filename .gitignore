@@ -109,3 +109,6 @@ venv.bak/
 
 # Test report
 test-reports/
+
+# IDE
+.idea/*
