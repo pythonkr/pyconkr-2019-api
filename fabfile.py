@@ -3,6 +3,7 @@ import os
 
 from fabric import task
 
+
 #from fabric.api import local, run, cd, prefix, env, sudo, settings, shell_env
 
 # env.use_ssh_config = True
@@ -23,7 +24,7 @@ def deploy(c, target='dev', port='8000', sha1=''):
     with c.cd(api_dir):
         c.run('git fetch --all -p')
         c.run('git reset --hard ' + sha1)
-        env = {'PSQL_VOLUME': database_dir, 'PORT': port}
-        c.run(
-            f'docker-compose -p "{project_name}" up -d --build --force-recreate', env=env)
+        env_command = f'PSQL_VOLUME = {database_dir} PORT = {port}'
+        compose_command = f'docker-compose -p "{project_name}" up -d --build --force-recreate'
+        c.run(f'{env_command} {compose_command}')
         print('finish')
