@@ -1,4 +1,4 @@
-from api.models import Program, Tutorial, Sprint, Youngcoder, Exercise
+from api.models.programs import Program, Tutorial, Sprint, Youngcoder, Exercise
 from api.tests.base import BaseTestCase
 from api.tests.common import create_exercise, create_sprint, \
     create_tutorial, create_youngcoder

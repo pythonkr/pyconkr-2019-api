@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from api.models import ConferenceTicket, YoungcoderTicket
+from api.models.programs import ConferenceTicket, YoungcoderTicket
 from api.tests.base import BaseTestCase
 from api.tests.common import create_conference, create_youngcoder, get_first_class_item_from_arr
 

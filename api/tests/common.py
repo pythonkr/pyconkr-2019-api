@@ -1,4 +1,4 @@
-from api.models import Conference, Tutorial, Sprint, Youngcoder, Exercise
+from api.models.programs import Conference, Tutorial, Sprint, Youngcoder, Exercise
 
 
 def create_conference(name='Conference', field='Conference Field'):

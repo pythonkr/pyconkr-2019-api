@@ -30,4 +30,6 @@ urlpatterns = [
     path('api/', include(router.urls), name='api'),
     path('api-auth/', include('rest_framework.urls'), name='rest_framework'),
     path('api/programList/', GraphQLView.as_view(graphiql=True), name='programList'),
+    path('api/sponsor/', GraphQLView.as_view(graphiql=True), name='sponsor'),
+
 ]
