@@ -88,3 +88,10 @@ workflows:
           filters:
             branches:
               only: feature/deploy
+      - deploy-master:
+          requires:
+            - build
+            - docker
+          filters:
+            branches:
+              only: master
