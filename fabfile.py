@@ -24,7 +24,7 @@ def deploy(c, target='dev', port='8000', sha1=''):
     with c.cd(api_dir):
         c.run('git fetch --all -p')
         c.run('git reset --hard ' + sha1)
-        env_command = f'PSQL_VOLUME = {database_dir} PORT = {port}'
+        env_command = f'PSQL_VOLUME={database_dir} PORT={port}'
         compose_command = f'docker-compose -p "{project_name}" up -d --build --force-recreate'
         c.run(f'{env_command} {compose_command}')
         print('finish')
