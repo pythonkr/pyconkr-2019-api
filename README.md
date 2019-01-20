@@ -30,25 +30,6 @@ $ python manage.py runserver
 - Backend github : https://github.com/pythonkr/pyconkr-api
 - 빠른 이해를 위한 간단한 설명 나열
 
-### React
-- React 자체를 이해하기 위해서는 많은 시간이 소요됨
-- 문법 자체에 대한 적당한 이해가 되었다면 구현 튜토리얼을 먼저 이해한 뒤 다시 문법을 파악하는 것이 도움이 될 수 있음
-
-#### 참고 링크
-- React 공식 페이지 : https://reactjs.org
-- React 위키 백과 : https://ko.wikipedia.org/wiki/리액트_(자바스크립트_라이브러리)#JSX
-- React 한글 튜토리얼 추천 : https://velopert.com/3613
-- React 의 실제 구현 튜토리얼 추천 : http://ibrahimovic.tistory.com/32?category=711523
-- JSX 튜토리얼 : https://velopert.com/3626
-
-
-### django
-- python 으로 만들어진 무료 오픈소스 웹 어플리케이션 프레임워크
-
-#### 참고 링크
-- django 공식 페이지 : https://www.djangoproject.com
-- django 한글 튜토리얼 추천 : https://tutorial.djangogirls.org/ko/django/
-
 
 ### GraphQL
 - 페이스북이 발표한 데이터 질의어
@@ -58,9 +39,3 @@ $ python manage.py runserver
 - GraphQL + django : http://docs.graphene-python.org/projects/django/en/latest/
 
 
-### NEXT.js
-- Zeit.co 팀에 의해 발표된 React JS를 이용한 서버 사이드 렌더링 프레임워크 (SSR, Server Side Rendering)
-
-#### 참고 링크
-- next.js 공식 페이지 : https://nextjs.org
--next.js 한글 튜토리얼 추천 : https://velopert.com/3293
