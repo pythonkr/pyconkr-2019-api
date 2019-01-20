@@ -36,7 +36,7 @@ jobs:
 
   docker:
     docker:
-      - image: appropriate/curl
+      - image: circleci/python:3.6.3
     steps:
       - checkout
       - setup_remote_docker
@@ -45,7 +45,8 @@ jobs:
           command: |
             set -x
             docker-compose up -d
-            curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8000/ping
+            docker run --network host appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused \
+              http://localhost:8000/ping
 
   deploy-dev:
     docker:
