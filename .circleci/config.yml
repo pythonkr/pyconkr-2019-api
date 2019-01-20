@@ -35,14 +35,16 @@ jobs:
           path: test-reports
 
   docker:
-    machine: true
+    docker:
+      - image: circleci/python:3.6.3
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Start container and verify it's working
           command: |
             set -x
-            docker-compose up -d
+            docker-compose up -d --build
             sleep 5
             curl http://localhost:8000/ping
 
