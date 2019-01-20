@@ -15,10 +15,10 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
 from rest_framework import routers
 from graphene_django.views import GraphQLView
 from api import views
-from django.http import HttpResponse
 
 # pylint: disable=invalid-name
 router = routers.DefaultRouter()
