@@ -14,7 +14,15 @@ A git repository for PyCon Korea api.
 $ git clone git@github.com:pythonkr/pyconkr-api.git
 $ cd pyconkr-api
 $ pip install -r requirements.txt
-$ python manage.py makemigrations 
+$ python manage.py makemigrations
 $ python manage.py migrate
 $ python manage.py runserver
+```
+
+## For developer
+
+When installing additional pip packages, please reflect in requirements.txt.
+
+```bash
+$ pip freeze > requirements.txt
 ```
