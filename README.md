@@ -35,7 +35,6 @@ $ python manage.py runserver
 - 페이스북이 발표한 데이터 질의어
 
 #### 참고 링크
-- GraphQL 개념 : https://velopert.com/2318
+- GraphQL 공식 페이지 : https://graphql.org
 - GraphQL + django : http://docs.graphene-python.org/projects/django/en/latest/
-
 
