@@ -18,6 +18,7 @@ from django.urls import path, include
 from rest_framework import routers
 #from rest_framework import urls as rest_framework_urls
 from api import views
+from django.http import HttpResponse
 
 # pylint: disable=invalid-name
 router = routers.DefaultRouter()
@@ -27,6 +28,7 @@ router.register(r'groups', views.GroupViewSet)
 urlpatterns = [
     #url(r'^', include(router.urls)),
     #path('admin/', admin.site.urls),
+    path('ping', lambda r: HttpResponse('OK')),
     path('api/', include(router.urls), name='api'),
     path('api-auth/', include('rest_framework.urls'), name='rest_framework'),
 ]
