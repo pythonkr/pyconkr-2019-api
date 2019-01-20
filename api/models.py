@@ -12,6 +12,13 @@ class Conference(Program):
     conference_field = models.CharField(max_length=255, null=True, blank=True)
 
 
+class Presentation(Program):
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+
+
 class Tutorial(Program):
     tutorial_field = models.CharField(max_length=255, null=True, blank=True)
 
