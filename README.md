@@ -1,4 +1,4 @@
-# pyconkr-api
+# PyCon.KR api
 
 [![CircleCI](https://circleci.com/gh/pythonkr/pyconkr-api.svg?style=svg)](https://circleci.com/gh/pythonkr/pyconkr-api) [![codecov](https://codecov.io/gh/pythonkr/pyconkr-api/branch/master/graph/badge.svg)](https://codecov.io/gh/pythonkr/pyconkr-api)
 
@@ -19,9 +19,9 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
-# Pycon KR Web 구조
+# PyCon.KR Web 구조
 - Frontend 는 React 자바스크립트 라이브러리를 사용하여 사용자가 보는 화면의 구조를 생성한다.
-- Backend 는 django 프레임웍을 사용하여 개발한다.
+- Backend 는 django 프레임워크을 사용하여 개발한다.
 - 동적인 데이터는 GraphQL 을 통해 조회하여 클라이언트 브라우져에서 완성하도록 한다.
 - SSR(Server Side Rendered) 를 위해 NEXT.js 를 사용한다. (?)
 
