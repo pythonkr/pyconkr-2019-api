@@ -3,8 +3,11 @@
 Contributor 여러분 안녕하세요!!
 pyconkr-api contribution을 제출할 때에는 반드시 다음 가이드라인을 따라주세요.
 
+- [PyCon.KR Web Structure](#pyconkr-web-structure)
 - [Pull Request Guidelines](#pull-request-guidelines)
 - [Commit Checklist](#commit-checklist)
+- [Knowledge](#knowledge)
+- [Reference](#reference)
 
 ## PyCon.KR Web Structure
 
