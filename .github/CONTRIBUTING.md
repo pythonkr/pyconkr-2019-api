@@ -54,7 +54,7 @@ pyconkr-api contribution을 제출할 때에는 반드시 다음 가이드라인
 ## Knowledge
 
 1. GraphQL
-- 페이스북이 발표한 데이터 질의어
+    - 페이스북이 발표한 데이터 질의어
 
 ## Reference
 
