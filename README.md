@@ -26,9 +26,10 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
-## For developer
+## Contribution
 
-When installing additional pip packages, please reflect in requirements.txt.
+처음 Contribution를 하시는 분이라면, Pull Request를 만들기 전에 [Contribution Guide](.github/CONTRIBUTING.md)를 꼭 읽어주세요.
+
 
 ```bash
 $ pip freeze > requirements.txt
