@@ -1,10 +1,20 @@
 # 파이콘 한국 Contributing Guide
 
 Contributor 여러분 안녕하세요!!
-pyconkr-api로 contribution을 시작하거나 제출하기 전에 다음 가이드라인을 읽고 따라주세요.
+pyconkr-api contribution을 제출할 때에는 반드시 다음 가이드라인을 따라주세요.
 
 - [Pull Request Guidelines](#pull-request-guidelines)
 - [Commit Checklist](#commit-checklist)
+
+## PyCon.KR Web Structure
+
+파이콘 한국 Webpage는 [frontend](https://github.com/pythonkr/pyconkr-web)와 [backend](https://github.com/pythonkr/pyconkr-api)로 구성되어 있습니다.
+
+- Frontend 는 React 자바스크립트 라이브러리를 사용하여 사용자가 보는 화면의 구조를 생성합니다.
+- Backend 는 django 프레임워크을 사용하여 개발합니다.
+- 동적인 데이터는 GraphQL 을 통해 조회하여 클라이언트 브라우져에서 완성하도록 합니다.
+- SSR(Server Side Rendered) 를 위해 NEXT.js 를 사용합니다. (수정 필요)
+
 
 ## Pull Request Guidelines
 
@@ -37,3 +47,13 @@ pyconkr-api로 contribution을 시작하거나 제출하기 전에 다음 가이
    ```bash
    $ pip freeze > requirements.txt
    ```
+
+## Knowledge
+
+1. GraphQL
+- 페이스북이 발표한 데이터 질의어
+
+## Reference
+
+- GraphQL 공식 페이지 : https://graphql.org
+- GraphQL + django : http://docs.graphene-python.org/projects/django/en/latest/
