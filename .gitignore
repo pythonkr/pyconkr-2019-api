@@ -104,9 +104,11 @@ venv.bak/
 .mypy_cache/
 
 # vscode
-
 .vscode/
 .idea/
 
 # Test report
 test-reports/
+
+# pyCharm
+.idea/
