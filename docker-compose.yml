@@ -10,6 +10,6 @@ services:
       - DJANGO_SETTINGS_MODULE=pyconkr.production_settings
     command: bash docker-entrypoint.sh
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
     depends_on:
       - db
