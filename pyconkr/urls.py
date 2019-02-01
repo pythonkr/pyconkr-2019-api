@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
+from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from rest_framework import routers
@@ -22,15 +22,13 @@ from api import views
 
 # pylint: disable=invalid-name
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
     #url(r'^', include(router.urls)),
-    #path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('robots.txt', views.robots, name='robots.txt'),
     path('ping', lambda r: HttpResponse('OK')),
     path('api/', include(router.urls), name='api'),
     path('api-auth/', include('rest_framework.urls'), name='rest_framework'),
-    path('api/programList/', GraphQLView.as_view(graphiql=True), name='programList'),
+    path('graphql/', GraphQLView.as_view(graphiql=True), name='graphql'),
 ]
