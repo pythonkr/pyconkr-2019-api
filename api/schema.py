@@ -72,14 +72,6 @@ class Query(graphene.ObjectType):
     programs = graphene.List(ProgramNode)
     presentations = graphene.List(PresentationNode)
 
-    @graphene.resolve_only_args
-    def resolve_programs(self):
-        return Program.objects.all()
-
-    @graphene.resolve_only_args
-    def resolve_presentations(self):
-        return Presentation.objects.all()
-
 
 # pylint: disable=invalid-name
 schema = graphene.Schema(query=Query)
