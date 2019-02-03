@@ -104,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # GraphQl setting
 GRAPHENE = {
-    'SCHEMA': 'api.schema.schema' # Where your Graphene schema lives
+    'SCHEMA': 'api.schema.schema'  # Where your Graphene schema lives
 }
 
 # Internationalization
