@@ -1,15 +1,49 @@
+from json import loads, dumps
 from datetime import datetime
+from django.utils.timezone import get_current_timezone
 from api.tests.base import BaseTestCase
 from api.tests.data import initialize
 from api.schema import schema
 from api.models.program import Presentation
+
+TIMEZONE = get_current_timezone()
 
 
 class ProgramTestCase(BaseTestCase):
     def setUp(self):
         initialize()
 
-    def test_retrive_presentation(self):
+    def test_retrieve_conference(self):
+        query = '''
+        query {
+            conference {
+                name
+                conferenceStartedAt
+                conferenceFinishedAt
+                sprintStartedAt
+                sprintFinishedAt
+                tutorialStartedAt
+                tutorialFinishedAt
+            }
+        }
+        '''
+
+        expected = {
+            'conference': {
+                'name': 'Pycon Korea 2019',
+                'conferenceStartedAt': '2019-08-10',
+                'conferenceFinishedAt': '2019-08-11',
+                'sprintStartedAt': '2019-08-09',
+                'sprintFinishedAt': '2019-08-09',
+                'tutorialStartedAt': '2019-08-08',
+                'tutorialFinishedAt': '2019-08-09'
+            }
+        }
+        result = schema.execute(query)
+        actual = loads(dumps(result.data))
+        self.assertDictEqual(actual, expected)
+
+    def test_retrieve_presentation(self):
         query = '''
         query {
             presentations {
@@ -23,7 +57,7 @@ class ProgramTestCase(BaseTestCase):
                 owner {
                     username
                 }
-                accepted 
+                accepted
                 place {
                     name
                 }
@@ -63,8 +97,8 @@ class ProgramTestCase(BaseTestCase):
                     'place': {
                         'name': '101'
                     },
-                    'startedAt': datetime(2017, 8, 21, 13, 00),
-                    'finishedAt': datetime(2017, 8, 21, 15, 00),
+                    'startedAt': datetime(2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE).isoformat(),
+                    'finishedAt': datetime(2019, 8, 21, 15, 00).astimezone(tz=TIMEZONE).isoformat(),
                     'category': {
                         'name': 'machine learning',
                         'slug': 'ML',
@@ -75,12 +109,12 @@ class ProgramTestCase(BaseTestCase):
                     'videoUrl': 'https://video/1',
                     'difficulty': {
                         'nameEn': 'beginner',
-                        'nameEo': '초급'
+                        'nameKo': '초급'
                     },
                     'recordable': True
                 }
             ]
         }
         result = schema.execute(query)
-
-        self.assertEqual(sorted(dict(result.data)), sorted(expected))
+        actual = loads(dumps(result.data))
+        self.assertDictEqual(actual, expected)

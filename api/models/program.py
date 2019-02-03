@@ -3,10 +3,19 @@ from django.contrib.auth.models import User
 from model_utils.managers import InheritanceManager
 
 
+class Period(models.Model):
+    started_at = models.DateField(null=True)
+    finished_at = models.DateField(null=True)
+
+
 class Conference(models.Model):
     name = models.CharField(max_length=50, null=True, blank=True)
-    started_at = models.DateTimeField(null=True)
-    finished_at = models.DateTimeField(null=True)
+    conference_started_at = models.DateField(null=True)
+    conference_finished_at = models.DateField(null=True)
+    sprint_started_at = models.DateField(null=True)
+    sprint_finished_at = models.DateField(null=True)
+    tutorial_started_at = models.DateField(null=True)
+    tutorial_finished_at = models.DateField(null=True)
 
     def __str__(self):
         return self.name
