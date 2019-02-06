@@ -8,7 +8,8 @@ from api.models.program import Place, Category, Difficulty
 
 def initialize():
     conference = Conference()
-    conference.name = 'Pycon Korea 2019'
+    conference.name_ko = '파이콘 한국 2019'
+    conference.name_en = 'Pycon Korea 2019'
     conference.conference_started_at = date(2019, 8, 10)
     conference.conference_finished_at = date(2019, 8, 11)
     conference.sprint_started_at = date(2019, 8, 9)
@@ -20,7 +21,7 @@ def initialize():
     user = User.objects.create_user(
         'testname', 'test@test.com', 'testpassword')
     category = Category.objects.create(
-        name='machine learning', slug='ML', visible=True)
+        name_ko='머신러닝', name_en='machine learning', slug='ML', visible=True)
     difficulty = Difficulty.objects.create(name_en='beginner', name_ko='초급')
 
     place = Place.objects.create(name='101')
