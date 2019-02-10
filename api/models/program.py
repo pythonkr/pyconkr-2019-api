@@ -12,6 +12,13 @@ class Conference(models.Model):
     tutorial_started_at = models.DateField(null=True)
     tutorial_finished_at = models.DateField(null=True)
 
+    presentation_proposal_started_at = models.DateField(null=True)
+    presentation_proposal_finished_at = models.DateField(null=True)
+    sprint_proposal_started_at = models.DateField(null=True)
+    sprint_proposal_finished_at = models.DateField(null=True)
+    tutorial_proposal_started_at = models.DateField(null=True)
+    tutorial_proposal_finished_at = models.DateField(null=True)
+
     def __str__(self):
         return self.name
 

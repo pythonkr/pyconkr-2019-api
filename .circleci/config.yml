@@ -70,7 +70,7 @@ jobs:
       - run:
           command: |
             sudo pip install fabric
-            fab -H ${DEPLOY_HOST} -p -e deploy --target www --sha1 $CIRCLE_SHA1 --port 8001
+            fab -H ${DEPLOY_HOST} -p -e deploy --target www --sha1 $CIRCLE_SHA1 --port 8000
 
 workflows:
   version: 2
