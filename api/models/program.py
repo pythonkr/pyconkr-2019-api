@@ -3,13 +3,8 @@ from django.contrib.auth.models import User
 from model_utils.managers import InheritanceManager
 
 
-class Period(models.Model):
-    started_at = models.DateField(null=True)
-    finished_at = models.DateField(null=True)
-
-
 class Conference(models.Model):
-    name = models.CharField(max_length=50, null=True, blank=True)
+    name = models.CharField(max_length=50, default='', blank=True)
     conference_started_at = models.DateField(null=True)
     conference_finished_at = models.DateField(null=True)
     sprint_started_at = models.DateField(null=True)
@@ -17,12 +12,19 @@ class Conference(models.Model):
     tutorial_started_at = models.DateField(null=True)
     tutorial_finished_at = models.DateField(null=True)
 
+    presentation_proposal_started_at = models.DateField(null=True)
+    presentation_proposal_finished_at = models.DateField(null=True)
+    sprint_proposal_started_at = models.DateField(null=True)
+    sprint_proposal_finished_at = models.DateField(null=True)
+    tutorial_proposal_started_at = models.DateField(null=True)
+    tutorial_proposal_finished_at = models.DateField(null=True)
+
     def __str__(self):
         return self.name
 
 
 class Place(models.Model):
-    name = models.CharField(max_length=50, null=True, blank=True)
+    name = models.CharField(max_length=50, default='', blank=True)
 
     def __str__(self):
         return self.name
@@ -34,15 +36,14 @@ class Category(models.Model):
     visible = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.name} / {self.slug}'
+        return f'{self.name} / {self.slug} / {self.visible}'
 
 
 class Difficulty(models.Model):
-    name_ko = models.CharField(max_length=100, db_index=True)
-    name_en = models.CharField(max_length=100, db_index=True)
+    name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
-        return f'{self.name_ko} / {self.name_en}'
+        return f'{self.name}'
 
 
 class Program(models.Model):
@@ -51,10 +52,8 @@ class Program(models.Model):
 
     objects = InheritanceManager()
 
-    name_ko = models.CharField(max_length=255, null=True, blank=True)
-    desc_ko = models.TextField(null=True, blank=True)
-    name_en = models.CharField(max_length=255, null=True, blank=True)
-    desc_en = models.TextField(null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    desc = models.TextField(null=True, blank=True)
     price = models.IntegerField(default=0)
     visible = models.BooleanField(default=False)
 
@@ -84,4 +83,4 @@ class Presentation(Program):
     recordable = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.owner}/{self.name_ko}'
+        return f'{self.owner}/{self.name}'

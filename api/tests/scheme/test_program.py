@@ -18,6 +18,8 @@ class ProgramTestCase(BaseTestCase):
         query {
             conference {
                 name
+                nameKo
+                nameEn
                 conferenceStartedAt
                 conferenceFinishedAt
                 sprintStartedAt
@@ -30,7 +32,9 @@ class ProgramTestCase(BaseTestCase):
 
         expected = {
             'conference': {
-                'name': 'Pycon Korea 2019',
+                'name': '파이콘 한국 2019',
+                'nameKo': '파이콘 한국 2019',
+                'nameEn': 'Pycon Korea 2019',
                 'conferenceStartedAt': '2019-08-10',
                 'conferenceFinishedAt': '2019-08-11',
                 'sprintStartedAt': '2019-08-09',
@@ -47,9 +51,11 @@ class ProgramTestCase(BaseTestCase):
         query = '''
         query {
             presentations {
+                name
                 nameKo
-                descKo
                 nameEn
+                desc
+                descKo
                 descEn
                 price
                 visible
@@ -65,6 +71,8 @@ class ProgramTestCase(BaseTestCase):
                 finishedAt
                 category {
                     name
+                    nameKo
+                    nameEn
                     slug
                     visible
                 }
@@ -72,8 +80,9 @@ class ProgramTestCase(BaseTestCase):
                 pdfUrl
                 videoUrl
                 difficulty {
-                    nameEn
+                    name
                     nameKo
+                    nameEn
                 }
                 recordable
             }
@@ -83,9 +92,11 @@ class ProgramTestCase(BaseTestCase):
         expected = {
             'presentations': [
                 {
+                    'name': 'Graphql로 api를 만들어보자',
                     'nameKo': 'Graphql로 api를 만들어보자',
-                    'descKo': 'Graphql은 아주 훌륭한 도구입니다',
                     'nameEn': 'Make api using Graphql',
+                    'desc': 'Graphql은 아주 훌륭한 도구입니다',
+                    'descKo': 'Graphql은 아주 훌륭한 도구입니다',
                     'descEn': 'Graphql is very good package.',
                     'price': 0,
                     'visible': False,
@@ -100,7 +111,9 @@ class ProgramTestCase(BaseTestCase):
                     'startedAt': datetime(2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE).isoformat(),
                     'finishedAt': datetime(2019, 8, 21, 15, 00).astimezone(tz=TIMEZONE).isoformat(),
                     'category': {
-                        'name': 'machine learning',
+                        'name': '머신러닝',
+                        'nameKo': '머신러닝',
+                        'nameEn': 'machine learning',
                         'slug': 'ML',
                         'visible': True
                     },
@@ -108,8 +121,9 @@ class ProgramTestCase(BaseTestCase):
                     'pdfUrl': 'https://pdf/1',
                     'videoUrl': 'https://video/1',
                     'difficulty': {
-                        'nameEn': 'beginner',
-                        'nameKo': '초급'
+                        'name': '초급',
+                        'nameKo': '초급',
+                        'nameEn': 'beginner'
                     },
                     'recordable': True
                 }
