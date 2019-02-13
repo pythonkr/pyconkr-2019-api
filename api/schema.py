@@ -1,10 +1,47 @@
 import datetime
 import graphene
 import pytz
+import graphql_jwt
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 from api.models.program import Conference, Program, Presentation
 from api.models.program import Place, Category, Difficulty
+from django.contrib.auth import authenticate, get_user_model
+from graphql_jwt.exceptions import JSONWebTokenError
+import logging
+from graphql_jwt.utils import jwt_encode, jwt_payload
+
+logger = logging.getLogger(__name__)
+
+# Refer the django-graphql-jwt source code below
+# https://github.com/flavors/django-graphql-jwt/blob/master/graphql_jwt/decorators.py
+
+
+class OAuthTokenAuth(graphene.Mutation):
+    class Arguments:
+        oauth_type = graphene.String()
+        oauth_access_token = graphene.String()
+
+    token = graphene.String()
+
+    def mutate(self, info, oauth_type=None, oauth_access_token=None):
+        user = authenticate(
+            request=info.context,
+            oauth_type=oauth_type,
+            oauth_access_token=oauth_access_token)
+        if user is None:
+            raise JSONWebTokenError(
+                'Please, enter valid credentials')
+        payload = jwt_payload(user)
+        token = jwt_encode(payload)
+        return OAuthTokenAuth(token=token)
+
+
+class Mutations(graphene.ObjectType):
+    o_auth_token_auth = OAuthTokenAuth.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
 
 
 class SeoulDateTime(graphene.types.Scalar):
@@ -113,4 +150,4 @@ class Query(graphene.ObjectType):
 
 
 # pylint: disable=invalid-name
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutations)
