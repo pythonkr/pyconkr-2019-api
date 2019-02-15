@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 """api URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -25,6 +26,7 @@ from rest_framework_jwt.views import verify_jwt_token
 # pylint: disable=invalid-name
 router = routers.DefaultRouter()
 
+
 urlpatterns = [
     #url(r'^', include(router.urls)),
     path('admin/', admin.site.urls),
@@ -32,8 +34,5 @@ urlpatterns = [
     path('ping', lambda r: HttpResponse('OK')),
     path('api/', include(router.urls), name='api'),
     path('api-auth/', include('rest_framework.urls'), name='rest_framework'),
-    path('graphql/', GraphQLView.as_view(graphiql=True), name='graphql'),
-    path('api-token-auth/', obtain_jwt_token),
-    path('api-token-refresh/', refresh_jwt_token),
-    path('api-token-verify/', verify_jwt_token),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)), name='graphql'),
 ]

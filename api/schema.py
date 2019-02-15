@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 import datetime
 import graphene
 import pytz
@@ -128,6 +129,7 @@ class DifficultyNode(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
+    profile = graphene.Field(UserNode)
     owner = graphene.Field(UserNode)
     conference = graphene.Field(ConferenceNode)
     place = graphene.Field(PlaceNode)
@@ -137,11 +139,16 @@ class Query(graphene.ObjectType):
     programs = graphene.List(ProgramNode)
     presentations = graphene.List(PresentationNode)
 
-    @graphene.resolve_only_args
+    def resolve_profile(self, info):
+        user = info.context.user
+        # print(info.context.META[''])
+        if user.is_authenticated:
+            return user
+        return None
+
     def resolve_presentations(self):
         return Presentation.objects.all()
 
-    @graphene.resolve_only_args
     def resolve_conference(self):
         conferences = Conference.objects.all()
         if conferences:
