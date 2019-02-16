@@ -1,7 +1,6 @@
-import json
-from django.test import RequestFactory, testcases
 from unittest import mock
-from api.oauth_tokenbackend import OAuthTokenBackend, GITHUB_PROFILE_URL, GITHUB_EMAIL_URL
+from django.test import RequestFactory, testcases
+from api.oauth_tokenbackend import OAuthTokenBackend
 
 
 USER_RESPONSE = {
@@ -35,14 +34,15 @@ class OAuthTokenBackendTestCase(testcases.TestCase):
 
         # Then
         self.assertIsNotNone(user)
-        self.assertEquals(f'github_{USER_RESPONSE["login"]}', user.username)
-        self.assertEquals(USER_RESPONSE['email'], user.email)
-        # self.assertEquals(USER_RESPONSE['avatar_url'], user.profile.avatar_url)
+        self.assertEqual(f'github_{USER_RESPONSE["login"]}', user.username)
+        self.assertEqual(USER_RESPONSE['email'], user.email)
+        self.assertEqual(USER_RESPONSE['login'], user.profile.name)
+        self.assertEqual(USER_RESPONSE['avatar_url'], user.profile.avatar_url)
 
     def _mock_response(
             self,
             status=200,
-            json={},
+            json=None,
             raise_for_status=None):
 
         mock_resp = mock.Mock()

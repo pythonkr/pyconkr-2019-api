@@ -1,7 +1,6 @@
 import requests
 from django.contrib.auth import get_user_model
 
-# pylint: disable=invalid-name
 UserModel = get_user_model()
 
 OAUTH_TYPE_GITHUB = 'github'
@@ -19,14 +18,29 @@ class OAuthTokenBackend:
             if oauth_type != OAUTH_TYPE_GITHUB:
                 return None
             profile = self.retrive_github_profile(oauth_access_token)
-            username = profile['username']
+            name = profile['name']
             email = profile['email']
-            user = UserModel.objects.get(username=username, email=email)
+            avatar_url = profile['avatar_url']
+            # 어떤 OAuth를 통해 인증했는지 구분하기 위해 Prefix를 붙입니다.
+            # e.g, github_amazingguni, google_amazingguni
+            username = f'{oauth_type}_{name}'
+            user = UserModel.objects.get(
+                username=username)
+            if user.email != email:
+                user.email = email
+                user.save()
         except UserModel.DoesNotExist:
             user = UserModel(username=username, email=email)
             user.is_staff = False
             user.is_superuser = False
             user.save()
+
+        profile = user.profile
+        profile.name = name
+        profile.email = email
+        profile.avatar_url = avatar_url
+        profile.save()
+
         return user
 
     def retrive_github_profile(self, access_token):
@@ -41,7 +55,7 @@ class OAuthTokenBackend:
             email = self.retrieve_github_email(headers)
 
         return {
-            'username': f'{GITHUB_USERNAME_PREFIX}_{data["login"]}',
+            'name': data["login"],
             'avatar_url': data['avatar_url'],
             'email': email
         }

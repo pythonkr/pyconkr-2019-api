@@ -1,21 +1,14 @@
-from django.contrib.auth.decorators import login_required
 import datetime
 import graphene
 import pytz
 import graphql_jwt
+from graphql_jwt.exceptions import JSONWebTokenError
+from graphql_jwt.utils import jwt_encode, jwt_payload
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from graphene_django import DjangoObjectType
 from api.models.program import Conference, Program, Presentation
 from api.models.program import Place, Category, Difficulty
-from django.contrib.auth import authenticate, get_user_model
-from graphql_jwt.exceptions import JSONWebTokenError
-import logging
-from graphql_jwt.utils import jwt_encode, jwt_payload
-
-logger = logging.getLogger(__name__)
-
-# Refer the django-graphql-jwt source code below
-# https://github.com/flavors/django-graphql-jwt/blob/master/graphql_jwt/decorators.py
 
 
 class OAuthTokenAuth(graphene.Mutation):
