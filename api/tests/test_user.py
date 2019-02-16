@@ -3,7 +3,6 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 
 
 class UsersTests(JSONWebTokenTestCase):
-
     def setUp(self):
         self.user = get_user_model().objects.create(username='test')
         self.client.authenticate(self.user)
