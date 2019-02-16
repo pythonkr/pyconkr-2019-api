@@ -43,6 +43,7 @@ INSTALLED_APPS = (
 ) + (
     # thirt-party apps
     'graphene_django',
+    'sorl.thumbnail',
 ) + (
     # local apps
     'api',

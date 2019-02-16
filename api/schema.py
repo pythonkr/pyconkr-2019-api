@@ -141,15 +141,14 @@ class Query(graphene.ObjectType):
 
     def resolve_profile(self, info):
         user = info.context.user
-        # print(info.context.META[''])
         if user.is_authenticated:
             return user
         return None
 
-    def resolve_presentations(self):
+    def resolve_presentations(self, info):
         return Presentation.objects.all()
 
-    def resolve_conference(self):
+    def resolve_conference(self, info):
         conferences = Conference.objects.all()
         if conferences:
             return conferences[0]
