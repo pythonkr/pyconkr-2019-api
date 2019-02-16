@@ -42,9 +42,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 ) + (
     # thirt-party apps
-    'rest_framework',
     'graphene_django',
-
+    'sorl.thumbnail',
 ) + (
     # local apps
     'api',
@@ -58,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'graphql_jwt.middleware.JSONWebTokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -112,11 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# GraphQl setting
-GRAPHENE = {
-    'SCHEMA': 'api.schema.schema'  # Where your Graphene schema lives
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -139,12 +134,6 @@ TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
 TEST_OUTPUT_VERBOSE = 2
 TEST_OUTPUT_DIR = 'test-reports'
 
-# Django REST Framework
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
@@ -156,3 +145,17 @@ LANGUAGES = (
 LANGUAGE_CODE = 'ko'
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ko'
 MODELTRANSLATION_LANGUAGES = ('ko', 'en')
+
+# Graphene
+GRAPHENE = {
+    'SCHEMA': 'api.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'api.oauth_tokenbackend.OAuthTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

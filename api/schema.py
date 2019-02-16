@@ -1,10 +1,41 @@
 import datetime
 import graphene
 import pytz
+import graphql_jwt
+from graphql_jwt.exceptions import JSONWebTokenError
+from graphql_jwt.utils import jwt_encode, jwt_payload
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from graphene_django import DjangoObjectType
 from api.models.program import Conference, Program, Presentation
 from api.models.program import Place, Category, Difficulty
+
+
+class OAuthTokenAuth(graphene.Mutation):
+    class Arguments:
+        oauth_type = graphene.String()
+        oauth_access_token = graphene.String()
+
+    token = graphene.String()
+
+    def mutate(self, info, oauth_type=None, oauth_access_token=None):
+        user = authenticate(
+            request=info.context,
+            oauth_type=oauth_type,
+            oauth_access_token=oauth_access_token)
+        if user is None:
+            raise JSONWebTokenError(
+                'Please, enter valid credentials')
+        payload = jwt_payload(user)
+        token = jwt_encode(payload)
+        return OAuthTokenAuth(token=token)
+
+
+class Mutations(graphene.ObjectType):
+    o_auth_token_auth = OAuthTokenAuth.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
 
 
 class SeoulDateTime(graphene.types.Scalar):
@@ -91,6 +122,7 @@ class DifficultyNode(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
+    profile = graphene.Field(UserNode)
     owner = graphene.Field(UserNode)
     conference = graphene.Field(ConferenceNode)
     place = graphene.Field(PlaceNode)
@@ -100,12 +132,16 @@ class Query(graphene.ObjectType):
     programs = graphene.List(ProgramNode)
     presentations = graphene.List(PresentationNode)
 
-    @graphene.resolve_only_args
-    def resolve_presentations(self):
+    def resolve_profile(self, info):
+        user = info.context.user
+        if user.is_authenticated:
+            return user
+        return None
+
+    def resolve_presentations(self, info):
         return Presentation.objects.all()
 
-    @graphene.resolve_only_args
-    def resolve_conference(self):
+    def resolve_conference(self, info):
         conferences = Conference.objects.all()
         if conferences:
             return conferences[0]
@@ -113,4 +149,4 @@ class Query(graphene.ObjectType):
 
 
 # pylint: disable=invalid-name
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutations)

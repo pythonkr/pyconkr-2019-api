@@ -1,9 +1,10 @@
 from datetime import datetime, date
-
+from PIL import Image
 from django.contrib.auth.models import User
 from django.utils.timezone import get_current_timezone
 from api.models.program import Conference, Presentation
 from api.models.program import Place, Category, Difficulty
+from api.models.profile import Profile
 
 
 def initialize():
@@ -20,6 +21,17 @@ def initialize():
 
     user = User.objects.create_user(
         'testname', 'test@test.com', 'testpassword')
+    profile = Profile()
+    profile.name = '나영근'
+    profile.bio = '안녕하세요 나영근입니다'
+    profile.phone = '010-0000-0000'
+    profile.organization = '파이콘 한국'
+    profile.nationality = 'Korea'
+
+    img = Image.new('RGB', (800, 1280), (255, 255, 255))
+    img.save("/tmp/image.png", "PNG")
+    profile.image = img
+
     category = Category.objects.create(
         name_ko='머신러닝', name_en='machine learning', slug='ML', visible=True)
     difficulty = Difficulty.objects.create(name_en='beginner', name_ko='초급')
