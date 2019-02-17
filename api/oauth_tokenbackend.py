@@ -40,7 +40,7 @@ class OAuthTokenBackend:
         profile.email = email
         profile.avatar_url = avatar_url
         profile.save()
-
+        print(user)
         return user
 
     def retrive_github_profile(self, access_token):

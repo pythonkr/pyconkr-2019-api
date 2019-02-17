@@ -13,10 +13,10 @@ class Profile(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     bio = models.TextField(max_length=4000, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
-    organization = models.CharField(max_length=100, db_index=True)
+    organization = models.CharField(max_length=100, null=True, blank=True)
     nationality = models.CharField(max_length=100, null=True, blank=True)
     image = SorlImageField(upload_to='profile', null=True, blank=True)
-    avatar_url = models.TextField(max_length=500, blank=True)
+    avatar_url = models.TextField(max_length=500, null=True, blank=True)
 
 
 @receiver(post_save, sender=UserModel)
