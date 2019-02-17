@@ -3,7 +3,7 @@
 echo "Collect static files"
 python manage.py collectstatic --noinput
 
-sleep 15
+sleep 20
 echo "Apply database migrations"
 python manage.py migrate
 
