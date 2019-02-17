@@ -3,6 +3,10 @@ services:
   db:
     image: postgres
     restart: always
+    environment:
+      POSTGRES_USER: pyconkr
+      POSTGRES_PASSWORD: pyconkr
+      POSTGRES_DB: db
     volumes:
       - ${PSQL_VOLUME:-./data}:/var/lib/postgresql/data:z
   web:
