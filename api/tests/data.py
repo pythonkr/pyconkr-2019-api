@@ -5,6 +5,7 @@ from django.utils.timezone import get_current_timezone
 from api.models.program import Conference, Presentation
 from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
+from api.models.sponsor import Sponsor, SponsorLevel
 
 
 def initialize():
@@ -62,3 +63,19 @@ def initialize():
     presentation.difficulty = difficulty
     presentation.recordable = True
     presentation.save()
+
+    sponsorLevel = Sponsor.objects.create(
+        name='키스톤', desc='가장돈은 많이 낸 분들이죠', price='20000000', ticket_count='20')
+
+    sponsor = Sponsor()
+
+    sponsor.name_ko = '파이콘준비위원회'
+    sponsor.desc_ko = '파이콘을 준비하는 준비위원회입니다.'
+    sponsor.name_en = 'PyconKr'
+    sponsor.desc_en = 'The people who want to open python conference'
+    sponsor.image = img
+    sponsor.url = 'http://pythonkr/1'
+    sponsor.level = sponsorLevel
+    sponsor.paid_at = datetime(
+        2019, 8, 21, 13, 00).astimezone(tz=timezone)
+    sponsor.ticket_users = user
