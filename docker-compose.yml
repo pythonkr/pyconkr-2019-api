@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: always
     volumes:
-      - ${PSQL_VOLUME:-./data}:/var/lib/postgresql/data
+      - ${PSQL_VOLUME:-./data}:/var/lib/postgresql/data:z
   web:
     build: .
     restart: always
