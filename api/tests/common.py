@@ -1,24 +1,8 @@
-from api.models.programs import Conference, Tutorial, Sprint, Youngcoder, Exercise
+from api.models.program import Conference
 
 
 def create_conference(name='Conference', field='Conference Field'):
     return Conference.objects.create(name=name, conference_field=field)
-
-
-def create_tutorial(name='Tutorial', field='Tutorial Field'):
-    return Tutorial.objects.create(name=name, tutorial_field=field)
-
-
-def create_sprint(name='Sprint'):
-    return Sprint.objects.create(name=name)
-
-
-def create_youngcoder(name='Youngcoder'):
-    return Youngcoder.objects.create(name=name)
-
-
-def create_exercise(name='Exercise'):
-    return Exercise.objects.create(name=name)
 
 
 def get_first_class_item_from_arr(arr, cls):

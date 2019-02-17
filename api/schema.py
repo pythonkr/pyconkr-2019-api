@@ -1,7 +1,7 @@
 import graphene
 from graphene import Schema, resolve_only_args
 from graphene_django import DjangoObjectType
-from api.models.programs import Presentation
+from api.models.program import Presentation
 
 
 class PresentationNode(DjangoObjectType):
