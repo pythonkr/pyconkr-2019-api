@@ -1,12 +1,15 @@
 from urllib.parse import parse_qs
 import requests
 from django.contrib.auth import get_user_model
-from api.oauth_config import GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET
+from django.conf import settings
 
 UserModel = get_user_model()
 
 OAUTH_TYPE_GITHUB = 'github'
 OAUTH_TYPE_GOOGLE = 'google'
+
+GITHUB_CLIENT_ID = settings.PYCONKR_OAUTH_SETTING['GITHUB_CLIENT_ID']
+GITHUB_CLIENT_SECRET = settings.PYCONKR_OAUTH_SETTING['GITHUB_CLIENT_SECRET']
 
 GITHUB_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 GITHUB_PROFILE_URL = 'https://api.github.com/user'

@@ -79,6 +79,7 @@ workflows:
       - build
       - docker
       - deploy-dev:
+          context: DEVELOP
           requires:
             - build
             - docker
