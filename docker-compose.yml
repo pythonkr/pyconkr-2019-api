@@ -2,15 +2,19 @@ version: "3"
 services:
   db:
     image: postgres
+    restart: always
     volumes:
       - ${PSQL_VOLUME:-./data}:/var/lib/postgresql/data
   web:
     build: .
+    restart: always
     environment:
       - DJANGO_SETTINGS_MODULE=pyconkr.production_settings
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
     command: bash -c "while !</dev/tcp/db/5432; do sleep 1; done; bash docker-entrypoint.sh"
     ports:
       - "${PORT:-8000}:8000"
+    links:
+      - db
     depends_on:
       - db
