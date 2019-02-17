@@ -45,7 +45,8 @@ jobs:
           name: Start container and verify it's working
           command: |
             set -x
-            docker-compose up -d --build
+            docker-compose build
+            docker-compose up -d
             sleep 10
             docker-compose logs
             curl http://localhost:8000/ping

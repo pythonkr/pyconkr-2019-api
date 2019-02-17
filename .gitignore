@@ -118,3 +118,6 @@ oauth_config.py
 
 # Collected static files
 collected_static/
+
+# database
+data/
