@@ -8,7 +8,7 @@ services:
     build: .
     environment:
       - DJANGO_SETTINGS_MODULE=pyconkr.production_settings
-      - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:pyconkr}
+      - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
     command: bash docker-entrypoint.sh
     ports:
       - "${PORT:-8000}:8000"
