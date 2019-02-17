@@ -112,3 +112,6 @@ test-reports/
 
 # pyCharm
 .idea/
+
+# oauth
+oauth_config.py

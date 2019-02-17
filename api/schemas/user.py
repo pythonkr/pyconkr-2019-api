@@ -3,9 +3,6 @@ import graphene
 from graphql import GraphQLError
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 
 from graphene_django import DjangoObjectType
 import graphql_jwt
@@ -14,6 +11,7 @@ from graphql_jwt.utils import jwt_encode, jwt_payload
 
 
 from api.models.profile import Profile
+from api.models.profile import create_profile_if_not_exists
 
 UserModel = get_user_model()
 
@@ -33,15 +31,16 @@ class ProfileNode(DjangoObjectType):
 class OAuthTokenAuth(graphene.Mutation):
     class Arguments:
         oauth_type = graphene.String()
-        oauth_access_token = graphene.String()
+        code = graphene.String()
 
     token = graphene.String()
 
-    def mutate(self, info, oauth_type=None, oauth_access_token=None):
+    def mutate(self, info, oauth_type=None, code=None):
         user = authenticate(
             request=info.context,
             oauth_type=oauth_type,
-            oauth_access_token=oauth_access_token)
+            code=code)
+
         if user is None:
             raise JSONWebTokenError(
                 'Please, enter valid credentials')
@@ -69,12 +68,7 @@ class UpdateProfile(graphene.Mutation):
         user = info.context.user
         if not user.is_authenticated:
             raise GraphQLError('You must be logged to PyCon Korea')
-
-        try:
-            profile = Profile.objects.get(user=user)
-        except Profile.DoesNotExist:
-            profile = Profile(user=user)
-            profile.save()
+        profile = create_profile_if_not_exists(user)
 
         for k, v in profile_data.items():
             setattr(profile, k, v)
