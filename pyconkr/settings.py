@@ -25,9 +25,7 @@ SECRET_KEY = '34&4p%e6r68$95mcq%n+d%!^&0&r)cdahu@sy!6fd#k*-y@+eh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -130,6 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # XML Test Runner
 TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
@@ -176,8 +175,3 @@ PYCONKR_OAUTH_SETTING = {
     'NAVER_CLIENT_ID': os.environ.get('NAVER_CLIENT_ID', ''),
     'NAVER_CLIENT_SECRET': os.environ.get('NAVER_CLIENT_SECRET', '')
 }
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
-STATIC_URL = '/static/'

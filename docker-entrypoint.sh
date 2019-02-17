@@ -3,8 +3,10 @@
 echo "Collect static files"
 python manage.py collectstatic --noinput
 
+sleep 5
 echo "Apply database migrations"
 python manage.py migrate
+
 
 echo "Create admin user"
 CREATE_ADMIN_SOURCE="
