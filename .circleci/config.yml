@@ -35,9 +35,12 @@ jobs:
           path: test-reports
 
   docker:
-    machine: true
+    docker:
+      - image: circleci/python:3.6.3
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Start container and verify it's working
           command: |
