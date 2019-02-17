@@ -27,7 +27,7 @@ def deploy(c, target='dev', port='8000', sha1=''):
         envs = [
             f'PSQL_VOLUME={database_dir}',
             f'PORT={port}',
-            f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}'
+            f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
             f'GITHUB_CLIENT_ID={os.environ.get("GITHUB_CLIENT_ID", "")}',
             f'GITHUB_CLIENT_SECRET={os.environ.get("GITHUB_CLIENT_SECRET", "")}',
             f'GOOGLE_CLIENT_ID={os.environ.get("GOOGLE_CLIENT_ID", "")}',
