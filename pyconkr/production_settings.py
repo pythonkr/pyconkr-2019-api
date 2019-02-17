@@ -7,7 +7,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pyconkr',
+        'NAME': 'postgres',
         'USER': 'pyconkr',
         'HOST': 'db',
         'PORT': 5432,
