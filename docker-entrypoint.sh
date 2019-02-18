@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Wait for starting database"
+while !</dev/tcp/db/5432; do sleep 1; done; 
+
 echo "Collect static files"
 python manage.py collectstatic --noinput
 
