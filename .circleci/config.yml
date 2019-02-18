@@ -59,7 +59,7 @@ jobs:
       - run:
           command: |
             sudo pip install fabric
-            fab -H ${DEPLOY_HOST} -p -e deploy --target dev --sha1 $CIRCLE_SHA1 --port 80
+            fab -H ${DEPLOY_HOST} -p -e deploy --target dev --sha1 $CIRCLE_SHA1 --port 8080
 
   deploy-master:
     docker:
