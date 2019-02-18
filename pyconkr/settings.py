@@ -148,7 +148,7 @@ MODELTRANSLATION_LANGUAGES = ('ko', 'en')
 
 # Graphene
 GRAPHENE = {
-    'SCHEMA': 'api.schemas.schema.schema',
+    'SCHEMA': 'api.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],

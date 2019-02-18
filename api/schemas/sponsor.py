@@ -1,6 +1,8 @@
 import graphene
 from graphene_django import DjangoObjectType
 from api.models.sponsor import Sponsor, SponsorLevel
+from api.schemas.common import SeoulDateTime
+from api.schemas.user import UserNode
 
 
 class SponsorNode(DjangoObjectType):
@@ -9,6 +11,8 @@ class SponsorNode(DjangoObjectType):
         description = """
         Sponsors which spon python conference in Korea.
         """
+
+    paid_at = graphene.Field(SeoulDateTime)
 
 
 class SponsorLevelNode(DjangoObjectType):
@@ -24,8 +28,8 @@ class Mutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    #owner = graphene.Field(UserNode)
-    #sponsorLevel = graphene.List(SponsorLevelNode)
+    ticketUsers = graphene.List(UserNode)
+    sponsorLevel = graphene.Field(SponsorLevelNode)
 
     sponsor = graphene.Field(SponsorNode)
     sponsors = graphene.List(SponsorNode)

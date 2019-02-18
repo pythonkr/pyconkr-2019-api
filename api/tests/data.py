@@ -86,9 +86,10 @@ def initialize():
     sponsor.desc_en = 'The people who want to open python conference'
     img = Image.new('RGB', (800, 1280), (255, 255, 255))
     img.save("/tmp/image_sponsor.png", "PNG")
-    sponsor.image = img
+    #sponsor.image = img
     sponsor.url = 'http://pythonkr/1'
     sponsor.level = sponsorLevel
     sponsor.paid_at = datetime(
         2019, 8, 21, 13, 00).astimezone(tz=timezone)
     sponsor.ticket_users = user
+    sponsor.save()
