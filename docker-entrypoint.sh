@@ -33,4 +33,4 @@ except UserModel.DoesNotExist:
 echo "${CREATE_ADMIN_SOURCE}"  | python manage.py shell
 
 echo "Starting server"
-python manage.py runserver 0.0.0.0:8000
+gunicorn pyconkr.wsgi:application --bind=0.0.0.0:8000
