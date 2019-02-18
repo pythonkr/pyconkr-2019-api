@@ -105,7 +105,6 @@ venv.bak/
 
 # vscode
 .vscode/
-.idea/
 
 # Test report
 test-reports/

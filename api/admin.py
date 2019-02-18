@@ -5,6 +5,7 @@ from api.models.oauth_setting import OAuthSetting
 from api.models.program import Conference, Presentation
 from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
+from api.models.sponsor import Sponsor, SponsorLevel
 
 
 UserModel = get_user_model()
@@ -29,3 +30,5 @@ admin.site.register(Presentation)
 admin.site.register(Place)
 admin.site.register(Category)
 admin.site.register(Difficulty)
+admin.site.register(Sponsor)
+admin.site.register(SponsorLevel)

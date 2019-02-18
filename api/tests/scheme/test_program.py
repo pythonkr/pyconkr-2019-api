@@ -3,7 +3,7 @@ from datetime import datetime
 from django.utils.timezone import get_current_timezone
 from api.tests.base import BaseTestCase
 from api.tests.data import initialize
-from api.schemas.schema import schema
+from api.schema import schema
 from api.models.program import Presentation
 
 TIMEZONE = get_current_timezone()

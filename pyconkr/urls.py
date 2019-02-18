@@ -7,7 +7,6 @@ from api import views
 
 
 urlpatterns = [
-    #url(r'^', include(router.urls)),
     path('admin/', admin.site.urls),
     path('robots.txt', views.robots, name='robots.txt'),
     path('ping', lambda r: HttpResponse('OK')),
