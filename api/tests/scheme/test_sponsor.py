@@ -1,9 +1,9 @@
 from datetime import datetime
-from django.utils.timezone import get_current_timezone
 from json import loads, dumps
+from django.utils.timezone import get_current_timezone
 from api.tests.base import BaseTestCase
 from api.tests.data import initialize
-from api.schema import schema
+from api.schemas.schema import schema
 
 TIMEZONE = get_current_timezone()
 
@@ -41,7 +41,6 @@ class SponsorTestCase(BaseTestCase):
 
         result = schema.execute(query)
         actual = loads(dumps(result.data))
-        self.assertEqual(actual, "")
         self.assertDictEqual(actual, expected)
 
     def test_스폰서_리스트_나열하기(self):

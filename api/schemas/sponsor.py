@@ -1,7 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
 from api.models.sponsor import Sponsor, SponsorLevel
-from api.schemas.user import UserNode
 
 
 class SponsorNode(DjangoObjectType):
@@ -31,10 +30,8 @@ class Query(graphene.ObjectType):
     sponsor = graphene.Field(SponsorNode)
     sponsors = graphene.List(SponsorNode)
 
-
     def resolve_sponsor(self, info):
         return Sponsor.objects.all()[0]
-
 
     def resolve_sponsors(self, info):
         return Sponsor.objects.all()
