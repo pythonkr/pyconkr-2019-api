@@ -18,6 +18,9 @@ class Profile(models.Model):
     image = SorlImageField(upload_to='profile', null=True, blank=True)
     avatar_url = models.TextField(max_length=500, null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 @receiver(post_save, sender=UserModel)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -28,3 +31,12 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=UserModel)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+def create_profile_if_not_exists(user):
+    try:
+        profile = Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        profile = Profile(user=user)
+        profile.save()
+    return profile

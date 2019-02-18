@@ -25,9 +25,7 @@ SECRET_KEY = '34&4p%e6r68$95mcq%n+d%!^&0&r)cdahu@sy!6fd#k*-y@+eh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -42,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 ) + (
     # thirt-party apps
+    'corsheaders',
     'graphene_django',
     'sorl.thumbnail',
 ) + (
@@ -54,6 +53,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -128,6 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # XML Test Runner
 TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
@@ -159,3 +160,18 @@ AUTHENTICATION_BACKENDS = [
     'api.oauth_tokenbackend.OAuthTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# PyCon OAuth Setting
+#
+PYCONKR_OAUTH_SETTING = {
+    'GITHUB_CLIENT_ID': os.environ.get('GITHUB_CLIENT_ID', ''),
+    'GITHUB_CLIENT_SECRET': os.environ.get('GITHUB_CLIENT_SECRET', ''),
+    'GOOGLE_CLIENT_ID': os.environ.get('GOOGLE_CLIENT_ID', ''),
+    'GOOGLE_CLIENT_SECRET': os.environ.get('GOOGLE_CLIENT_SECRET', ''),
+    'FACEBOOK_CLIENT_ID': os.environ.get('FACEBOOK_CLIENT_ID', ''),
+    'FACEBOOK_CLIENT_SECRET': os.environ.get('FACEBOOK_CLIENT_SECRET', ''),
+    'NAVER_CLIENT_ID': os.environ.get('NAVER_CLIENT_ID', ''),
+    'NAVER_CLIENT_SECRET': os.environ.get('NAVER_CLIENT_SECRET', '')
+}

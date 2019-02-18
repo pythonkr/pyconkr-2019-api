@@ -105,15 +105,18 @@ venv.bak/
 
 # vscode
 .vscode/
-.idea/
 
 # Test report
 test-reports/
 
-<<<<<<< HEAD
-# IDE
-.idea/*
-=======
 # pyCharm
 .idea/
->>>>>>> 8e3b1a4a2e2c875e074e0f240677e97800e5f610
+
+# oauth
+oauth_config.py
+
+# Collected static files
+static/
+
+# database
+data/

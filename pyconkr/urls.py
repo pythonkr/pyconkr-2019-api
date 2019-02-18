@@ -11,4 +11,5 @@ urlpatterns = [
     path('robots.txt', views.robots, name='robots.txt'),
     path('ping', lambda r: HttpResponse('OK')),
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)), name='graphql'),
+    path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True)), name='graphql'),
 ]
