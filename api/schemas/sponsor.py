@@ -20,11 +20,21 @@ class SponsorLevelNode(DjangoObjectType):
         """
 
 
-class Query(graphene.ObjectType):
-    owner = graphene.Field(UserNode)
-    sponsorLevel = graphene.List(SponsorLevelNode)
+class Mutations(graphene.ObjectType):
+    pass
 
+
+class Query(graphene.ObjectType):
+    #owner = graphene.Field(UserNode)
+    #sponsorLevel = graphene.List(SponsorLevelNode)
+
+    sponsor = graphene.Field(SponsorNode)
     sponsors = graphene.List(SponsorNode)
 
-    def resolve_presentations(self, info):
+
+    def resolve_sponsor(self, info):
+        return Sponsor.objects.all()[0]
+
+
+    def resolve_sponsors(self, info):
         return Sponsor.objects.all()
