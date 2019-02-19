@@ -1,15 +1,13 @@
 from urllib.parse import parse_qs
 import requests
 from django.contrib.auth import get_user_model
-from django.conf import settings
+from api.models.oauth_setting import OAuthSetting
 
 UserModel = get_user_model()
 
 OAUTH_TYPE_GITHUB = 'github'
 OAUTH_TYPE_GOOGLE = 'google'
 
-GITHUB_CLIENT_ID = settings.PYCONKR_OAUTH_SETTING['GITHUB_CLIENT_ID']
-GITHUB_CLIENT_SECRET = settings.PYCONKR_OAUTH_SETTING['GITHUB_CLIENT_SECRET']
 
 GITHUB_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 GITHUB_PROFILE_URL = 'https://api.github.com/user'
@@ -45,9 +43,18 @@ class OAuthTokenBackend:
         return user
 
     def retrive_github_profile(self, code):
+        github_client_id = ''
+        github_client_secret = ''
+        oauth_setting = OAuthSetting.objects.last()
+        if oauth_setting:
+            github_client_id = oauth_setting.github_client_id
+            github_client_secret = oauth_setting.github_client_secret
+        if not github_client_id or not github_client_secret:
+            raise ValueError(
+                'GitHub client information should be registered by admin(OAuthSetting')
         response = requests.post(GITHUB_ACCESS_TOKEN_URL, data={
-            'client_id': GITHUB_CLIENT_ID,
-            'client_secret': GITHUB_CLIENT_SECRET,
+            'client_id': github_client_id,
+            'client_secret': github_client_secret,
             'code': code
         })
         response.raise_for_status()

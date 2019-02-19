@@ -162,16 +162,3 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-# PyCon OAuth Setting
-#
-PYCONKR_OAUTH_SETTING = {
-    'GITHUB_CLIENT_ID': os.environ.get('GITHUB_CLIENT_ID', ''),
-    'GITHUB_CLIENT_SECRET': os.environ.get('GITHUB_CLIENT_SECRET', ''),
-    'GOOGLE_CLIENT_ID': os.environ.get('GOOGLE_CLIENT_ID', ''),
-    'GOOGLE_CLIENT_SECRET': os.environ.get('GOOGLE_CLIENT_SECRET', ''),
-    'FACEBOOK_CLIENT_ID': os.environ.get('FACEBOOK_CLIENT_ID', ''),
-    'FACEBOOK_CLIENT_SECRET': os.environ.get('FACEBOOK_CLIENT_SECRET', ''),
-    'NAVER_CLIENT_ID': os.environ.get('NAVER_CLIENT_ID', ''),
-    'NAVER_CLIENT_SECRET': os.environ.get('NAVER_CLIENT_SECRET', '')
-}
