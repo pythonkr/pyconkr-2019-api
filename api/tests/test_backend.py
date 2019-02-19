@@ -1,6 +1,7 @@
 from unittest import mock
 from django.test import RequestFactory, testcases
 from api.oauth_tokenbackend import OAuthTokenBackend
+from api.tests.data import initialize
 
 ACCESS_TOKEN_RESPONSE = b'access_token=111767d60d69f06812b54ca7b5bb46c49358a4ec&token_type=bearer'
 
@@ -27,6 +28,7 @@ EMAILS_RESPONSE = [
 
 class OAuthTokenBackendTestCase(testcases.TestCase):
     def setUp(self):
+        initialize()
         self.request_factory = RequestFactory()
         self.backend = OAuthTokenBackend()
         self.dummy_user_response = USER_RESPONSE.copy()
