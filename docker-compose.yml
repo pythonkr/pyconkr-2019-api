@@ -4,20 +4,17 @@ services:
     image: postgres
     restart: always
     volumes:
-      - ${PSQL_VOLUME:-./data}:/var/lib/postgresql/data:z
+      - ${PSQL_VOLUME:-../data}:/var/lib/postgresql/data:z
   api:
     build: .
     restart: always
     environment:
-      - DJANGO_SETTINGS_MODULE=pyconkr.production_settings
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
     command: bash docker-entrypoint.sh
     volumes:
       - .:/web
     expose:
       - "8000"
-    links:
-      - db
     depends_on:
       - db
   nginx:
@@ -25,8 +22,8 @@ services:
     ports:
       - "${PORT:-80}:80"
     volumes:
-      - .:/web
-      - ./static:/static
-      - ./config/nginx:/etc/nginx/conf.d
+      # - .:/web:ro
+      - ./static:/static:ro
+      - ./config/nginx:/etc/nginx/conf.d:ro
     depends_on:
       - api
