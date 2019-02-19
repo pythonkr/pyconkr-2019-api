@@ -28,14 +28,6 @@ def deploy(c, target='dev', port='8000', sha1=''):
             f'PSQL_VOLUME={database_dir}',
             f'PORT={port}',
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
-            f'GITHUB_CLIENT_ID={os.environ.get("GITHUB_CLIENT_ID", "")}',
-            f'GITHUB_CLIENT_SECRET={os.environ.get("GITHUB_CLIENT_SECRET", "")}',
-            f'GOOGLE_CLIENT_ID={os.environ.get("GOOGLE_CLIENT_ID", "")}',
-            f'GOOGLE_CLIENT_SECRET={os.environ.get("GOOGLE_CLIENT_SECRET", "")}',
-            f'FACEBOOK_CLIENT_ID={os.environ.get("FACEBOOK_CLIENT_ID", "")}',
-            f'FACEBOOK_CLIENT_SECRET={os.environ.get("FACEBOOK_CLIENT_SECRET", "")}',
-            f'NAVER_CLIENT_ID={os.environ.get("NAVER_CLIENT_ID", "")}',
-            f'NAVER_CLIENT_SECRET={os.environ.get("NAVER_CLIENT_SECRET", "")}',
         ]
 
         env_command = ' '.join(envs)

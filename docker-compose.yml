@@ -22,7 +22,6 @@ services:
     ports:
       - "${PORT:-80}:80"
     volumes:
-      # - .:/web:ro
       - ./static:/static:ro
       - ./config/nginx:/etc/nginx/conf.d:ro
     depends_on:
