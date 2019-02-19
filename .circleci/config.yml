@@ -61,7 +61,7 @@ jobs:
             sudo pip install fabric
             fab -H ${DEPLOY_HOST} -p -e deploy --target dev --sha1 $CIRCLE_SHA1 --port 80
             sleep 20
-            curl http://dev.python.kr/api/ping
+            curl http://dev.pycon.kr/api/ping
 
   deploy-master:
     docker:
