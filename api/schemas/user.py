@@ -30,9 +30,9 @@ class ProfileNode(DjangoObjectType):
 
 class OAuthTokenAuth(graphene.Mutation):
     class Arguments:
-        oauth_type = graphene.String()
-        client_id = graphene.String()
-        code = graphene.String()
+        oauth_type = graphene.String(required=True)
+        client_id = graphene.String(required=True)
+        code = graphene.String(required=True)
 
     token = graphene.String()
 
@@ -52,11 +52,11 @@ class OAuthTokenAuth(graphene.Mutation):
 
 
 class ProfileInput(graphene.InputObjectType):
-    name = graphene.String(required=False)
-    bio = graphene.String(required=False)
-    phone = graphene.String(required=False)
-    organization = graphene.String(required=False)
-    nationality = graphene.String(required=False)
+    name = graphene.String()
+    bio = graphene.String()
+    phone = graphene.String()
+    organization = graphene.String()
+    nationality = graphene.String()
     # image = SorlImageField(upload_to='profile', null=True, blank=True)
 
 
