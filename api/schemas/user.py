@@ -31,14 +31,16 @@ class ProfileNode(DjangoObjectType):
 class OAuthTokenAuth(graphene.Mutation):
     class Arguments:
         oauth_type = graphene.String()
+        client_id = graphene.String()
         code = graphene.String()
 
     token = graphene.String()
 
-    def mutate(self, info, oauth_type=None, code=None):
+    def mutate(self, info, oauth_type, client_id, code):
         user = authenticate(
             request=info.context,
             oauth_type=oauth_type,
+            client_id=client_id,
             code=code)
 
         if user is None:
