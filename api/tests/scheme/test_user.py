@@ -1,20 +1,17 @@
 from unittest import mock
-from graphql import GraphQLError
 from json import loads, dumps
 from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
 from api.tests.base import BaseTestCase
 from api.tests.data import initialize
 from api.schema import schema
-from api.models.program import Presentation
-from api.models.profile import Profile
 
 from api.tests.common import \
     generate_mock_response, \
     generate_request_authenticated
+
 from api.tests.oauth_app_response import \
     GITHUB_USER_RESPONSE,\
-    GITHUB_EMAILS_RESPONSE, \
     GITHUB_ACCESS_TOKEN_RESPONSE
 
 
