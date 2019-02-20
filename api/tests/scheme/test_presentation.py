@@ -9,43 +9,9 @@ from api.models.program import Presentation
 TIMEZONE = get_current_timezone()
 
 
-class ProgramTestCase(BaseTestCase):
+class PresentationTestCase(BaseTestCase):
     def setUp(self):
         initialize()
-
-    def test_retrieve_conference(self):
-        query = '''
-        query {
-            conference {
-                name
-                nameKo
-                nameEn
-                conferenceStartedAt
-                conferenceFinishedAt
-                sprintStartedAt
-                sprintFinishedAt
-                tutorialStartedAt
-                tutorialFinishedAt
-            }
-        }
-        '''
-
-        expected = {
-            'conference': {
-                'name': '파이콘 한국 2019',
-                'nameKo': '파이콘 한국 2019',
-                'nameEn': 'Pycon Korea 2019',
-                'conferenceStartedAt': '2019-08-10',
-                'conferenceFinishedAt': '2019-08-11',
-                'sprintStartedAt': '2019-08-09',
-                'sprintFinishedAt': '2019-08-09',
-                'tutorialStartedAt': '2019-08-08',
-                'tutorialFinishedAt': '2019-08-09'
-            }
-        }
-        result = schema.execute(query)
-        actual = loads(dumps(result.data))
-        self.assertDictEqual(actual, expected)
 
     def test_retrieve_presentation(self):
         query = '''
