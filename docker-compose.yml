@@ -10,7 +10,6 @@ services:
     restart: always
     environment:
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
-    command: bash docker-entrypoint.sh
     volumes:
       - .:/web
     expose:
@@ -20,7 +19,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "${PORT:-80}:80"
+      - ${PORT:-80}:80
     volumes:
       - ./static:/static:ro
       - ./config/nginx:/etc/nginx/conf.d:ro
