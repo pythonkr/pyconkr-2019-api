@@ -48,11 +48,12 @@ class OAuthTokenBackendTestCase(testcases.TestCase):
 
         # When
         user = self.backend.authenticate(
-            request=request, oauth_type='github', code='TEST_CODE')
+            request=request, oauth_type='github',
+            client_id='prod_github_client_id', code='TEST_CODE')
 
         # Then
         self.assertIsNotNone(user)
-        self.assertEqual(f'github_{USER_RESPONSE["id"]}', user.username)
+        self.assertEqual(f'prod_github_{USER_RESPONSE["id"]}', user.username)
         self.assertEqual(USER_RESPONSE['email'], user.email)
         self.assertEqual(USER_RESPONSE['avatar_url'], user.profile.avatar_url)
         self.assertEqual(USER_RESPONSE['login'], user.profile.name)
@@ -76,11 +77,13 @@ class OAuthTokenBackendTestCase(testcases.TestCase):
 
         # When
         user = self.backend.authenticate(
-            request=request, oauth_type='github', code='TEST_TOKEN')
+            request=request, oauth_type='github',
+            client_id='develop_github_client_id', code='TEST_CODE')
 
         # Then
         self.assertIsNotNone(user)
-        self.assertEqual(f'github_{USER_RESPONSE["id"]}', user.username)
+        self.assertEqual(
+            f'develop_github_{USER_RESPONSE["id"]}', user.username)
         self.assertEqual(EMAILS_RESPONSE[0]['email'], user.email)
         self.assertEqual(USER_RESPONSE['login'], user.profile.name)
         self.assertEqual(USER_RESPONSE['avatar_url'], user.profile.avatar_url)

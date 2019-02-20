@@ -13,6 +13,14 @@ from api.models.sponsor import Sponsor, SponsorLevel
 TIMEZONE = get_current_timezone()
 
 
+def initialize():
+    initialize_conference()
+    initialize_oauthsetting()
+    user = initialize_user()
+    initialize_sponsor(user)
+    initialize_presentation(user)
+
+
 def initialize_conference():
     conference = Conference()
     conference.name_ko = '파이콘 한국 2019'
@@ -45,18 +53,42 @@ def initialize_user():
 
 def initialize_oauthsetting():
     oauth_setting = OAuthSetting()
-    oauth_setting.github_client_id = 'github_client_id'
-    oauth_setting.github_client_secret = 'github_client_secret'
+    oauth_setting.env_name = 'prod'
+    oauth_setting.github_client_id = 'prod_github_client_id'
+    oauth_setting.github_client_secret = 'prod_github_client_secret'
+    oauth_setting.gmail_client_id = 'prod_gmail_client_id'
+    oauth_setting.gmail_client_secret = 'prod_gmail_client_secret'
+    oauth_setting.save()
+    oauth_setting = OAuthSetting()
+    oauth_setting.env_name = 'develop'
+    oauth_setting.github_client_id = 'develop_github_client_id'
+    oauth_setting.github_client_secret = 'develop_github_client_secret'
+    oauth_setting.gmail_client_id = 'develop_gmail_client_id'
+    oauth_setting.gmail_client_secret = 'develop_gmail_client_secret'
     oauth_setting.save()
 
 
-def initialize():
-    initialize_conference()
-    initialize_oauthsetting()
-    user = initialize_user()
+def initialize_sponsor(user):
+    sponsor_level = SponsorLevel.objects.create(
+        name='키스톤', desc='가장돈은 많이 낸 분들이죠', price='20000000', ticket_count='20')
+    sponsor = Sponsor()
 
-    initialize_sponsor(user)
+    sponsor.name_ko = '파이콘준비위원회'
+    sponsor.desc_ko = '파이콘을 준비하는 준비위원회입니다.'
+    sponsor.name_en = 'PyconKr'
+    sponsor.desc_en = 'The people who want to open python conference'
+    img = Image.new('RGB', (800, 1280), (255, 255, 255))
+    img.save("/tmp/image_sponsor.png", "PNG")
+    # sponsor.image = img
+    sponsor.url = 'http://pythonkr/1'
+    sponsor.level = sponsor_level
+    sponsor.paid_at = datetime(
+        2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE)
+    sponsor.ticket_users = user
+    sponsor.save()
 
+
+def initialize_presentation(user):
     category = Category.objects.create(
         name_ko='머신러닝', name_en='machine learning', slug='ML', visible=True)
     difficulty = Difficulty.objects.create(name_en='beginner', name_ko='초급')
@@ -86,23 +118,3 @@ def initialize():
     presentation.difficulty = difficulty
     presentation.recordable = True
     presentation.save()
-
-
-def initialize_sponsor(user):
-    sponsor_level = SponsorLevel.objects.create(
-        name='키스톤', desc='가장돈은 많이 낸 분들이죠', price='20000000', ticket_count='20')
-    sponsor = Sponsor()
-
-    sponsor.name_ko = '파이콘준비위원회'
-    sponsor.desc_ko = '파이콘을 준비하는 준비위원회입니다.'
-    sponsor.name_en = 'PyconKr'
-    sponsor.desc_en = 'The people who want to open python conference'
-    img = Image.new('RGB', (800, 1280), (255, 255, 255))
-    img.save("/tmp/image_sponsor.png", "PNG")
-    # sponsor.image = img
-    sponsor.url = 'http://pythonkr/1'
-    sponsor.level = sponsor_level
-    sponsor.paid_at = datetime(
-        2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE)
-    sponsor.ticket_users = user
-    sponsor.save()
