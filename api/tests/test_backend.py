@@ -48,7 +48,8 @@ class OAuthTokenBackendTestCase(testcases.TestCase):
 
         # When
         user = self.backend.authenticate(
-            request=request, oauth_type='github', client_id='prod_github_client_id', code='TEST_CODE')
+            request=request, oauth_type='github',
+            client_id='prod_github_client_id', code='TEST_CODE')
 
         # Then
         self.assertIsNotNone(user)
@@ -76,7 +77,8 @@ class OAuthTokenBackendTestCase(testcases.TestCase):
 
         # When
         user = self.backend.authenticate(
-            request=request, oauth_type='github', client_id='develop_github_client_id', code='TEST_CODE')
+            request=request, oauth_type='github',
+            client_id='develop_github_client_id', code='TEST_CODE')
 
         # Then
         self.assertIsNotNone(user)
