@@ -1,17 +1,135 @@
 from json import loads, dumps
 from datetime import datetime
 from django.utils.timezone import get_current_timezone
+from django.contrib.auth import get_user_model
 from api.tests.base import BaseTestCase
 from api.tests.data import initialize
 from api.schema import schema
-from api.models.program import Presentation
-
+from api.tests.common import generate_request_authenticated
 TIMEZONE = get_current_timezone()
+
+UserModel = get_user_model()
 
 
 class PresentationTestCase(BaseTestCase):
     def setUp(self):
         initialize()
+
+    def test_create_presentation(self):
+        mutation = '''
+        mutation CreatePresentation($presentationInput: PresentationInput!, 
+                $categoryId: Int, $difficultyId: Int) {
+            createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
+                presentation {
+                    id
+                    nameKo
+                    nameEn
+                    descKo
+                    descEn
+                    language
+                    slideUrl
+                    pdfUrl
+                    videoUrl
+                    recordable
+                    category {
+                        id
+                    }
+                    difficulty {
+                        id
+                    }
+                }
+            }
+        }
+        '''
+
+        variables = {
+            'categoryId': 1,
+            'difficultyId': 1,
+            'presentationInput': {
+                'nameKo': '흥미로운 GraphQL',
+                'nameEn': 'Interesting GraphQL',
+                'descKo': 'GraphQL은 재미있다는 설명!',
+                'descEn': 'The description that GraphQL is fun',
+                'language': 'KOREAN',
+                'slideUrl': 'my.slide.url',
+                'pdfUrl': 'my.pdf.url',
+                'videoUrl': 'my.video.url',
+                'recordable': True
+            }
+        }
+
+        expected = {
+            'createPresentation': {
+                'presentation': {
+                    **variables['presentationInput'],
+                    'category': {
+                        'id': '1'
+                    },
+                    'difficulty': {
+                        'id': '1'
+                    }
+                }
+            }
+        }
+        user = UserModel(username='develop_github_123', email='me@pycon.kr')
+        user.save()
+        request = generate_request_authenticated(user)
+
+        # When
+        result = schema.execute(
+            mutation, variables=variables, context_value=request)
+
+        # Then
+        actual = loads(dumps(result.data))
+        self.assertIsNotNone(actual)
+        self.assertIsNotNone(
+            actual['createPresentation']['presentation']['id'])
+        del actual['createPresentation']['presentation']['id']
+        self.assertDictEqual(actual, expected)
+
+    def test_create_presentation_only_name(self):
+        mutation = '''
+        mutation CreatePresentation($presentationInput: PresentationInput!, 
+                $categoryId: Int, $difficultyId: Int) {
+            createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
+                presentation {
+                    id
+                    nameKo
+                    nameEn
+                }
+            }
+        }
+        '''
+
+        variables = {
+            'presentationInput': {
+                'nameKo': '흥미로운 GraphQL',
+                'nameEn': 'Interesting GraphQL',
+            }
+        }
+
+        expected = {
+            'createPresentation': {
+                'presentation': {
+                    **variables['presentationInput'],
+                }
+            }
+        }
+        user = UserModel(username='develop_github_123', email='me@pycon.kr')
+        user.save()
+        request = generate_request_authenticated(user)
+
+        # When
+        result = schema.execute(
+            mutation, variables=variables, context_value=request)
+
+        # Then
+        actual = loads(dumps(result.data))
+        self.assertIsNotNone(actual)
+        self.assertIsNotNone(
+            actual['createPresentation']['presentation']['id'])
+        del actual['createPresentation']['presentation']['id']
+        self.assertDictEqual(actual, expected)
 
     def test_retrieve_presentation(self):
         query = '''
@@ -66,7 +184,7 @@ class PresentationTestCase(BaseTestCase):
                     'descEn': 'Graphql is very good package.',
                     'price': 0,
                     'visible': False,
-                    'language': Presentation.LANGUAGE_KOREAN,
+                    'language': 'KOREAN',
                     'owner': {
                         'username': 'testname'
                     },

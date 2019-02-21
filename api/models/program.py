@@ -70,16 +70,17 @@ class Program(models.Model):
 class Presentation(Program):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     accepted = models.BooleanField(default=False)
-    place = models.ForeignKey(Place, null=True, on_delete=models.SET_NULL)
-    started_at = models.DateTimeField(null=True)
-    finished_at = models.DateTimeField(null=True)
+    place = models.ForeignKey(
+        Place, blank=True, null=True, on_delete=models.SET_NULL)
+    started_at = models.DateTimeField(null=True, blank=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
     category = models.ForeignKey(
-        Category, null=True, on_delete=models.SET_NULL)
+        Category, null=True, blank=True, on_delete=models.SET_NULL)
     slide_url = models.CharField(max_length=255, null=True, blank=True)
     pdf_url = models.CharField(max_length=255, null=True, blank=True)
     video_url = models.CharField(max_length=255, null=True, blank=True)
     difficulty = models.ForeignKey(
-        Difficulty, null=True, on_delete=models.SET_NULL)
+        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     recordable = models.BooleanField(default=False)
 
     def __str__(self):
