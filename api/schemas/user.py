@@ -70,7 +70,7 @@ class UpdateProfile(graphene.Mutation):
     class Arguments:
         profile_input = ProfileInput(required=True)
 
-    def mutate(self, info, profile_data):
+    def mutate(self, info, profile_input):
         user = info.context.user
         if not user.is_authenticated:
             raise GraphQLError('You must be logged to PyCon Korea')
