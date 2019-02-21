@@ -27,6 +27,7 @@ class PresentationTestCase(BaseTestCase):
                     descKo
                     descEn
                     language
+                    submitted
                     slideUrl
                     pdfUrl
                     videoUrl
@@ -51,6 +52,7 @@ class PresentationTestCase(BaseTestCase):
                 'descKo': 'GraphQL은 재미있다는 설명!',
                 'descEn': 'The description that GraphQL is fun',
                 'language': 'KOREAN',
+                'submitted': True,
                 'slideUrl': 'my.slide.url',
                 'pdfUrl': 'my.pdf.url',
                 'videoUrl': 'my.video.url',

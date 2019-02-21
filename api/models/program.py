@@ -69,6 +69,7 @@ class Program(models.Model):
 
 class Presentation(Program):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)

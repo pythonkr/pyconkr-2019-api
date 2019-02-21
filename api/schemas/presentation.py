@@ -55,6 +55,7 @@ class PresentationInput(graphene.InputObjectType):
     desc_ko = graphene.String()
     desc_en = graphene.String()
     language = graphene.Field(LanguageNode)
+    submitted = graphene.Boolean()
     slide_url = graphene.String()
     pdf_url = graphene.String()
     video_url = graphene.String()
