@@ -19,6 +19,7 @@ UserModel = get_user_model()
 class UserNode(DjangoObjectType):
     class Meta:
         model = UserModel
+        only_fields = ('username', 'email', 'profile')
         description = "User information"
 
 
@@ -37,13 +38,16 @@ class OAuthTokenAuth(graphene.Mutation):
     token = graphene.String()
 
     def mutate(self, info, oauth_type, client_id, code):
-        user = authenticate(
-            request=info.context,
-            oauth_type=oauth_type,
-            client_id=client_id,
-            code=code)
-
-        if user is None:
+        from requests.exceptions import HTTPError
+        try:
+            user = authenticate(
+                request=info.context,
+                oauth_type=oauth_type,
+                client_id=client_id,
+                code=code)
+        except HTTPError as e:
+            raise GraphQLError(e)
+        if user is None or user.is_anonymous:
             raise JSONWebTokenError(
                 'Please, enter valid credentials')
         payload = jwt_payload(user)
@@ -64,7 +68,7 @@ class UpdateProfile(graphene.Mutation):
     profile = graphene.Field(ProfileNode)
 
     class Arguments:
-        profile_data = ProfileInput(required=True)
+        profile_input = ProfileInput(required=True)
 
     def mutate(self, info, profile_data):
         user = info.context.user
@@ -72,7 +76,7 @@ class UpdateProfile(graphene.Mutation):
             raise GraphQLError('You must be logged to PyCon Korea')
         profile = create_profile_if_not_exists(user)
 
-        for k, v in profile_data.items():
+        for k, v in profile_input.items():
             setattr(profile, k, v)
 
         profile.full_clean()
@@ -90,9 +94,9 @@ class Mutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    profile = graphene.Field(UserNode)
+    me = graphene.Field(UserNode)
 
-    def resolve_profile(self, info):
+    def resolve_me(self, info):
         user = info.context.user
         if not user.is_authenticated:
             raise GraphQLError('You must be logged to PyCon Korea')
