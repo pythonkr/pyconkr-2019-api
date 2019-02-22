@@ -6,7 +6,6 @@ from django.utils.timezone import get_current_timezone
 from api.models.oauth_setting import OAuthSetting
 from api.models.program import Conference, Presentation
 from api.models.program import Place, Category, Difficulty
-from api.models.profile import Profile
 from api.models.sponsor import Sponsor, SponsorLevel
 
 
@@ -37,16 +36,15 @@ def initialize_conference():
 def initialize_user():
     user = User.objects.create_user(
         'testname', 'test@test.com', 'testpassword')
-
-    profile = Profile()
-    profile.name = '나영근'
-    profile.bio = '안녕하세요 나영근입니다'
-    profile.phone = '010-0000-0000'
-    profile.organization = '파이콘 한국'
-    profile.nationality = 'Korea'
-    img = Image.new('RGB', (800, 1280), (255, 255, 255))
-    img.save("/tmp/image.png", "PNG")
-    profile.image = img
+    user.save()
+    user.profile.name = '나영근'
+    user.profile.bio = '안녕하세요 나영근입니다'
+    user.profile.phone = '010-0000-0000'
+    user.profile.organization = '파이콘 한국'
+    user.profile.nationality = 'Korea'
+    # img = Image.new('RGB', (800, 1280), (255, 255, 255))
+    # img.save("/tmp/image.png", "PNG")
+    # user.profile.image = img
     user.save()
     return user
 

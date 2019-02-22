@@ -1,6 +1,7 @@
 import graphene
 from graphql import GraphQLError
 from graphene_django import DjangoObjectType
+from django.db.models import Q
 from api.models.program import Presentation
 from api.models.program import Place, Category, Difficulty
 from api.schemas.user import UserNode
@@ -103,4 +104,8 @@ class Query(graphene.ObjectType):
     presentations = graphene.List(PresentationNode)
 
     def resolve_presentations(self, info):
-        return Presentation.objects.all()
+        condition = Q(accepted=True)
+        user = info.context.user
+        if user.is_authenticated:
+            condition = condition | Q(owner=user)
+        return Presentation.objects.filter(condition)

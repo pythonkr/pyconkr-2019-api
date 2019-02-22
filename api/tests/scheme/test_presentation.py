@@ -5,10 +5,52 @@ from django.contrib.auth import get_user_model
 from api.tests.base import BaseTestCase
 from api.tests.data import initialize
 from api.schema import schema
-from api.tests.common import generate_request_authenticated
+from api.tests.common import generate_request_authenticated, \
+    generate_request_anonymous
 TIMEZONE = get_current_timezone()
 
 UserModel = get_user_model()
+
+PRESENTATION_QUERY = '''
+query {
+    presentations {
+        name
+        nameKo
+        nameEn
+        desc
+        descKo
+        descEn
+        price
+        visible
+        language
+        owner {
+            username
+        }
+        accepted
+        place {
+            name
+        }
+        startedAt
+        finishedAt
+        category {
+            name
+            nameKo
+            nameEn
+            slug
+            visible
+        }
+        slideUrl
+        pdfUrl
+        videoUrl
+        difficulty {
+            name
+            nameKo
+            nameEn
+        }
+        recordable
+    }
+}
+'''
 
 
 class PresentationTestCase(BaseTestCase):
@@ -17,7 +59,7 @@ class PresentationTestCase(BaseTestCase):
 
     def test_create_presentation(self):
         mutation = '''
-        mutation CreatePresentation($presentationInput: PresentationInput!, 
+        mutation CreatePresentation($presentationInput: PresentationInput!,
                 $categoryId: Int, $difficultyId: Int) {
             createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
                 presentation {
@@ -91,7 +133,7 @@ class PresentationTestCase(BaseTestCase):
 
     def test_create_presentation_only_name(self):
         mutation = '''
-        mutation CreatePresentation($presentationInput: PresentationInput!, 
+        mutation CreatePresentation($presentationInput: PresentationInput!,
                 $categoryId: Int, $difficultyId: Int) {
             createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
                 presentation {
@@ -134,47 +176,7 @@ class PresentationTestCase(BaseTestCase):
         self.assertDictEqual(actual, expected)
 
     def test_retrieve_presentation(self):
-        query = '''
-        query {
-            presentations {
-                name
-                nameKo
-                nameEn
-                desc
-                descKo
-                descEn
-                price
-                visible
-                language
-                owner {
-                    username
-                }
-                accepted
-                place {
-                    name
-                }
-                startedAt
-                finishedAt
-                category {
-                    name
-                    nameKo
-                    nameEn
-                    slug
-                    visible
-                }
-                slideUrl
-                pdfUrl
-                videoUrl
-                difficulty {
-                    name
-                    nameKo
-                    nameEn
-                }
-                recordable
-            }
-        }
-        '''
-
+        # Given
         expected = {
             'presentations': [
                 {
@@ -215,6 +217,34 @@ class PresentationTestCase(BaseTestCase):
                 }
             ]
         }
-        result = schema.execute(query)
+        user = UserModel.objects.get(username='testname')
+        request = generate_request_authenticated(user)
+
+        # When
+        result = schema.execute(PRESENTATION_QUERY, context_value=request)
+
+        # Then
         actual = loads(dumps(result.data))
         self.assertDictEqual(actual, expected)
+
+    def test_should_not_retrieve_unaccepted_presentation_to_anonymous(self):
+        request = generate_request_anonymous()
+
+        # When
+        result = schema.execute(PRESENTATION_QUERY, context_value=request)
+
+        # Then
+        actual = loads(dumps(result.data))
+        self.assertDictEqual(actual, {'presentations': []})
+
+    def test_retrieve_unaccepted_presentation_to_only_owner(self):
+        user = UserModel.objects.create(username='other_user')
+        user.save()
+        request = generate_request_authenticated(user)
+
+        # When
+        result = schema.execute(PRESENTATION_QUERY, context_value=request)
+
+        # Then
+        actual = loads(dumps(result.data))
+        self.assertDictEqual(actual, {'presentations': []})
