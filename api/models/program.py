@@ -4,20 +4,20 @@ from model_utils.managers import InheritanceManager
 
 
 class Conference(models.Model):
-    name = models.CharField(max_length=50, default='', blank=True)
-    conference_started_at = models.DateField(null=True)
-    conference_finished_at = models.DateField(null=True)
-    sprint_started_at = models.DateField(null=True)
-    sprint_finished_at = models.DateField(null=True)
-    tutorial_started_at = models.DateField(null=True)
-    tutorial_finished_at = models.DateField(null=True)
+    name = models.CharField(max_length=50)
+    conference_started_at = models.DateField(null=True, blank=True)
+    conference_finished_at = models.DateField(null=True, blank=True)
+    sprint_started_at = models.DateField(null=True, blank=True)
+    sprint_finished_at = models.DateField(null=True, blank=True)
+    tutorial_started_at = models.DateField(null=True, blank=True)
+    tutorial_finished_at = models.DateField(null=True, blank=True)
 
-    presentation_proposal_started_at = models.DateField(null=True)
-    presentation_proposal_finished_at = models.DateField(null=True)
-    sprint_proposal_started_at = models.DateField(null=True)
-    sprint_proposal_finished_at = models.DateField(null=True)
-    tutorial_proposal_started_at = models.DateField(null=True)
-    tutorial_proposal_finished_at = models.DateField(null=True)
+    presentation_proposal_started_at = models.DateField(null=True, blank=True)
+    presentation_proposal_finished_at = models.DateField(null=True, blank=True)
+    sprint_proposal_started_at = models.DateField(null=True, blank=True)
+    sprint_proposal_finished_at = models.DateField(null=True, blank=True)
+    tutorial_proposal_started_at = models.DateField(null=True, blank=True)
+    tutorial_proposal_finished_at = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -69,17 +69,19 @@ class Program(models.Model):
 
 class Presentation(Program):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
-    place = models.ForeignKey(Place, null=True, on_delete=models.SET_NULL)
-    started_at = models.DateTimeField(null=True)
-    finished_at = models.DateTimeField(null=True)
+    place = models.ForeignKey(
+        Place, blank=True, null=True, on_delete=models.SET_NULL)
+    started_at = models.DateTimeField(null=True, blank=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
     category = models.ForeignKey(
-        Category, null=True, on_delete=models.SET_NULL)
+        Category, null=True, blank=True, on_delete=models.SET_NULL)
     slide_url = models.CharField(max_length=255, null=True, blank=True)
     pdf_url = models.CharField(max_length=255, null=True, blank=True)
     video_url = models.CharField(max_length=255, null=True, blank=True)
     difficulty = models.ForeignKey(
-        Difficulty, null=True, on_delete=models.SET_NULL)
+        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     recordable = models.BooleanField(default=False)
 
     def __str__(self):
