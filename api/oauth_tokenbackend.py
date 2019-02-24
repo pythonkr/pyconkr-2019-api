@@ -1,5 +1,5 @@
-from django.contrib.auth import get_user_model
 from requests_oauthlib import OAuth2Session
+from django.contrib.auth import get_user_model
 from api.models.oauth_setting import OAuthSetting
 
 UserModel = get_user_model()

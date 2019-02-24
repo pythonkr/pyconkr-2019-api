@@ -1,4 +1,4 @@
-from unittest import mock, skip
+from unittest import skip
 from django.test import RequestFactory, testcases
 from api.oauth_tokenbackend import OAuthTokenBackend
 from api.tests.data import initialize
@@ -39,7 +39,7 @@ class OAuthTokenBackendTestCase(testcases.TestCase):
         self.assertEqual(
             GITHUB_USER_RESPONSE['avatar_url'], user.profile.avatar_url)
         self.assertEqual(GITHUB_USER_RESPONSE['login'], user.profile.name)
-    
+
     @skip
     def test_authenticate_without_public_email(self, mock_post, mock_get):
         # Given

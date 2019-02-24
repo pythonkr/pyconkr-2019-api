@@ -1,4 +1,4 @@
-from unittest import mock, skip
+from unittest import skip
 from json import loads, dumps
 from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
