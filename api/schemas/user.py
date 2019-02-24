@@ -34,19 +34,23 @@ class OAuthTokenAuth(graphene.Mutation):
         oauth_type = graphene.String(required=True)
         client_id = graphene.String(required=True)
         code = graphene.String(required=True)
+        redirect_uri = graphene.String(required=True)
 
     token = graphene.String()
 
-    def mutate(self, info, oauth_type, client_id, code):
-        from requests.exceptions import HTTPError
+    def mutate(self, info, oauth_type, client_id, code, redirect_uri):
         try:
             user = authenticate(
                 request=info.context,
                 oauth_type=oauth_type,
                 client_id=client_id,
-                code=code)
-        except HTTPError as e:
-            raise GraphQLError(e)
+                code=code,
+                redirect_uri=redirect_uri)
+        except Exception as e:
+            print(e)
+            import traceback
+            traceback.print_exc()
+            raise e
         if user is None or user.is_anonymous:
             raise JSONWebTokenError(
                 'Please, enter valid credentials')

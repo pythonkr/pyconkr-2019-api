@@ -1,0 +1,29 @@
+[{
+    "model": "api.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "name": "\ub098\uc601\uadfc",
+      "bio": "\uc548\ub155\ud558\uc138\uc694 \ub098\uc601\uadfc\uc785\ub2c8\ub2e4",
+      "phone": "010-0000-0000",
+      "organization": "\ud30c\uc774\ucf58 \ud55c\uad6d",
+      "nationality": "Korea",
+      "image": "profile/image_YNzjTLd.png",
+      "avatar_url": "http://avartar.com/me.png"
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "name": null,
+      "bio": null,
+      "phone": null,
+      "organization": null,
+      "nationality": null,
+      "image": "",
+      "avatar_url": null
+    }
+  }
+]

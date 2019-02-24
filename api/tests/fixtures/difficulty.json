@@ -1,0 +1,29 @@
+[
+{
+  "model": "api.difficulty",
+  "pk": 1,
+  "fields": {
+    "name": "\ucd08\uae09",
+    "name_ko": "\ucd08\uae09",
+    "name_en": "Beginner"
+  }
+},
+{
+  "model": "api.difficulty",
+  "pk": 2,
+  "fields": {
+    "name": "\uc911\uae09",
+    "name_ko": "\uc911\uae09",
+    "name_en": "Intermediate"
+  }
+},
+{
+  "model": "api.difficulty",
+  "pk": 3,
+  "fields": {
+    "name": "\uace0\uae09",
+    "name_ko": "\uace0\uae09",
+    "name_en": "Experienced"
+  }
+}
+]

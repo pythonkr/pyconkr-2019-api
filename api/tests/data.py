@@ -13,8 +13,8 @@ TIMEZONE = get_current_timezone()
 
 
 def initialize():
-    initialize_conference()
-    initialize_oauthsetting()
+    # initialize_conference()
+    # initialize_oauthsetting()
     user = initialize_user()
     initialize_sponsor(user)
     initialize_presentation(user)

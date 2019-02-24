@@ -1,6 +1,7 @@
 from urllib.parse import parse_qs
 import requests
 from django.contrib.auth import get_user_model
+from requests_oauthlib import OAuth2Session
 from api.models.oauth_setting import OAuthSetting
 
 UserModel = get_user_model()
@@ -13,23 +14,39 @@ OAUTH_TYPE_NAVER = 'naver'
 OAUTH_TYPES = [OAUTH_TYPE_GITHUB, OAUTH_TYPE_GOOGLE,
                OAUTH_TYPE_FACEBOOK, OAUTH_TYPE_NAVER]
 
+REDIRECT_URI = 'http://localhost:3000'
 
 GITHUB_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 GITHUB_PROFILE_URL = 'https://api.github.com/user'
 GITHUB_EMAIL_URL = 'https://api.github.com/user/emails'
 
-GITHUB_USERNAME_PREFIX = 'github'
+GOOGLE_ACCESS_TOKEN_URL = "https://www.googleapis.com/oauth2/v4/token"
+GOOGLE_PROFILE_URL = 'https://www.googleapis.com/oauth2/v1/userinfo'
+GOOGLE_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile']
+
+FACEBOOK_ACCESS_TOKEN_URL = "https://graph.facebook.com/v3.2/oauth/access_token"
+FACEBOOK_PROFILE_URL = 'https://graph.facebook.com/me?fields=id,email,name,picture'
 
 
 class OAuthTokenBackend:
-    def authenticate(self, request, oauth_type, client_id, code):
+    def authenticate(self, request, oauth_type, client_id, code, redirect_uri):
         try:
             if oauth_type not in OAUTH_TYPES:
                 return None
             oauth_setting = self.get_oauth_setting(oauth_type, client_id)
+
             if oauth_type == OAUTH_TYPE_GITHUB:
-                profile_data = self.retrive_github_profile(
-                    client_id, oauth_setting.github_client_secret, code)
+                profile_data = self.retrieve_github_profile(
+                    client_id, oauth_setting.github_client_secret, code, redirect_uri)
+            elif oauth_type == OAUTH_TYPE_GOOGLE:
+                profile_data = self.retrieve_google_profile(
+                    client_id, oauth_setting.google_client_secret, code, redirect_uri)
+            elif oauth_type == OAUTH_TYPE_FACEBOOK:
+                profile_data = self.retrieve_facebook_profile(
+                    client_id, oauth_setting.facebook_client_secret, code, redirect_uri)
+                
             # 어떤 OAuth를 통해 인증했는지 구분하기 위해 Prefix를 붙이고
             # 해당 서비스의 계정 Index를 사용해 Username으로 사용합니다
             # e.g, develop_github_3424, localhost_google_25325
@@ -61,29 +78,19 @@ class OAuthTokenBackend:
                 f'{oauth_type} client information should be registered by admin(OAuthSetting')
         return settings.last()
 
-    def retrive_github_profile(self, client_id, client_secret, code):
+    def retrieve_github_profile(self, client_id, client_secret, code, redirect_uri):
         if not client_id or not client_secret:
             raise ValueError(
                 'GitHub client information should be registered by admin(OAuthSetting')
-        response = requests.post(GITHUB_ACCESS_TOKEN_URL, data={
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'code': code
-        })
-        response.raise_for_status()
-        data = parse_qs(response.content.decode('ascii'))
-        access_token = data['access_token'][0]
-        token_type = data['token_type'][0]
-        headers = {
-            'Authorization': f'{token_type} {access_token}'
-        }
-        response = requests.get(GITHUB_PROFILE_URL, headers=headers)
+
+        github = OAuth2Session(client_id, redirect_uri=redirect_uri)
+        github.fetch_token(GITHUB_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        response = github.get(GITHUB_PROFILE_URL)
         response.raise_for_status()
         data = response.json()
         email = data['email']
         if not email:
-            email = self.retrieve_github_email(headers)
-
+            email = self.retrieve_github_email(github)
         return {
             'id': data['id'],
             'name': data['login'],
@@ -91,11 +98,42 @@ class OAuthTokenBackend:
             'email': email
         }
 
-    def retrieve_github_email(self, headers):
-        response = requests.get(GITHUB_EMAIL_URL, headers=headers)
+    def retrieve_github_email(self, github):
+        response = github.get(GITHUB_EMAIL_URL)
         response.raise_for_status()
         data = response.json()
-        primary_email = [item['email'] for item in data if item['primary']]
-        if not primary_email:
-            return None
-        return primary_email[0]
+        primary_emails = [item['email'] for item in data if item['primary']]
+        return primary_emails[0] if primary_emails else None
+
+    def retrieve_google_profile(self, client_id, client_secret, code, redirect_uri):
+        if not client_id or not client_secret:
+            raise ValueError(
+                'Google client information should be registered by admin(OAuthSetting')
+        google = OAuth2Session(client_id,
+            scope=GOOGLE_SCOPE, redirect_uri=redirect_uri)
+        google.fetch_token(GOOGLE_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        response = google.get(GOOGLE_PROFILE_URL)
+        response.raise_for_status()
+        data = response.json()
+        return {
+            'id': data['id'],
+            'name': data['name'],
+            'avatar_url': data['picture'],
+            'email': data['email']
+        }
+    
+    def retrieve_facebook_profile(self, client_id, client_secret, code, redirect_uri):
+        if not client_id or not client_secret:
+            raise ValueError(
+                'Facebook client information should be registered by admin(OAuthSetting')
+        facebook = OAuth2Session(client_id, redirect_uri=redirect_uri)
+        facebook.fetch_token(FACEBOOK_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        response = facebook.get(FACEBOOK_PROFILE_URL)
+        response.raise_for_status()
+        data = response.json()
+        return {
+            'id': data['id'],
+            'name': data['name'],
+            'avatar_url': data['picture']['data']['url'],
+            'email': data['email']
+        }
