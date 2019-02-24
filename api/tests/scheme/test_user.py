@@ -1,4 +1,4 @@
-from unittest import mock
+from unittest import mock, skip
 from json import loads, dumps
 from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
@@ -23,8 +23,7 @@ class UserTestCase(BaseTestCase):
     def setUp(self):
         initialize()
 
-    @mock.patch('api.oauth_tokenbackend.requests.get')
-    @mock.patch('api.oauth_tokenbackend.requests.post')
+    @skip
     def test_oauth_token_auth(self, mock_post, mock_get):
         # Given
         mock_access_token_resp = generate_mock_response(

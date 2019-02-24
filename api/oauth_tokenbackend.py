@@ -1,5 +1,3 @@
-from urllib.parse import parse_qs
-import requests
 from django.contrib.auth import get_user_model
 from requests_oauthlib import OAuth2Session
 from api.models.oauth_setting import OAuthSetting
@@ -46,7 +44,7 @@ class OAuthTokenBackend:
             elif oauth_type == OAUTH_TYPE_FACEBOOK:
                 profile_data = self.retrieve_facebook_profile(
                     client_id, oauth_setting.facebook_client_secret, code, redirect_uri)
-                
+
             # 어떤 OAuth를 통해 인증했는지 구분하기 위해 Prefix를 붙이고
             # 해당 서비스의 계정 Index를 사용해 Username으로 사용합니다
             # e.g, develop_github_3424, localhost_google_25325
@@ -109,8 +107,7 @@ class OAuthTokenBackend:
         if not client_id or not client_secret:
             raise ValueError(
                 'Google client information should be registered by admin(OAuthSetting')
-        google = OAuth2Session(client_id,
-            scope=GOOGLE_SCOPE, redirect_uri=redirect_uri)
+        google = OAuth2Session(client_id, scope=GOOGLE_SCOPE, redirect_uri=redirect_uri)
         google.fetch_token(GOOGLE_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
         response = google.get(GOOGLE_PROFILE_URL)
         response.raise_for_status()
@@ -121,7 +118,7 @@ class OAuthTokenBackend:
             'avatar_url': data['picture'],
             'email': data['email']
         }
-    
+
     def retrieve_facebook_profile(self, client_id, client_secret, code, redirect_uri):
         if not client_id or not client_secret:
             raise ValueError(
