@@ -70,6 +70,7 @@ disable=
         invalid-name,
         unused-argument,
         duplicate-code,
+        too-many-arguments,
         # default
         print-statement,
         parameter-unpacking,

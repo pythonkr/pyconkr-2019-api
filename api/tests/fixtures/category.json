@@ -1,0 +1,156 @@
+[
+{
+  "model": "api.category",
+  "pk": 1,
+  "fields": {
+    "name": "Python Library",
+    "name_ko": "Python Library",
+    "name_en": "Python Library",
+    "slug": "python_library",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 2,
+  "fields": {
+    "name": "Development Method with Python",
+    "name_ko": "Development Method with Python",
+    "name_en": "Development Method with Python",
+    "slug": "development_method_with_python",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 3,
+  "fields": {
+    "name": "Data Analytics",
+    "name_ko": "Data Analytics",
+    "name_en": "Data Analytics",
+    "slug": "data_analytics",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 4,
+  "fields": {
+    "name": "Life/Social",
+    "name_ko": "Life/Social",
+    "name_en": "Life/Social",
+    "slug": "life_social",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 5,
+  "fields": {
+    "name": "Computer Vision",
+    "name_ko": "Computer Vision",
+    "name_en": "Computer Vision",
+    "slug": "computer_vision",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 6,
+  "fields": {
+    "name": "Robotics / Embedded System",
+    "name_ko": "Robotics / Embedded System",
+    "name_en": "Robotics / Embedded System",
+    "slug": "robotics_embedded_system",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 7,
+  "fields": {
+    "name": "Data Gathering",
+    "name_ko": "Data Gathering",
+    "name_en": "Data Gathering",
+    "slug": "data_gathering",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 8,
+  "fields": {
+    "name": "Blockchain",
+    "name_ko": "Blockchain",
+    "name_en": "Blockchain",
+    "slug": "blockchain",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 9,
+  "fields": {
+    "name": "Python Community",
+    "name_ko": "Python Community",
+    "name_en": "Python Community",
+    "slug": "python_community",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 10,
+  "fields": {
+    "name": "Web Service",
+    "name_ko": "Web Service",
+    "name_en": "Web Service",
+    "slug": "web_service",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 11,
+  "fields": {
+    "name": "Deep Learning & AI",
+    "name_ko": "Deep Learning & AI",
+    "name_en": "Deep Learning & AI",
+    "slug": "deep_learning_ai",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 12,
+  "fields": {
+    "name": "Python Core & Fundamental",
+    "name_ko": "Python Core & Fundamental",
+    "name_en": "Python Core & Fundamental",
+    "slug": "python_core_fundamental",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 13,
+  "fields": {
+    "name": "\uc2a4\ud3f0\uc11c\uc138\uc158",
+    "name_ko": "\uc2a4\ud3f0\uc11c\uc138\uc158",
+    "name_en": "Sponsors Session",
+    "slug": "sponsors_session",
+    "visible": true
+  }
+},
+{
+  "model": "api.category",
+  "pk": 14,
+  "fields": {
+    "name": "\ub77c\uc774\ud2b8\ub2dd \ud1a0\ud06c",
+    "name_ko": "\ub77c\uc774\ud2b8\ub2dd \ud1a0\ud06c",
+    "name_en": "Lighting Talk",
+    "slug": "lighting_talk",
+    "visible": true
+  }
+}
+]

@@ -12,22 +12,21 @@ class Conference(models.Model):
     tutorial_started_at = models.DateField(null=True, blank=True)
     tutorial_finished_at = models.DateField(null=True, blank=True)
 
-    presentation_proposal_started_at = models.DateField(null=True, blank=True)
-    presentation_proposal_finished_at = models.DateField(null=True, blank=True)
-    sprint_proposal_started_at = models.DateField(null=True, blank=True)
-    sprint_proposal_finished_at = models.DateField(null=True, blank=True)
-    tutorial_proposal_started_at = models.DateField(null=True, blank=True)
-    tutorial_proposal_finished_at = models.DateField(null=True, blank=True)
+    earlybird_started_at = models.DateTimeField(null=True, blank=True)
+    earlybird_finished_at = models.DateTimeField(null=True, blank=True)
 
-    def __str__(self):
-        return self.name
+    presentation_proposal_started_at = models.DateTimeField(
+        null=True, blank=True)
+    presentation_proposal_finished_at = models.DateTimeField(
+        null=True, blank=True)
+    sprint_proposal_started_at = models.DateTimeField(null=True, blank=True)
+    sprint_proposal_finished_at = models.DateTimeField(null=True, blank=True)
+    tutorial_proposal_started_at = models.DateTimeField(null=True, blank=True)
+    tutorial_proposal_finished_at = models.DateTimeField(null=True, blank=True)
 
 
 class Place(models.Model):
     name = models.CharField(max_length=50, default='', blank=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Category(models.Model):
@@ -36,7 +35,7 @@ class Category(models.Model):
     visible = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.name} / {self.slug} / {self.visible}'
+        return self.name
 
 
 class Difficulty(models.Model):
