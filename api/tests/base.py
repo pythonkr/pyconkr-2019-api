@@ -1,10 +1,6 @@
-from os import listdir
-from os.path import isfile, join
 from django.test import TestCase
 
 # pylint: disable=invalid-name
-
-
 
 class BaseTestCase(TestCase):
     fixtures = [

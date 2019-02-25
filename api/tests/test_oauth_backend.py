@@ -1,5 +1,5 @@
 from unittest import mock
-from django.test import RequestFactory, testcases
+from django.test import RequestFactory
 from api.tests.base import BaseTestCase
 from api.oauth_tokenbackend import OAuthTokenBackend
 from api.tests.common import generate_mock_response

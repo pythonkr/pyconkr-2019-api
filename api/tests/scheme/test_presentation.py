@@ -209,7 +209,7 @@ class PresentationTestCase(BaseTestCase):
             },
             'recordable': True
         }
-         
+
         user = UserModel.objects.get(username='testuser')
         request = generate_request_authenticated(user)
 

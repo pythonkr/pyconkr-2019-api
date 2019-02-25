@@ -23,8 +23,8 @@ class Sponsor(models.Model):
     level = models.ForeignKey(SponsorLevel, null=True,
                               on_delete=models.SET_NULL)
     paid_at = models.DateTimeField(null=True, blank=True)
-    ticket_users = models.ForeignKey(User, on_delete=models.SET_NULL, 
-        null=True, blank=True, related_name='sponsor_ticket_users')
+    ticket_users = models.ForeignKey(User, on_delete=models.SET_NULL,
+                                     null=True, blank=True, related_name='sponsor_ticket_users')
 
     def __str__(self):
         return f'{self.name}/{self.level}'
