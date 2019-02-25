@@ -3,8 +3,8 @@
   "model": "api.conference",
   "pk": 1,
   "fields": {
-    "name": "\ud30c\uc774\ucf58 \ud55c\uad6d 2019",
-    "name_ko": "\ud30c\uc774\ucf58 \ud55c\uad6d 2019",
+    "name": "파이콘 한국 2019",
+    "name_ko": "파이콘 한국 2019",
     "name_en": "Pycon Korea 2019",
     "conference_started_at": "2019-08-17",
     "conference_finished_at": "2019-08-18",

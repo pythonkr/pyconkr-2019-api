@@ -1,0 +1,129 @@
+[
+{
+  "model": "api.sponsorlevel",
+  "pk": 1,
+  "fields": {
+    "name": "키스톤",
+    "name_ko": "키스톤",
+    "name_en": "Keystone",
+    "price": 20000000,
+    "limit": 1,
+    "ticket_count": 20,
+    "presentation_count": 2
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 2,
+  "fields": {
+    "name": "다이아몬드",
+    "name_ko": "다이아몬드",
+    "name_en": "Diamond",
+    "price": 15000000,
+    "limit": 2,
+    "ticket_count": 15,
+    "presentation_count": 1
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 3,
+  "fields": {
+    "name": "사파이어",
+    "name_ko": "사파이어",
+    "name_en": "Sapphire",
+    "price": 10000000,
+    "limit": 2,
+    "ticket_count": 10,
+    "presentation_count": 1
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 4,
+  "fields": {
+    "name": "플래티넘",
+    "name_ko": "플래티넘",
+    "name_en": "Platinum",
+    "price": 8000000,
+    "limit": 6,
+    "ticket_count": 8,
+    "presentation_count": 0
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 5,
+  "fields": {
+    "name": "골드",
+    "name_ko": "골드",
+    "name_en": "Gold",
+    "price": 5000000,
+    "limit": 10,
+    "ticket_count": 5,
+    "presentation_count": 0
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 6,
+  "fields": {
+    "name": "실버",
+    "name_ko": "실버",
+    "name_en": "Silver",
+    "price": 2000000,
+    "limit": 10000000,
+    "ticket_count": 4,
+    "presentation_count": 0
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 7,
+  "fields": {
+    "name": "커뮤니티",
+    "name_ko": "커뮤니티",
+    "name_en": "Community",
+    "price": 300000,
+    "limit": 10000000,
+    "ticket_count": 0,
+    "presentation_count": 0
+  }
+},
+{
+  "model": "api.sponsor",
+  "pk": 1,
+  "fields": {
+    "owner": 1,
+    "name": "파이콘한국",
+    "name_ko": "파이콘한국",
+    "name_en": "Pycon Korea",
+    "desc": "파이콘 한국입니다",
+    "desc_ko": "파이콘 한국입니다",
+    "desc_en": "we are pycon korea",
+    "image": "",
+    "url": "http://pythonkr/1",
+    "level": 1,
+    "paid_at": "2019-08-21T04:00:00Z",
+    "ticket_users": 2
+  }
+},
+{
+  "model": "api.sponsor",
+  "pk": 2,
+  "fields": {
+    "owner": 2,
+    "name": "입금전후원사",
+    "name_ko": "입금전후원사",
+    "name_en": "NotPaid",
+    "desc": "아직 입금하지 않은 후원사입니다",
+    "desc_ko": "아직 입금하지 않은 후원사입니다",
+    "desc_en": "We haven't paid yet",
+    "image": "",
+    "url": "http://unpaid.com",
+    "level": 6,
+    "paid_at": null,
+    "ticket_users": 2
+  }
+}
+]

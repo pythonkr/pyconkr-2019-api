@@ -1,18 +1,15 @@
-from unittest import skip
+from unittest import mock
 from json import loads, dumps
 from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
 from api.tests.base import BaseTestCase
-from api.tests.data import initialize
 from api.schema import schema
 
 from api.tests.common import \
     generate_mock_response, \
     generate_request_authenticated
 
-from api.tests.oauth_app_response import \
-    GITHUB_USER_RESPONSE,\
-    GITHUB_ACCESS_TOKEN_RESPONSE
+from api.tests.oauth_app_response import GITHUB_USER_RESPONSE
 
 
 TIMEZONE = get_current_timezone()
@@ -20,23 +17,18 @@ UserModel = get_user_model()
 
 
 class UserTestCase(BaseTestCase):
-    def setUp(self):
-        initialize()
-
-    @skip
-    def test_oauth_token_auth(self, mock_post, mock_get):
+    @mock.patch('api.oauth_tokenbackend.OAuth2Session.fetch_token')
+    @mock.patch('api.oauth_tokenbackend.OAuth2Session.get')
+    def test_oauth_token_auth(self, mock_get, mock_fetch_token):
         # Given
-        mock_access_token_resp = generate_mock_response(
-            status=200, content=GITHUB_ACCESS_TOKEN_RESPONSE)
         mock_resp = generate_mock_response(
             status=200, json=GITHUB_USER_RESPONSE)
-        mock_post.side_effect = [mock_access_token_resp]
         mock_get.side_effect = [mock_resp]
 
         # Given
         mutation = '''
-        mutation OAuthTokenAuth($oauthType: String!, $clientId: String!, $code: String!) {
-            oAuthTokenAuth(oauthType: $oauthType, clientId: $clientId, code: $code) {
+        mutation OAuthTokenAuth($oauthType: String!, $clientId: String!, $code: String!, $redirectUri: String!) {
+            oAuthTokenAuth(oauthType: $oauthType, clientId: $clientId, code: $code, redirectUri: $redirectUri) {
                 token
             }
         }
@@ -44,7 +36,8 @@ class UserTestCase(BaseTestCase):
         variables = {
             'oauthType': 'github',
             'clientId': 'prod_github_client_id',
-            'code': 'CODE'
+            'code': 'CODE',
+            'redirectUri': 'REDIRECT_ME'
         }
 
         # When
