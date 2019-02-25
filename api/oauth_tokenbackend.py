@@ -27,6 +27,8 @@ GOOGLE_SCOPE = [
 FACEBOOK_ACCESS_TOKEN_URL = "https://graph.facebook.com/v3.2/oauth/access_token"
 FACEBOOK_PROFILE_URL = 'https://graph.facebook.com/me?fields=id,email,name,picture'
 
+NAVER_ACCESS_TOKEN_URL = "https://nid.naver.com/oauth2.0/token"
+NAVER_PROFILE_URL = 'https://openapi.naver.com/v1/nid/me'
 
 class OAuthTokenBackend:
     def authenticate(self, request, oauth_type, client_id, code, redirect_uri):
@@ -44,6 +46,11 @@ class OAuthTokenBackend:
             elif oauth_type == OAUTH_TYPE_FACEBOOK:
                 profile_data = self.retrieve_facebook_profile(
                     client_id, oauth_setting.facebook_client_secret, code, redirect_uri)
+            elif oauth_type == OAUTH_TYPE_NAVER:
+                profile_data = self.retrieve_naver_profile(
+                    client_id, oauth_setting.naver_client_secret, code, redirect_uri)
+            else:
+                return None
 
             # 어떤 OAuth를 통해 인증했는지 구분하기 위해 Prefix를 붙이고
             # 해당 서비스의 계정 Index를 사용해 Username으로 사용합니다
@@ -132,5 +139,22 @@ class OAuthTokenBackend:
             'id': data['id'],
             'name': data['name'],
             'avatar_url': data['picture']['data']['url'],
+            'email': data['email']
+        }
+
+    def retrieve_naver_profile(self, client_id, client_secret, code, redirect_uri):
+        if not client_id or not client_secret:
+            raise ValueError(
+                'Naver client information should be registered by admin(OAuthSetting')
+        naver = OAuth2Session(client_id, redirect_uri=redirect_uri)
+        naver.fetch_token(NAVER_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        response = naver.get(NAVER_PROFILE_URL)
+        response.raise_for_status()
+        data = response.json()
+        data = data['response']
+        return {
+            'id': data['id'],
+            'name': data['name'],
+            'avatar_url': data['profile_image'],
             'email': data['email']
         }
