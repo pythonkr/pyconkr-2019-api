@@ -3,7 +3,6 @@ from datetime import datetime
 from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
 from api.tests.base import BaseTestCase
-from api.tests.data import initialize
 from api.schema import schema
 from api.tests.common import generate_request_authenticated, \
     generate_request_anonymous
@@ -54,9 +53,6 @@ query {
 
 
 class PresentationTestCase(BaseTestCase):
-    def setUp(self):
-        initialize()
-
     def test_create_presentation(self):
         mutation = '''
         mutation CreatePresentation($presentationInput: PresentationInput!,
@@ -178,46 +174,43 @@ class PresentationTestCase(BaseTestCase):
     def test_retrieve_presentation(self):
         # Given
         expected = {
-            'presentations': [
-                {
-                    'name': 'Graphql로 api를 만들어보자',
-                    'nameKo': 'Graphql로 api를 만들어보자',
-                    'nameEn': 'Make api using Graphql',
-                    'desc': 'Graphql은 아주 훌륭한 도구입니다',
-                    'descKo': 'Graphql은 아주 훌륭한 도구입니다',
-                    'descEn': 'Graphql is very good package.',
-                    'price': 0,
-                    'visible': False,
-                    'language': 'KOREAN',
-                    'owner': {
-                        'username': 'testname'
-                    },
-                    'accepted': False,
-                    'place': {
-                        'name': '101'
-                    },
-                    'startedAt': datetime(2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE).isoformat(),
-                    'finishedAt': datetime(2019, 8, 21, 15, 00).astimezone(tz=TIMEZONE).isoformat(),
-                    'category': {
-                        'name': '머신러닝',
-                        'nameKo': '머신러닝',
-                        'nameEn': 'machine learning',
-                        'slug': 'ML',
-                        'visible': True
-                    },
-                    'slideUrl': 'https://slide/1',
-                    'pdfUrl': 'https://pdf/1',
-                    'videoUrl': 'https://video/1',
-                    'difficulty': {
-                        'name': '초급',
-                        'nameKo': '초급',
-                        'nameEn': 'beginner'
-                    },
-                    'recordable': True
-                }
-            ]
+            'name': '작성중인 발표',
+            'nameKo': '작성중인 발표',
+            'nameEn': 'Before submitting',
+            'desc': '작성중인 발표입니다.',
+            'descKo': '작성중인 발표입니다.',
+            'descEn': 'It is onprogress presentation',
+            'price': 0,
+            'visible': False,
+            'language': 'KOREAN',
+            'owner': {
+                'username': 'testuser'
+            },
+            'accepted': False,
+            'place': {
+                'name': '101'
+            },
+            'startedAt': datetime(2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE).isoformat(),
+            'finishedAt': datetime(2019, 8, 21, 15, 00).astimezone(tz=TIMEZONE).isoformat(),
+            'category': {
+                'name': 'Web Service',
+                'nameKo': 'Web Service',
+                'nameEn': 'Web Service',
+                'slug': 'web_service',
+                'visible': True
+            },
+            'slideUrl': 'https://slide/1',
+            'pdfUrl': 'https://pdf/1',
+            'videoUrl': 'https://video/1',
+            'difficulty': {
+                'name': '초급',
+                'nameKo': '초급',
+                'nameEn': 'Beginner'
+            },
+            'recordable': True
         }
-        user = UserModel.objects.get(username='testname')
+         
+        user = UserModel.objects.get(username='testuser')
         request = generate_request_authenticated(user)
 
         # When
@@ -225,7 +218,8 @@ class PresentationTestCase(BaseTestCase):
 
         # Then
         actual = loads(dumps(result.data))
-        self.assertDictEqual(actual, expected)
+        self.assertIn('presentations', actual)
+        self.assertDictEqual(actual['presentations'][0], expected)
 
     def test_should_not_retrieve_unaccepted_presentation_to_anonymous(self):
         request = generate_request_anonymous()
@@ -235,7 +229,7 @@ class PresentationTestCase(BaseTestCase):
 
         # Then
         actual = loads(dumps(result.data))
-        self.assertDictEqual(actual, {'presentations': []})
+        self.assertEqual(1, len(actual['presentations']))
 
     def test_retrieve_unaccepted_presentation_to_only_owner(self):
         user = UserModel.objects.create(username='other_user')
@@ -247,4 +241,4 @@ class PresentationTestCase(BaseTestCase):
 
         # Then
         actual = loads(dumps(result.data))
-        self.assertDictEqual(actual, {'presentations': []})
+        self.assertEqual(1, len(actual['presentations']))

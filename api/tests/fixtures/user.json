@@ -1,6 +1,25 @@
-[{
+[
+  {
     "model": "auth.user",
-    "pk": 3,
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$M6F1ZG0xuZwD$wbnlX4vWFVpOzxJK1ic7MDpQgaNf6rEs5faCy8L+bfo=",
+      "last_login": "2019-02-23T06:12:09.296Z",
+      "is_superuser": true,
+      "username": "pyconkr",
+      "first_name": "",
+      "last_name": "",
+      "email": "pyconkr@pycon.kr",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-02-23T06:12:04.399Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$120000$COAqWNJv1pOT$P99n4cjzkg+3RxEbtdZ8lurFnr7DrNr0ZujOQKRpisw=",
       "last_login": null,
@@ -16,22 +35,34 @@
       "user_permissions": []
     }
   },
+  
   {
-    "model": "auth.user",
-    "pk": 4,
+    "model": "api.profile",
+    "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$120000$M6F1ZG0xuZwD$wbnlX4vWFVpOzxJK1ic7MDpQgaNf6rEs5faCy8L+bfo=",
-      "last_login": "2019-02-23T06:12:09.296Z",
-      "is_superuser": true,
-      "username": "pyconkr",
-      "first_name": "",
-      "last_name": "",
-      "email": "pyconkr@pycon.kr",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2019-02-23T06:12:04.399Z",
-      "groups": [],
-      "user_permissions": []
+      "user": 1,
+      "name": null,
+      "bio": null,
+      "phone": null,
+      "organization": null,
+      "nationality": null,
+      "image": "",
+      "avatar_url": null
+    }
+  },
+  {
+  
+    "model": "api.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "name": "Ã«ÂÂÃ¬ÂÂÃªÂ·Â¼",
+      "bio": "Ã¬ÂÂÃ«ÂÂÃ­ÂÂÃ¬ÂÂ¸Ã¬ÂÂ Ã«ÂÂÃ¬ÂÂÃªÂ·Â¼Ã¬ÂÂÃ«ÂÂÃ«ÂÂ¤",
+      "phone": "010-0000-0000",
+      "organization": "Ã­ÂÂÃ¬ÂÂ´Ã¬Â½Â Ã­ÂÂÃªÂµÂ­",
+      "nationality": "Korea",
+      "image": "",
+      "avatar_url": "http://avartar.com/me.png"
     }
   }
 ]

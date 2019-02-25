@@ -1,0 +1,56 @@
+[
+{
+  "model": "api.place",
+  "pk": 1,
+  "fields": {
+    "name": "101",
+    "name_ko": "101",
+    "name_en": "101"
+  }
+},
+{
+  "model": "api.place",
+  "pk": 2,
+  "fields": {
+    "name": "102",
+    "name_ko": "102",
+    "name_en": "102"
+  }
+},
+{
+  "model": "api.place",
+  "pk": 3,
+  "fields": {
+    "name": "103",
+    "name_ko": "103",
+    "name_en": "103"
+  }
+},
+{
+  "model": "api.place",
+  "pk": 4,
+  "fields": {
+    "name": "104",
+    "name_ko": "104",
+    "name_en": "104"
+  }
+},
+{
+  "model": "api.place",
+  "pk": 5,
+  "fields": {
+    "name": "105",
+    "name_ko": "105",
+    "name_en": "105"
+  }
+},
+{
+  "model": "api.place",
+  "pk": 6,
+  "fields": {
+    "name": "202",
+    "name_ko": "202",
+    "name_en": "202"
+  }
+}
+]

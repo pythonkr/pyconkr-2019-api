@@ -135,8 +135,8 @@
   "model": "api.category",
   "pk": 13,
   "fields": {
-    "name": "\uc2a4\ud3f0\uc11c\uc138\uc158",
-    "name_ko": "\uc2a4\ud3f0\uc11c\uc138\uc158",
+    "name": "Ã¬ÂÂ¤Ã­ÂÂ°Ã¬ÂÂÃ¬ÂÂ¸Ã¬ÂÂ",
+    "name_ko": "Ã¬ÂÂ¤Ã­ÂÂ°Ã¬ÂÂÃ¬ÂÂ¸Ã¬ÂÂ",
     "name_en": "Sponsors Session",
     "slug": "sponsors_session",
     "visible": true
@@ -146,8 +146,8 @@
   "model": "api.category",
   "pk": 14,
   "fields": {
-    "name": "\ub77c\uc774\ud2b8\ub2dd \ud1a0\ud06c",
-    "name_ko": "\ub77c\uc774\ud2b8\ub2dd \ud1a0\ud06c",
+    "name": "Ã«ÂÂ¼Ã¬ÂÂ´Ã­ÂÂ¸Ã«ÂÂ Ã­ÂÂ Ã­ÂÂ¬",
+    "name_ko": "Ã«ÂÂ¼Ã¬ÂÂ´Ã­ÂÂ¸Ã«ÂÂ Ã­ÂÂ Ã­ÂÂ¬",
     "name_en": "Lighting Talk",
     "slug": "lighting_talk",
     "visible": true
