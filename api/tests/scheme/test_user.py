@@ -7,7 +7,8 @@ from api.schema import schema
 
 from api.tests.common import \
     generate_mock_response, \
-    generate_request_authenticated
+    generate_request_authenticated, \
+    generate_request_anonymous
 
 from api.tests.oauth_app_response import GITHUB_USER_RESPONSE
 
@@ -15,6 +16,21 @@ from api.tests.oauth_app_response import GITHUB_USER_RESPONSE
 TIMEZONE = get_current_timezone()
 UserModel = get_user_model()
 
+PROFILE_QUERY = '''
+query {
+    me {
+        username
+        email
+        profile {
+            name
+            bio
+            phone
+            organization
+            nationality
+        }
+    }
+}
+'''
 
 class UserTestCase(BaseTestCase):
     @mock.patch('api.oauth_tokenbackend.OAuth2Session.fetch_token')
@@ -100,22 +116,6 @@ class UserTestCase(BaseTestCase):
         self.assertDictEqual(actual, expected)
 
     def test_me(self):
-        query = '''
-        query {
-            me {
-                username
-                email
-                profile {
-                    name
-                    bio
-                    phone
-                    organization
-                    nationality
-                }
-            }
-        }
-        '''
-
         # Given
         user = UserModel(username='develop_github_123', email='me@pycon.kr')
         user.save()
@@ -129,7 +129,7 @@ class UserTestCase(BaseTestCase):
         request = generate_request_authenticated(user)
 
         # When
-        result = schema.execute(query, context_value=request)
+        result = schema.execute(PROFILE_QUERY, context_value=request)
         expected = {
             'me': {
                 'username': 'develop_github_123',
@@ -148,3 +148,9 @@ class UserTestCase(BaseTestCase):
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)
         self.assertDictEqual(actual, expected)
+
+    def test_me_anonymous(self):
+        request = generate_request_anonymous()
+        # When
+        result = schema.execute(PROFILE_QUERY, context_value=request)
+        self.assertIsNotNone(result.errors)

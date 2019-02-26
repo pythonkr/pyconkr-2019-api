@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import admin
 from django.urls import path
 from django.http import HttpResponse
-from graphene_django.views import GraphQLView
+from graphql_extensions.views import GraphQLView
 from api import views
 
 

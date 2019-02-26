@@ -1,6 +1,5 @@
 
 import graphene
-from graphql import GraphQLError
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 
@@ -8,7 +7,7 @@ from graphene_django import DjangoObjectType
 import graphql_jwt
 from graphql_jwt.exceptions import JSONWebTokenError
 from graphql_jwt.utils import jwt_encode, jwt_payload
-
+from graphql_extensions.auth.decorators import login_required
 
 from api.models.profile import Profile
 from api.models.profile import create_profile_if_not_exists
@@ -47,7 +46,6 @@ class OAuthTokenAuth(graphene.Mutation):
                 code=code,
                 redirect_uri=redirect_uri)
         except Exception as e:
-            print(e)
             import traceback
             traceback.print_exc()
             raise e
@@ -74,15 +72,11 @@ class UpdateProfile(graphene.Mutation):
     class Arguments:
         profile_input = ProfileInput(required=True)
 
+    @login_required
     def mutate(self, info, profile_input):
-        user = info.context.user
-        if not user.is_authenticated:
-            raise GraphQLError('You must be logged to PyCon Korea')
-        profile = create_profile_if_not_exists(user)
-
+        profile = create_profile_if_not_exists(info.context.user)
         for k, v in profile_input.items():
             setattr(profile, k, v)
-
         profile.full_clean()
         profile.save()
         return UpdateProfile(profile=profile)
@@ -100,8 +94,6 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     me = graphene.Field(UserNode)
 
-    def resolve_me(self, info):
-        user = info.context.user
-        if not user.is_authenticated:
-            raise GraphQLError('You must be logged to PyCon Korea')
-        return user
+    @login_required
+    def resolve_me(self, info, **kwargs):
+        return info.context.user

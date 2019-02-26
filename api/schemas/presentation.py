@@ -1,7 +1,7 @@
 import graphene
-from graphql import GraphQLError
 from graphene_django import DjangoObjectType
 from django.db.models import Q
+from graphql_extensions.auth.decorators import login_required
 from api.models.program import Presentation
 from api.models.program import Place, Category, Difficulty
 from api.schemas.user import UserNode
@@ -71,13 +71,10 @@ class CreatePresentation(graphene.Mutation):
         category_id = graphene.Int()
         difficulty_id = graphene.Int()
 
+    @login_required
     def mutate(self, info, presentation_input, category_id=None, difficulty_id=None):
-        user = info.context.user
-        if not user.is_authenticated:
-            raise GraphQLError('You must be logged to PyCon Korea')
-
         presentation = Presentation()
-        presentation.owner = user
+        presentation.owner = info.context.user
         if category_id:
             presentation.category = Category.objects.get(pk=category_id)
         if difficulty_id:
