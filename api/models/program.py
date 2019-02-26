@@ -55,7 +55,7 @@ class Program(models.Model):
 
     objects = InheritanceManager()
 
-    name = models.CharField(max_length=255, null=True, blank=True, 
+    name = models.CharField(max_length=255, null=True, blank=True,
                             validators=[MinLengthValidator(1)])
     desc = models.TextField(null=True, blank=True)
     price = models.IntegerField(default=0)

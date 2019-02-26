@@ -14,6 +14,7 @@ cryptography==2.4.2
 Django==2.1.5
 django-cors-headers==2.4.0
 django-filter==2.1.0
+django-graphql-extensions==0.0.6
 django-graphql-jwt==0.2.0
 django-model-utils==3.1.2
 django-modeltranslation==0.13b1
