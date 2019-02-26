@@ -13,18 +13,6 @@ class LanguageNode(graphene.Enum):
     ENGLISH = 'E'
 
 
-class PresentationNode(DjangoObjectType):
-    class Meta:
-        model = Presentation
-        description = """
-        Program which speakers present their presentations at Pycon Korea.
-        It is one of the the most important program in Pycon Korea.
-        """
-    language = graphene.Field(LanguageNode)
-    started_at = graphene.Field(SeoulDateTime)
-    finished_at = graphene.Field(SeoulDateTime)
-
-
 class PlaceNode(DjangoObjectType):
     class Meta:
         model = Place
@@ -49,6 +37,20 @@ class DifficultyNode(DjangoObjectType):
         Difficulty of presentation.
         """
 
+class PresentationNode(DjangoObjectType):
+    class Meta:
+        model = Presentation
+        description = """
+        Program which speakers present their presentations at Pycon Korea.
+        It is one of the the most important program in Pycon Korea.
+        """
+    owner = graphene.Field(UserNode)
+    place = graphene.Field(PlaceNode)
+    category = graphene.Field(CategoryNode)
+    difficulty = graphene.Field(DifficultyNode)
+    language = graphene.Field(LanguageNode)
+    started_at = graphene.Field(SeoulDateTime)
+    finished_at = graphene.Field(SeoulDateTime)
 
 class PresentationInput(graphene.InputObjectType):
     name_ko = graphene.String(required=True)
@@ -93,11 +95,6 @@ class Mutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    owner = graphene.Field(UserNode)
-    place = graphene.Field(PlaceNode)
-    category = graphene.Field(CategoryNode)
-    difficulty = graphene.Field(DifficultyNode)
-
     presentations = graphene.List(PresentationNode)
 
     def resolve_presentations(self, info):

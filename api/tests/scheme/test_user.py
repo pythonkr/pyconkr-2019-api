@@ -2,6 +2,8 @@ from unittest import mock
 from json import loads, dumps
 from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from graphql_extensions.exceptions import PermissionDenied
 from api.tests.base import BaseTestCase
 from api.schema import schema
 
@@ -115,6 +117,35 @@ class UserTestCase(BaseTestCase):
         self.assertIsNotNone(actual)
         self.assertDictEqual(actual, expected)
 
+    def test_update_profile_with_empty_name(self):
+        # Given
+        mutation = '''
+        mutation UpdateProfile($profileInput: ProfileInput!) {
+            updateProfile(profileInput: $profileInput) {
+                profile {
+                    name
+                }
+            }
+        }
+        '''
+        variables = {
+            'profileInput': {
+                'name': '',
+            }
+        }
+
+        user = UserModel(username='develop_github_123', email='me@pycon.kr')
+        user.save()
+        request = generate_request_authenticated(user)
+        result = schema.execute(
+            mutation, variables=variables, context_value=request)
+
+        # Then
+        actual = loads(dumps(result.data))
+        self.assertIsNotNone(actual)
+        self.assertIsNotNone(result.errors)
+        self.assertIsInstance(result.errors[0].original_error, ValidationError)
+
     def test_me(self):
         # Given
         user = UserModel(username='develop_github_123', email='me@pycon.kr')
@@ -152,5 +183,6 @@ class UserTestCase(BaseTestCase):
     def test_me_anonymous(self):
         request = generate_request_anonymous()
         # When
-        result = schema.execute(PROFILE_QUERY, context_value=request)
-        self.assertIsNotNone(result.errors)
+        actual = schema.execute(PROFILE_QUERY, context_value=request)
+        self.assertIsNotNone(actual.errors)
+        self.assertIsInstance(actual.errors[0].original_error, PermissionDenied)
