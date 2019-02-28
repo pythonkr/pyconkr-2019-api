@@ -117,6 +117,9 @@ oauth_config.py
 
 # Collected static files
 static/
+media/
 
 # database
 data/
+
+

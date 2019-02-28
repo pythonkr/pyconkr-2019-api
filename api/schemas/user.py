@@ -63,7 +63,7 @@ class ProfileInput(graphene.InputObjectType):
     phone = graphene.String()
     organization = graphene.String()
     nationality = graphene.String()
-    # image = SorlImageField(upload_to='profile', null=True, blank=True)
+    signature = graphene.String()
 
 
 class UpdateProfile(graphene.Mutation):
@@ -72,11 +72,17 @@ class UpdateProfile(graphene.Mutation):
     class Arguments:
         profile_input = ProfileInput(required=True)
 
+
     @login_required
     def mutate(self, info, profile_input):
         profile = create_profile_if_not_exists(info.context.user)
         for k, v in profile_input.items():
             setattr(profile, k, v)
+        files = info.context.FILES
+        if profile_input.signature:
+            photo = files[profile_input.signature]
+            print(photo)
+
         profile.full_clean()
         profile.save()
         return UpdateProfile(profile=profile)

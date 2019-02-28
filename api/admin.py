@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from sorl.thumbnail.admin import AdminImageMixin
 from api.models.oauth_setting import OAuthSetting
 from api.models.program import Conference, Presentation
 from api.models.program import Place, Category, Difficulty
@@ -11,7 +12,7 @@ from api.models.sponsor import Sponsor, SponsorLevel
 UserModel = get_user_model()
 
 
-class ProfileInline(admin.StackedInline):
+class ProfileInline(AdminImageMixin, admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = 'profile'
