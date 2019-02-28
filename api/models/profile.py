@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.validators import MinLengthValidator
 from sorl.thumbnail import ImageField as SorlImageField
 
 # pylint: disable=invalid-name
@@ -10,7 +11,7 @@ UserModel = get_user_model()
 
 class Profile(models.Model):
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100, validators=[MinLengthValidator(1)])
     bio = models.TextField(max_length=4000, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
     organization = models.CharField(max_length=100, null=True, blank=True)

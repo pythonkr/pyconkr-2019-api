@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinLengthValidator
 from model_utils.managers import InheritanceManager
 
 
@@ -54,7 +55,8 @@ class Program(models.Model):
 
     objects = InheritanceManager()
 
-    name = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True,
+                            validators=[MinLengthValidator(1)])
     desc = models.TextField(null=True, blank=True)
     price = models.IntegerField(default=0)
     visible = models.BooleanField(default=False)
@@ -84,7 +86,7 @@ class Presentation(Program):
     video_url = models.CharField(max_length=255, null=True, blank=True)
     difficulty = models.ForeignKey(
         Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
-    recordable = models.BooleanField(default=False)
+    recordable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.owner}/{self.name}'

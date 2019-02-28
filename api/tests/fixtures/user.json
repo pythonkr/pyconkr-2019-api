@@ -41,7 +41,7 @@
     "pk": 1,
     "fields": {
       "user": 1,
-      "name": null,
+      "name": "파이콘 한국",
       "bio": null,
       "phone": null,
       "organization": null,
@@ -56,10 +56,10 @@
     "pk": 2,
     "fields": {
       "user": 2,
-      "name": "Ã«ÂÂÃ¬ÂÂÃªÂ·Â¼",
-      "bio": "Ã¬ÂÂÃ«ÂÂÃ­ÂÂÃ¬ÂÂ¸Ã¬ÂÂ Ã«ÂÂÃ¬ÂÂÃªÂ·Â¼Ã¬ÂÂÃ«ÂÂÃ«ÂÂ¤",
+      "name": "테스트유저",
+      "bio": "테스트 유저입니다",
       "phone": "010-0000-0000",
-      "organization": "Ã­ÂÂÃ¬ÂÂ´Ã¬Â½Â Ã­ÂÂÃªÂµÂ­",
+      "organization": "테스트조직",
       "nationality": "Korea",
       "image": "",
       "avatar_url": "http://avartar.com/me.png"
