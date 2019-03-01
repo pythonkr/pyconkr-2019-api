@@ -1,5 +1,4 @@
 import graphene
-from graphql import GraphQLError
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 
