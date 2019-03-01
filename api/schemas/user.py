@@ -8,6 +8,7 @@ import graphql_jwt
 from graphql_jwt.exceptions import JSONWebTokenError
 from graphql_jwt.utils import jwt_encode, jwt_payload
 from graphql_extensions.auth.decorators import login_required
+from graphql_extensions.types import Email
 
 from api.models.profile import Profile
 from api.models.profile import create_profile_if_not_exists
@@ -59,8 +60,13 @@ class OAuthTokenAuth(graphene.Mutation):
 
 class ProfileInput(graphene.InputObjectType):
     name = graphene.String()
+    name_ko = graphene.String()
+    name_en = graphene.String()
     bio = graphene.String()
+    bio_ko = graphene.String()
+    bio_en = graphene.String()
     phone = graphene.String()
+    email = Email()
     organization = graphene.String()
     nationality = graphene.String()
     signature = graphene.String()
@@ -72,17 +78,11 @@ class UpdateProfile(graphene.Mutation):
     class Arguments:
         profile_input = ProfileInput(required=True)
 
-
     @login_required
     def mutate(self, info, profile_input):
         profile = create_profile_if_not_exists(info.context.user)
         for k, v in profile_input.items():
             setattr(profile, k, v)
-        files = info.context.FILES
-        if profile_input.signature:
-            photo = files[profile_input.signature]
-            print(photo)
-
         profile.full_clean()
         profile.save()
         return UpdateProfile(profile=profile)
@@ -98,8 +98,8 @@ class Mutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    me = graphene.Field(UserNode)
+    profile = graphene.Field(ProfileNode)
 
     @login_required
-    def resolve_me(self, info, **kwargs):
-        return info.context.user
+    def resolve_profile(self, info, **kwargs):
+        return info.context.user.profile

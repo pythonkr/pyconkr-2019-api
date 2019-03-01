@@ -1,9 +1,13 @@
 from modeltranslation.translator import register, TranslationOptions
 
 from api.models import Sponsor, SponsorLevel
+from api.models.profile import Profile
 from api.models.program import \
     Conference, Place, Category, Difficulty, Program, Presentation
 
+@register(Profile)
+class ProfileTranslationOptions(TranslationOptions):
+    fields = ('name', 'bio',)
 
 @register(Conference)
 class ConferenceTranslationOptions(TranslationOptions):

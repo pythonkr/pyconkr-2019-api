@@ -2,7 +2,6 @@ from unittest import mock
 from json import loads, dumps
 from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from graphql_extensions.exceptions import PermissionDenied
 from api.tests.base import BaseTestCase
 from api.schema import schema
@@ -20,16 +19,13 @@ UserModel = get_user_model()
 
 PROFILE_QUERY = '''
 query {
-    me {
-        username
+    profile {        
+        name
+        bio
         email
-        profile {
-            name
-            bio
-            phone
-            organization
-            nationality
-        }
+        phone
+        organization
+        nationality
     }
 }
 '''
@@ -71,13 +67,12 @@ class UserTestCase(BaseTestCase):
         mutation UpdateProfile($profileInput: ProfileInput!) {
             updateProfile(profileInput: $profileInput) {
                 profile {
-                    user {
-                        username
-                        email
-                    }
-                    name
-                    bio
+                    nameKo
+                    nameEn
+                    bioKo
+                    bioEn
                     phone
+                    email
                     organization
                     nationality
                 }
@@ -86,9 +81,12 @@ class UserTestCase(BaseTestCase):
         '''
         variables = {
             'profileInput': {
-                'name': '코니',
-                'bio': '파이콘 한국을 참석하고 있지요',
+                'nameKo': '코니',
+                'nameEn': 'Coni',
+                'bioKo': '파이콘 한국을 참석하고 있지요',
+                'bioEn': 'PyCon Korea Good',
                 'phone': '010-1111-1111',
+                'email': 'pyconkr@pycon.kr',
                 'organization': '파이콘!',
                 'nationality': '미국',
             }
@@ -97,10 +95,6 @@ class UserTestCase(BaseTestCase):
         expected = {
             'updateProfile': {
                 'profile': {
-                    'user': {
-                        'username': 'develop_github_123',
-                        'email': 'me@pycon.kr'
-                    },
                     **variables['profileInput']
                 }
             }
@@ -117,41 +111,13 @@ class UserTestCase(BaseTestCase):
         self.assertIsNotNone(actual)
         self.assertDictEqual(actual, expected)
 
-    def test_update_profile_with_empty_name(self):
-        # Given
-        mutation = '''
-        mutation UpdateProfile($profileInput: ProfileInput!) {
-            updateProfile(profileInput: $profileInput) {
-                profile {
-                    name
-                }
-            }
-        }
-        '''
-        variables = {
-            'profileInput': {
-                'name': '',
-            }
-        }
-
-        user = UserModel(username='develop_github_123', email='me@pycon.kr')
-        user.save()
-        request = generate_request_authenticated(user)
-        result = schema.execute(
-            mutation, variables=variables, context_value=request)
-
-        # Then
-        actual = loads(dumps(result.data))
-        self.assertIsNotNone(actual)
-        self.assertIsNotNone(result.errors)
-        self.assertIsInstance(result.errors[0].original_error, ValidationError)
-
     def test_me(self):
         # Given
-        user = UserModel(username='develop_github_123', email='me@pycon.kr')
+        user = UserModel(username='develop_github_123')
         user.save()
         user.profile.name = 'pycon_angel'
         user.profile.bio = '파이콘 천사입니다.'
+        user.profile.email = 'me@pycon.kr'
         user.profile.phone = '222-2222-2222'
         user.profile.organization = '좋은회사'
         user.profile.nationality = '우리나라'
@@ -162,16 +128,13 @@ class UserTestCase(BaseTestCase):
         # When
         result = schema.execute(PROFILE_QUERY, context_value=request)
         expected = {
-            'me': {
-                'username': 'develop_github_123',
+            'profile': {
+                'name': 'pycon_angel',
+                'bio': '파이콘 천사입니다.',
                 'email': 'me@pycon.kr',
-                'profile': {
-                    'name': 'pycon_angel',
-                    'bio': '파이콘 천사입니다.',
-                    'phone': '222-2222-2222',
-                    'organization': '좋은회사',
-                    'nationality': '우리나라'
-                }
+                'phone': '222-2222-2222',
+                'organization': '좋은회사',
+                'nationality': '우리나라',
             }
         }
 
