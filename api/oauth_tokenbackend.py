@@ -64,9 +64,11 @@ class OAuthTokenBackend:
             user.is_staff = False
             user.is_superuser = False
             user.save()
-
+        if not user.profile.email:
+            user.profile.email = profile_data['email']
         if not user.profile.name:
-            user.profile.name = profile_data['name']
+            user.profile.name_ko = profile_data['name']
+            user.profile.name_en = profile_data['name']
         if not user.profile.avatar_url:
             user.profile.avatar_url = profile_data['avatar_url']
         user.save()

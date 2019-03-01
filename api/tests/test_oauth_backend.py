@@ -34,6 +34,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
         self.assertEqual(
             f'prod_github_{GITHUB_USER_RESPONSE["id"]}', user.username)
         self.assertEqual(GITHUB_USER_RESPONSE['email'], user.email)
+        self.assertEqual(GITHUB_USER_RESPONSE['email'], user.profile.email)
         self.assertEqual(
             GITHUB_USER_RESPONSE['avatar_url'], user.profile.avatar_url)
         self.assertEqual(GITHUB_USER_RESPONSE['login'], user.profile.name)
@@ -63,6 +64,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
         self.assertEqual(
             f'develop_github_{GITHUB_USER_RESPONSE["id"]}', user.username)
         self.assertEqual(GITHUB_EMAILS_RESPONSE[0]['email'], user.email)
+        self.assertEqual(GITHUB_EMAILS_RESPONSE[0]['email'], user.profile.email)
         self.assertEqual(GITHUB_USER_RESPONSE['login'], user.profile.name)
         self.assertEqual(
             GITHUB_USER_RESPONSE['avatar_url'], user.profile.avatar_url)
@@ -88,6 +90,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
         self.assertEqual(
             f'prod_google_{GOOGLE_USER_RESPONSE["id"]}', user.username)
         self.assertEqual(GOOGLE_USER_RESPONSE['email'], user.email)
+        self.assertEqual(GOOGLE_USER_RESPONSE['email'], user.profile.email)
         self.assertEqual(
             GOOGLE_USER_RESPONSE['picture'], user.profile.avatar_url)
         self.assertEqual(GOOGLE_USER_RESPONSE['name'], user.profile.name)
@@ -112,6 +115,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
         self.assertEqual(
             f'prod_facebook_{FACEBOOK_USER_RESPONSE["id"]}', user.username)
         self.assertEqual(FACEBOOK_USER_RESPONSE['email'], user.email)
+        self.assertEqual(FACEBOOK_USER_RESPONSE['email'], user.profile.email)
         self.assertEqual(
             FACEBOOK_USER_RESPONSE['picture']['data']['url'], user.profile.avatar_url)
         self.assertEqual(FACEBOOK_USER_RESPONSE['name'], user.profile.name)
@@ -136,6 +140,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
         self.assertEqual(
             f'prod_naver_{ NAVER_USER_RESPONSE["response"]["id"] }', user.username)
         self.assertEqual(NAVER_USER_RESPONSE['response']['email'], user.email)
+        self.assertEqual(NAVER_USER_RESPONSE['response']['email'], user.profile.email)
         self.assertEqual(
             NAVER_USER_RESPONSE['response']['profile_image'], user.profile.avatar_url)
         self.assertEqual(NAVER_USER_RESPONSE['response']['name'], user.profile.name)
