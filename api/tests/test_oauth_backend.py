@@ -1,5 +1,6 @@
 from unittest import mock
 from django.test import RequestFactory
+from api.models.profile import Profile
 from api.tests.base import BaseTestCase
 from api.oauth_tokenbackend import OAuthTokenBackend
 from api.tests.common import generate_mock_response
@@ -35,6 +36,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
             f'prod_github_{GITHUB_USER_RESPONSE["id"]}', user.username)
         self.assertEqual(GITHUB_USER_RESPONSE['email'], user.email)
         self.assertEqual(GITHUB_USER_RESPONSE['email'], user.profile.email)
+        self.assertEqual(Profile.OAUTH_GITHUB, user.profile.oauth_type)
         self.assertEqual(
             GITHUB_USER_RESPONSE['avatar_url'], user.profile.avatar_url)
         self.assertEqual(GITHUB_USER_RESPONSE['login'], user.profile.name)
@@ -91,6 +93,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
             f'prod_google_{GOOGLE_USER_RESPONSE["id"]}', user.username)
         self.assertEqual(GOOGLE_USER_RESPONSE['email'], user.email)
         self.assertEqual(GOOGLE_USER_RESPONSE['email'], user.profile.email)
+        self.assertEqual(Profile.OAUTH_GOOGLE, user.profile.oauth_type)
         self.assertEqual(
             GOOGLE_USER_RESPONSE['picture'], user.profile.avatar_url)
         self.assertEqual(GOOGLE_USER_RESPONSE['name'], user.profile.name)
@@ -116,6 +119,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
             f'prod_facebook_{FACEBOOK_USER_RESPONSE["id"]}', user.username)
         self.assertEqual(FACEBOOK_USER_RESPONSE['email'], user.email)
         self.assertEqual(FACEBOOK_USER_RESPONSE['email'], user.profile.email)
+        self.assertEqual(Profile.OAUTH_FACEBOOK, user.profile.oauth_type)
         self.assertEqual(
             FACEBOOK_USER_RESPONSE['picture']['data']['url'], user.profile.avatar_url)
         self.assertEqual(FACEBOOK_USER_RESPONSE['name'], user.profile.name)
@@ -141,6 +145,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
             f'prod_naver_{ NAVER_USER_RESPONSE["response"]["id"] }', user.username)
         self.assertEqual(NAVER_USER_RESPONSE['response']['email'], user.email)
         self.assertEqual(NAVER_USER_RESPONSE['response']['email'], user.profile.email)
+        self.assertEqual(Profile.OAUTH_NAVER, user.profile.oauth_type)
         self.assertEqual(
             NAVER_USER_RESPONSE['response']['profile_image'], user.profile.avatar_url)
         self.assertEqual(NAVER_USER_RESPONSE['response']['name'], user.profile.name)

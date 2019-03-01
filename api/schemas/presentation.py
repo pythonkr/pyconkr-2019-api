@@ -1,7 +1,9 @@
 import graphene
+from graphql import GraphQLError
 from graphene_django import DjangoObjectType
-from django.db.models import Q
 from graphql_extensions.auth.decorators import login_required
+
+from django.db.models import Q
 from api.models.program import Presentation
 from api.models.program import Place, Category, Difficulty
 from api.schemas.user import UserNode
@@ -9,8 +11,20 @@ from api.schemas.common import SeoulDateTime
 
 
 class LanguageNode(graphene.Enum):
-    KOREAN = 'K'
-    ENGLISH = 'E'
+    KOREAN = Presentation.LANGUAGE_KOREAN
+    ENGLISH = Presentation.LANGUAGE_ENGLISH
+
+
+class PresentationNode(DjangoObjectType):
+    class Meta:
+        model = Presentation
+        description = """
+        Program which speakers present their presentations at Pycon Korea.
+        It is one of the the most important program in Pycon Korea.
+        """
+    language = graphene.Field(LanguageNode)
+    started_at = graphene.Field(SeoulDateTime)
+    finished_at = graphene.Field(SeoulDateTime)
 
 
 class PlaceNode(DjangoObjectType):
@@ -37,20 +51,6 @@ class DifficultyNode(DjangoObjectType):
         Difficulty of presentation.
         """
 
-class PresentationNode(DjangoObjectType):
-    class Meta:
-        model = Presentation
-        description = """
-        Program which speakers present their presentations at Pycon Korea.
-        It is one of the the most important program in Pycon Korea.
-        """
-    owner = graphene.Field(UserNode)
-    place = graphene.Field(PlaceNode)
-    category = graphene.Field(CategoryNode)
-    difficulty = graphene.Field(DifficultyNode)
-    language = graphene.Field(LanguageNode)
-    started_at = graphene.Field(SeoulDateTime)
-    finished_at = graphene.Field(SeoulDateTime)
 
 class PresentationInput(graphene.InputObjectType):
     name_ko = graphene.String(required=True)
@@ -75,8 +75,9 @@ class CreatePresentation(graphene.Mutation):
 
     @login_required
     def mutate(self, info, presentation_input, category_id=None, difficulty_id=None):
+        user = info.context.user
         presentation = Presentation()
-        presentation.owner = info.context.user
+        presentation.owner = user
         if category_id:
             presentation.category = Category.objects.get(pk=category_id)
         if difficulty_id:
@@ -89,12 +90,41 @@ class CreatePresentation(graphene.Mutation):
         presentation.save()
         return CreatePresentation(presentation=presentation)
 
+class UpdatePresentation(graphene.Mutation):
+    presentation = graphene.Field(PresentationNode)
+
+    class Arguments:
+        id = graphene.Int(required=True)
+        presentation_input = PresentationInput(required=True)
+        category_id = graphene.Int()
+        difficulty_id = graphene.Int()
+
+    @login_required
+    def mutate(self, info, presentation_input, category_id=None, difficulty_id=None):
+        presentation = Presentation.objects.get(pk=id)
+        if category_id:
+            presentation.category = Category.objects.get(pk=category_id)
+        if difficulty_id:
+            presentation.difficulty = Difficulty.objects.get(pk=difficulty_id)
+
+        for k, v in presentation_input.items():
+            setattr(presentation, k, v)
+
+        presentation.full_clean()
+        presentation.save()
+        return UpdatePresentation(presentation=presentation)
+
 
 class Mutations(graphene.ObjectType):
     create_presentation = CreatePresentation.Field()
 
 
 class Query(graphene.ObjectType):
+    owner = graphene.Field(UserNode)
+    place = graphene.Field(PlaceNode)
+    category = graphene.Field(CategoryNode)
+    difficulty = graphene.Field(DifficultyNode)
+
     presentations = graphene.List(PresentationNode)
 
     def resolve_presentations(self, info):

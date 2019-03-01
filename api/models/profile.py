@@ -9,7 +9,20 @@ UserModel = get_user_model()
 
 
 class Profile(models.Model):
+    OAUTH_GITHUB = '1'
+    OAUTH_GOOGLE = '2'
+    OAUTH_FACEBOOK = '3'
+    OAUTH_NAVER = '4'
+
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE)
+    oauth_type = models.CharField(max_length=1,
+                                  choices=(
+                                      (OAUTH_GITHUB, ('github')),
+                                      (OAUTH_GOOGLE, ('google')),
+                                      (OAUTH_FACEBOOK, ('facebook')),
+                                      (OAUTH_NAVER, ('naver')),
+                                  ), default=OAUTH_GITHUB)
+
     name = models.CharField(max_length=100, blank=True, default='')
     bio = models.TextField(max_length=4000, blank=True, default='')
     email = models.EmailField(blank=True, default='')

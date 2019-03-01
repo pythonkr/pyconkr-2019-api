@@ -1,5 +1,6 @@
 from requests_oauthlib import OAuth2Session
 from django.contrib.auth import get_user_model
+from api.models.profile import Profile
 from api.models.oauth_setting import OAuthSetting
 
 UserModel = get_user_model()
@@ -64,6 +65,7 @@ class OAuthTokenBackend:
             user.is_staff = False
             user.is_superuser = False
             user.save()
+        user.profile.oauth_type = profile_data['oauth_type']
         if not user.profile.email:
             user.profile.email = profile_data['email']
         if not user.profile.name:
@@ -102,7 +104,8 @@ class OAuthTokenBackend:
             'id': data['id'],
             'name': data['login'],
             'avatar_url': data['avatar_url'],
-            'email': email
+            'email': email,
+            'oauth_type': Profile.OAUTH_GITHUB
         }
 
     def retrieve_github_email(self, github):
@@ -125,7 +128,8 @@ class OAuthTokenBackend:
             'id': data['id'],
             'name': data['name'],
             'avatar_url': data['picture'],
-            'email': data['email']
+            'email': data['email'],
+            'oauth_type': Profile.OAUTH_GOOGLE
         }
 
     def retrieve_facebook_profile(self, client_id, client_secret, code, redirect_uri):
@@ -141,7 +145,8 @@ class OAuthTokenBackend:
             'id': data['id'],
             'name': data['name'],
             'avatar_url': data['picture']['data']['url'],
-            'email': data['email']
+            'email': data['email'],
+            'oauth_type': Profile.OAUTH_FACEBOOK
         }
 
     def retrieve_naver_profile(self, client_id, client_secret, code, redirect_uri):
@@ -158,5 +163,6 @@ class OAuthTokenBackend:
             'id': data['id'],
             'name': data['name'],
             'avatar_url': data['profile_image'],
-            'email': data['email']
+            'email': data['email'],
+            'oauth_type': Profile.OAUTH_NAVER
         }

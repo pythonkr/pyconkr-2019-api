@@ -22,11 +22,18 @@ class UserNode(DjangoObjectType):
         only_fields = ('username', 'email', 'profile')
         description = "User information"
 
+class OauthTypeNode(graphene.Enum):
+    GITHUB = Profile.OAUTH_GITHUB
+    GOOGLE = Profile.OAUTH_GOOGLE
+    FACEBOOK = Profile.OAUTH_FACEBOOK
+    NAVER = Profile.OAUTH_NAVER
 
 class ProfileNode(DjangoObjectType):
     class Meta:
         model = Profile
         description = "User Profile"
+
+    oauth_type = graphene.Field(OauthTypeNode)
 
 
 class OAuthTokenAuth(graphene.Mutation):
