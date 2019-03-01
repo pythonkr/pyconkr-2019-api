@@ -10,14 +10,14 @@ UserModel = get_user_model()
 
 class Profile(models.Model):
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, blank=True)
-    bio = models.TextField(max_length=4000, blank=True)
-    email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=100, blank=True)
-    organization = models.CharField(max_length=100, blank=True)
-    nationality = models.CharField(max_length=100, blank=True)
-    image = SorlImageField(upload_to='profile', blank=True)
-    avatar_url = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=100, blank=True, default='')
+    bio = models.TextField(max_length=4000, blank=True, default='')
+    email = models.EmailField(blank=True, default='')
+    phone = models.CharField(max_length=100, blank=True, default='')
+    organization = models.CharField(max_length=100, blank=True, default='')
+    nationality = models.CharField(max_length=100, blank=True, default='')
+    image = SorlImageField(upload_to='profile', blank=True, default='')
+    avatar_url = models.CharField(max_length=100, blank=True, default='')
 
     def __str__(self):
         return f'{self.name}'
