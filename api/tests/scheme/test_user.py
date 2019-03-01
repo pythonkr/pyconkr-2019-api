@@ -20,8 +20,10 @@ UserModel = get_user_model()
 PROFILE_QUERY = '''
 query {
     profile {        
-        name
-        bio
+        nameKo
+        nameEn
+        bioKo
+        bioEn
         email
         phone
         organization
@@ -115,8 +117,10 @@ class UserTestCase(BaseTestCase):
         # Given
         user = UserModel(username='develop_github_123')
         user.save()
-        user.profile.name = 'pycon_angel'
-        user.profile.bio = '파이콘 천사입니다.'
+        user.profile.name_ko = '파이콘 천사'
+        user.profile.name_en = 'pycon_angel'
+        user.profile.bio_ko = '파이콘 천사입니다.'
+        user.profile.bio_en = "I'm pycon angel."
         user.profile.email = 'me@pycon.kr'
         user.profile.phone = '222-2222-2222'
         user.profile.organization = '좋은회사'
@@ -129,8 +133,10 @@ class UserTestCase(BaseTestCase):
         result = schema.execute(PROFILE_QUERY, context_value=request)
         expected = {
             'profile': {
-                'name': 'pycon_angel',
-                'bio': '파이콘 천사입니다.',
+                'nameKo': '파이콘 천사',
+                'nameEn': 'pycon_angel',
+                'bioKo': '파이콘 천사입니다.',
+                'bioEn': "I'm pycon angel.",
                 'email': 'me@pycon.kr',
                 'phone': '222-2222-2222',
                 'organization': '좋은회사',
