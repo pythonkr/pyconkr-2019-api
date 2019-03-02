@@ -4,7 +4,7 @@ import os
 from fabric import task
 
 @task
-def deploy(c, branch='develop', sha1=''):
+def deploy(c, branch='develop', sha1='', port='8000'):
     target_dir = f'~/pyconkr.kr'
     if branch == 'develop':
         target_dir = f'~/dev.pyconkr.kr'
@@ -30,6 +30,7 @@ def deploy(c, branch='develop', sha1=''):
             c.run(f'git reset --hard origin/{branch}')
         envs = [
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
+            f'PORT={port}'
         ]
         c.run(f'docker-compose down | true')
         env_command = ' '.join(envs)
