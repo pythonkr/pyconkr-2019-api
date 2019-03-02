@@ -10,6 +10,8 @@ services:
     restart: always
     environment:
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
+      - STATIC_ROOT=../static
+      - MEDIA_ROOT=../media
     volumes:
       - .:/web
     ports:
