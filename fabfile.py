@@ -17,7 +17,7 @@ def deploy(c, target='dev', port='8000', sha1=''):
     target_dir = f'~/{project_name}/pyconkr-2019'
     api_dir = f'{target_dir}/pyconkr-api'
     database_dir = f'{target_dir}/postgresql/data'
-    pyconkr_api_git = 'https://github.com/pythonkr/pyconkr-deploy.git'
+    git_url = 'https://github.com/pythonkr/pyconkr-api.git'
 
     c.run(f'mkdir -p {database_dir}')
 
@@ -25,7 +25,7 @@ def deploy(c, target='dev', port='8000', sha1=''):
     result = c.run(f'test -e {api_dir}', warn=True)
     if result.exited:
         print(f'{api_dir} is not exists')
-        c.run(f'git clone {pyconkr_api_git} {api_dir}')
+        c.run(f'git clone {git_url} {api_dir}')
 
     with c.cd(api_dir):
         c.run('git fetch --all -p')
