@@ -46,7 +46,7 @@ jobs:
             docker-compose up -d
             sleep 20
             docker-compose logs
-            curl http://localhost/api/ping
+            curl http://localhost:8000/api/ping
 
   deploy-dev:
     docker:
