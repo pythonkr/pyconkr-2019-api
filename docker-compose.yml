@@ -12,16 +12,8 @@ services:
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
     volumes:
       - .:/web
-    expose:
-      - "8000"
+    ports:
+      - 8000:8000
     depends_on:
       - db
-  nginx:
-    image: nginx:latest
-    ports:
-      - ${PORT:-80}:80
-    volumes:
-      - ./static:/static:ro
-      - ./config/nginx:/etc/nginx/conf.d:ro
-    depends_on:
-      - api
+  
