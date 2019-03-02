@@ -29,8 +29,11 @@ def deploy(c, branch='develop', sha1='', port='8000'):
         else:
             c.run(f'git reset --hard origin/{branch}')
         envs = [
+            f'PSQL_VOLUME={target_dir}/postgresql/data',
+            f'STATIC_VOLUME={target_dir}/static',
+            f'MEDIA_VOLUME={target_dir}/media',
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
-            f'PORT={port}'
+            f'PORT={port}',
         ]
         c.run(f'docker-compose down | true')
         env_command = ' '.join(envs)

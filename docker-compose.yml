@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: always
     volumes:
-      - ${PSQL_VOLUME:-../postgresql}:/var/lib/postgresql:z
+      - ${PSQL_VOLUME:-./postgresql/data}:/var/lib/postgresql/data
   api:
     build: .
     restart: always
@@ -12,6 +12,8 @@ services:
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
     volumes:
       - .:/web
+      - ${MEDIA_VOLUME:-./media}:/media
+      - ${STATIC_VOLUME:-./static}:/static
     ports:
       - ${PORT:-8000}:8000
     depends_on:
