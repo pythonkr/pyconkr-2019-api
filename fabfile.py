@@ -3,28 +3,18 @@ import os
 
 from fabric import task
 
-
-#from fabric.api import local, run, cd, prefix, env, sudo, settings, shell_env
-
-# env.use_ssh_config = True
-# env.user = 'pyconkr'
-# env.hosts = ['pythonkorea1']
-
-
 @task
-def deploy(c, branch='develop', port='8000', sha1=''):
-    target = branch
-    if branch == 'master':
-        target = 'www'
-    elif branch == 'develop':
-        target = 'dev'
-    project_name = f'{target}.pycon.kr.api'
-    target_dir = f'~/{project_name}/pyconkr-2019'
+def deploy(c, branch='develop', sha1=''):
+    target_dir = f'~/pyconkr.kr'
+    if branch == 'develop':
+        target_dir = f'~/dev.pyconkr.kr'
+    elif branch == 'master':
+        target_dir = f'~/www.pyconkr.kr'
+
     api_dir = f'{target_dir}/pyconkr-api'
-    database_dir = f'{target_dir}/postgresql/data'
     git_url = 'https://github.com/pythonkr/pyconkr-api.git'
 
-    c.run(f'mkdir -p {database_dir}')
+    c.run(f'mkdir -p {target_dir}')
 
     # 이전에 deploy dir을 clone한 적이 없다면 clone
     result = c.run(f'test -e {api_dir}', warn=True)
@@ -39,11 +29,9 @@ def deploy(c, branch='develop', port='8000', sha1=''):
         else:
             c.run(f'git reset --hard origin/{branch}')
         envs = [
-            f'PSQL_VOLUME={database_dir}',
-            f'PORT={port}',
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
         ]
-        c.run(f'docker-compose down')
+        c.run(f'docker-compose down | true')
         env_command = ' '.join(envs)
         compose_command = f'docker-compose up -d --build --force-recreate'
         c.run(f'{env_command} {compose_command}')
