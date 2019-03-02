@@ -22,7 +22,7 @@ def deploy(c, target='dev', port='8000', sha1=''):
     c.run(f'mkdir -p {database_dir}')
 
     # 이전에 deploy dir을 clone한 적이 없다면 clone
-    result = c.run(f'test -e {api_dir}')
+    result = c.run(f'test -e {api_dir}', warn=True)
     if result.exited:
         print(f'{api_dir} is not exists')
         c.run(f'git clone {pyconkr_api_git} {api_dir}')
@@ -35,7 +35,7 @@ def deploy(c, target='dev', port='8000', sha1=''):
             f'PORT={port}',
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
         ]
-
+        c.run(f'docker-compose -p "{project_name}" down')
         env_command = ' '.join(envs)
         compose_command = f'docker-compose -p "{project_name}" up -d --build --force-recreate'
         c.run(f'{env_command} {compose_command}')
