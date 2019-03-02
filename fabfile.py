@@ -12,8 +12,13 @@ from fabric import task
 
 
 @task
-def deploy(c, target='dev', port='8000', sha1=''):
-    project_name = f'{target}.pycon.kr'
+def deploy(c, branch='develop', port='8000', sha1=''):
+    target = branch
+    if branch == 'master':
+        target = 'www'
+    elif branch == 'develop':
+        target = 'dev'
+    project_name = f'{target}.pycon.kr.api'
     target_dir = f'~/{project_name}/pyconkr-2019'
     api_dir = f'{target_dir}/pyconkr-api'
     database_dir = f'{target_dir}/postgresql/data'
@@ -29,14 +34,17 @@ def deploy(c, target='dev', port='8000', sha1=''):
 
     with c.cd(api_dir):
         c.run('git fetch --all -p')
-        c.run('git reset --hard ' + sha1)
+        if sha1:
+            c.run(f'git reset --hard {sha1}')
+        else:
+            c.run(f'git reset --hard origin/{branch}')
         envs = [
             f'PSQL_VOLUME={database_dir}',
             f'PORT={port}',
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
         ]
-        c.run(f'docker-compose -p "{project_name}" down')
+        c.run(f'docker-compose down')
         env_command = ' '.join(envs)
-        compose_command = f'docker-compose -p "{project_name}" up -d --build --force-recreate'
+        compose_command = f'docker-compose up -d --build --force-recreate'
         c.run(f'{env_command} {compose_command}')
         print('finish')
