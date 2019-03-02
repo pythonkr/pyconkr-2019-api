@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/web
     ports:
-      - 8000:8000
+      - ${PORT:-8000}:8000
     depends_on:
       - db
   
