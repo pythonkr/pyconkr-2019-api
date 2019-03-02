@@ -1,5 +1,4 @@
 # pylint: disable=unused-wildcard-import,wildcard-import
-import os
 from pyconkr.settings import *
 
 DEBUG = False
