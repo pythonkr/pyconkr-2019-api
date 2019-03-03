@@ -10,6 +10,7 @@ services:
     restart: always
     environment:
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-pyconkr.staging_settings}
     volumes:
       - .:/web
       - ${MEDIA_VOLUME:-./media}:/media

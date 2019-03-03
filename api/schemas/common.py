@@ -29,6 +29,21 @@ class SeoulDateTime(graphene.types.Scalar):
     def parse_value(value):
         return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
 
+class ImageUrl(graphene.types.Scalar):
+    '''
+    It is used to get image url for graphene queries.
+    e.g)
+    image = graphene.Field(ImageUrl)
+    to)
+    image: http://www.pycon.kr/media/profile/image.png
+    '''
+    
+    @staticmethod
+    def serialize(obj):
+        if not obj.name:
+            return ''
+        return obj.url
+
 
 class ProgramNode(DjangoObjectType):
     class Meta:

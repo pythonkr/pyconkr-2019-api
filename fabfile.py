@@ -4,13 +4,7 @@ import os
 from fabric import task
 
 @task
-def deploy(c, branch='develop', sha1='', port='8000'):
-    target_dir = f'~/pyconkr.kr'
-    if branch == 'develop':
-        target_dir = f'~/dev.pyconkr.kr'
-    elif branch == 'master':
-        target_dir = f'~/www.pyconkr.kr'
-
+def deploy(c, target_dir, sha1='', django_setting='pyconkr.staging_settings'):
     api_dir = f'{target_dir}/pyconkr-api'
     git_url = 'https://github.com/pythonkr/pyconkr-api.git'
 
@@ -24,19 +18,25 @@ def deploy(c, branch='develop', sha1='', port='8000'):
 
     with c.cd(api_dir):
         c.run('git fetch --all -p')
-        if sha1:
-            c.run(f'git reset --hard {sha1}')
-        else:
-            c.run(f'git reset --hard origin/{branch}')
+        c.run(f'git reset --hard {sha1}')
         envs = [
             f'PSQL_VOLUME={target_dir}/postgresql/data',
             f'STATIC_VOLUME={target_dir}/static',
             f'MEDIA_VOLUME={target_dir}/media',
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
-            f'PORT={port}',
+            f'PORT=8000',
+            f'DJANGO_SETTINGS_MODULE={django_setting}'
         ]
         c.run(f'docker-compose down | true')
         env_command = ' '.join(envs)
         compose_command = f'docker-compose up -d --build --force-recreate'
         c.run(f'{env_command} {compose_command}')
+
         print('finish')
+@task
+def deploy_dev(c, sha1=''):
+    deploy(c, target_dir='~/dev.pycon.kr', sha1=sha1, django_setting='pyconkr.staging_settings')
+
+@task
+def deploy_master(c, sha1=''):
+    deploy(c, target_dir='~/www.pycon.kr', sha1=sha1, django_setting='pyconkr.production_settings')

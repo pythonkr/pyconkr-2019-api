@@ -24,6 +24,7 @@ djangorestframework-jwt==1.11.0
 fabric==2.4.0
 graphene==2.1.3
 graphene-django==2.2.0
+graphene-file-upload==1.2.2
 graphql-core==2.1
 graphql-relay==0.4.5
 gunicorn==19.9.0

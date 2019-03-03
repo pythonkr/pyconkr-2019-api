@@ -1,13 +1,17 @@
-
+import os
 import graphene
 from django.contrib.auth import get_user_model
 
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.types import Email
+from graphene_file_upload.scalars import Upload
 
+from api.schemas.common import ImageUrl
 from api.models.profile import Profile
 from api.models.profile import create_profile_if_not_exists
+
+
 
 UserModel = get_user_model()
 
@@ -30,6 +34,7 @@ class ProfileNode(DjangoObjectType):
         description = "User Profile"
 
     oauth_type = graphene.Field(OauthTypeNode)
+    image = graphene.Field(ImageUrl)
 
 
 class ProfileInput(graphene.InputObjectType):
@@ -61,9 +66,25 @@ class UpdateProfile(graphene.Mutation):
         profile.save()
         return UpdateProfile(profile=profile)
 
+class UploadProfileImage(graphene.Mutation):
+    class Arguments:
+        file = Upload(required=True)
+
+    success = graphene.Boolean()
+    image = graphene.Field(ImageUrl)
+    
+    @login_required
+    def mutate(self, info, file, **kwargs):
+        profile = info.context.user.profile
+        if profile.image.name:
+            profile.image.delete()
+        extension = os.path.splitext(file.name)[1]
+        profile.image.save(f'{profile.id}{extension}', file)
+        return UploadProfileImage(success=True, image=profile.image)
 
 class Mutations(graphene.ObjectType):
     update_profile = UpdateProfile.Field()
+    upload_profile_image = UploadProfileImage.Field()
 
 
 class Query(graphene.ObjectType):
