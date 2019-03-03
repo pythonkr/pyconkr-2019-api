@@ -37,7 +37,7 @@ class ImageUrl(graphene.types.Scalar):
     to)
     image: http://www.pycon.kr/media/profile/image.png
     '''
-    
+
     @staticmethod
     def serialize(obj):
         if not obj.name:

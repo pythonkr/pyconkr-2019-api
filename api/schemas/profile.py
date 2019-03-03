@@ -72,7 +72,7 @@ class UploadProfileImage(graphene.Mutation):
 
     success = graphene.Boolean()
     image = graphene.Field(ImageUrl)
-    
+
     @login_required
     def mutate(self, info, file, **kwargs):
         profile = info.context.user.profile
