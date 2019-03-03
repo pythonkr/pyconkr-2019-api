@@ -25,7 +25,7 @@ def deploy(c, project_name, sha1='', django_setting='pyconkr.staging_settings', 
             f'STATIC_VOLUME={target_dir}/static',
             f'MEDIA_VOLUME={target_dir}/media',
             f'PYCONKR_ADMIN_PASSWORD={os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
-            f'PORT=8000',
+            f'PORT={port}',
             f'DJANGO_SETTINGS_MODULE={django_setting}'
         ]
         c.run(f'docker-compose -p {project_name} down | true')

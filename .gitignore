@@ -122,4 +122,5 @@ media/
 # database
 data/
 
-
+# vim
+*.swp
