@@ -4,7 +4,8 @@ import os
 from fabric import task
 
 @task
-def deploy(c, target_dir, sha1='', django_setting='pyconkr.staging_settings'):
+def deploy(c, project_name, sha1='', django_setting='pyconkr.staging_settings', port='8000'):
+    target_dir = f'~/{project_name}'
     api_dir = f'{target_dir}/pyconkr-api'
     git_url = 'https://github.com/pythonkr/pyconkr-api.git'
 
@@ -27,16 +28,16 @@ def deploy(c, target_dir, sha1='', django_setting='pyconkr.staging_settings'):
             f'PORT=8000',
             f'DJANGO_SETTINGS_MODULE={django_setting}'
         ]
-        c.run(f'docker-compose down | true')
+        c.run(f'docker-compose -p {project_name} down | true')
         env_command = ' '.join(envs)
-        compose_command = f'docker-compose up -d --build --force-recreate'
+        compose_command = f'docker-compose -p {project_name} up -d --build --force-recreate'
         c.run(f'{env_command} {compose_command}')
 
         print('finish')
 @task
 def deploy_dev(c, sha1=''):
-    deploy(c, target_dir='~/dev.pycon.kr', sha1=sha1, django_setting='pyconkr.staging_settings')
+    deploy(c, project_name='dev.pycon.kr', sha1=sha1, django_setting='pyconkr.staging_settings', port='8001')
 
 @task
 def deploy_master(c, sha1=''):
-    deploy(c, target_dir='~/www.pycon.kr', sha1=sha1, django_setting='pyconkr.production_settings')
+    deploy(c, project_name='www.pycon.kr', sha1=sha1, django_setting='pyconkr.production_settings', port='8000')
