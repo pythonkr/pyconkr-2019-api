@@ -104,8 +104,23 @@ venv.bak/
 .mypy_cache/
 
 # vscode
-
 .vscode/
 
 # Test report
 test-reports/
+
+# pyCharm
+.idea/
+
+# oauth
+oauth_config.py
+
+# Collected static files
+static/
+media/
+
+# database
+data/
+
+# vim
+*.swp

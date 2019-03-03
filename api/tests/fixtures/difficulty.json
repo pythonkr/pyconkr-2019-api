@@ -1,0 +1,29 @@
+[
+{
+  "model": "api.difficulty",
+  "pk": 1,
+  "fields": {
+    "name": "초급",
+    "name_ko": "초급",
+    "name_en": "Beginner"
+  }
+},
+{
+  "model": "api.difficulty",
+  "pk": 2,
+  "fields": {
+    "name": "중급",
+    "name_ko": "중급",
+    "name_en": "Intermediate"
+  }
+},
+{
+  "model": "api.difficulty",
+  "pk": 3,
+  "fields": {
+    "name": "고급",
+    "name_ko": "고급",
+    "name_en": "Experienced"
+  }
+}
+]

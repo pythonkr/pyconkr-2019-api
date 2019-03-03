@@ -42,9 +42,11 @@ jobs:
           name: Start container and verify it's working
           command: |
             set -x
-            docker-compose up -d --build
-            sleep 5
-            curl http://localhost:8000/ping
+            docker-compose build --no-cache
+            docker-compose up -d
+            sleep 20
+            docker-compose logs
+            curl http://localhost:8000/api/ping
 
   deploy-dev:
     docker:
@@ -57,9 +59,11 @@ jobs:
       - run:
           command: |
             sudo pip install fabric
-            fab -H ${DEPLOY_HOST} -p -e deploy --target dev --sha1 $CIRCLE_SHA1 --port 8000
-
-  deploy-master:
+            fab -H ${DEPLOY_HOST} -p -e deploy-dev --sha1 $CIRCLE_SHA1
+            sleep 20
+            curl -f ${URL_ROOT}/api/ping
+      
+  deploy-prod:
     docker:
       - image: circleci/python:3.6.3
     steps:
@@ -70,7 +74,9 @@ jobs:
       - run:
           command: |
             sudo pip install fabric
-            fab -H ${DEPLOY_HOST} -p -e deploy --target www --sha1 $CIRCLE_SHA1 --port 8001
+            fab -H ${DEPLOY_HOST} -p -e deploy-master --sha1 $CIRCLE_SHA1
+            sleep 20
+            curl -f ${URL_ROOT}/api/ping
 
 workflows:
   version: 2
@@ -79,13 +85,15 @@ workflows:
       - build
       - docker
       - deploy-dev:
+          context: DEVELOP
           requires:
             - build
             - docker
           filters:
             branches:
               only: develop
-      - deploy-master:
+      - deploy-prod:
+          context: PROD
           requires:
             - build
             - docker

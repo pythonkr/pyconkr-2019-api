@@ -1,0 +1,25 @@
+[
+{
+  "model": "api.conference",
+  "pk": 1,
+  "fields": {
+    "name": "파이콘 한국 2019",
+    "name_ko": "파이콘 한국 2019",
+    "name_en": "Pycon Korea 2019",
+    "conference_started_at": "2019-08-17",
+    "conference_finished_at": "2019-08-18",
+    "sprint_started_at": "2019-08-15",
+    "sprint_finished_at": "2019-08-16",
+    "tutorial_started_at": "2019-08-15",
+    "tutorial_finished_at": "2019-08-16",
+    "earlybird_started_at": null,
+    "earlybird_finished_at": null,
+    "presentation_proposal_started_at": null,
+    "presentation_proposal_finished_at": null,
+    "sprint_proposal_started_at": null,
+    "sprint_proposal_finished_at": null,
+    "tutorial_proposal_started_at": null,
+    "tutorial_proposal_finished_at": null
+  }
+}
+]

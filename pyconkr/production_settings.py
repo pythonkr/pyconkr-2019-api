@@ -13,3 +13,7 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+MEDIA_ROOT = '/media'
+STATIC_ROOT = '/static'
+MEDIA_URL = 'http://www.pycon.kr/media/'

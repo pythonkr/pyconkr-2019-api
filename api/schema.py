@@ -1,21 +1,27 @@
 import graphene
-from graphene import Schema, resolve_only_args
-from graphene_django import DjangoObjectType
-from api.models import Presentation
+
+import api.schemas.auth
+import api.schemas.profile
+import api.schemas.presentation
+import api.schemas.conference
+import api.schemas.sponsor
+
+class Mutations(api.schemas.conference.Mutations,
+                api.schemas.auth.Mutations,
+                api.schemas.profile.Mutations,
+                api.schemas.presentation.Mutations,
+                api.schemas.sponsor.Mutations,
+                graphene.ObjectType):
+    pass
 
 
-class PresentationNode(DjangoObjectType):
-    class Meta:
-        model = Presentation
+class Query(api.schemas.conference.Query,
+            api.schemas.auth.Query,
+            api.schemas.profile.Query,
+            api.schemas.presentation.Query,
+            api.schemas.sponsor.Query,
+            graphene.ObjectType):
+    pass
 
 
-class Query(graphene.ObjectType):
-    presentations = graphene.List(PresentationNode)
-
-    @resolve_only_args
-    def resolve_presentations(self):
-        return Presentation.objects.all()
-
-
-# pylint: disable=invalid-name
-schema = Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutations)

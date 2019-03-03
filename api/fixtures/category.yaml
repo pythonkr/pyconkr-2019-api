@@ -1,0 +1,7 @@
+- model: api.category
+  pk: 1
+  fields:
+    name_ko: Python Library
+    name_en: Python Library
+    slug: python_library
+    visible: True

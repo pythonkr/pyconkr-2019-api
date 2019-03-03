@@ -1,7 +1,9 @@
- FROM python:3.6.3
- ENV PYTHONUNBUFFERED 1
- RUN mkdir /web
- WORKDIR /web
- ADD requirements.txt /web/
- RUN pip install -r requirements.txt
- ADD . /web/
+FROM python:3.6.3
+
+ENV PYTHONUNBUFFERED 1
+WORKDIR /config
+ADD requirements.txt /config/
+RUN pip install -r requirements.txt
+
+WORKDIR /web
+ENTRYPOINT ["/web/docker-entrypoint.sh"]

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,30 +25,39 @@ SECRET_KEY = '34&4p%e6r68$95mcq%n+d%!^&0&r)cdahu@sy!6fd#k*-y@+eh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS = (
+    # django apps
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'api',
+) + (
+    # thirt-party apps
+    'corsheaders',
     'graphene_django',
-]
+    'sorl.thumbnail',
+) + (
+    # local apps
+    'api',
+)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'graphql_jwt.middleware.JSONWebTokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -102,11 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# GraphQl setting
-GRAPHENE = {
-    'SCHEMA': 'api.schema.schema' # Where your Graphene schema lives
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -123,14 +128,41 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # XML Test Runner
 TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
 TEST_OUTPUT_VERBOSE = 2
 TEST_OUTPUT_DIR = 'test-reports'
 
-# Django REST Framework
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+# Internationalization
+# https://docs.djangoproject.com/en/1.9/topics/i18n/
+
+
+LANGUAGES = (
+    ('ko', _('Korean')),
+    ('en', _('English')),
+)
+LANGUAGE_CODE = 'ko'
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'ko'
+MODELTRANSLATION_LANGUAGES = ('ko', 'en')
+
+# Graphene
+GRAPHENE = {
+    'SCHEMA': 'api.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'api.oauth_tokenbackend.OAuthTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'http://localhost:8000/media/'
