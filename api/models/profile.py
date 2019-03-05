@@ -30,7 +30,7 @@ class Profile(models.Model):
     organization = models.CharField(max_length=100, blank=True, default='')
     nationality = models.CharField(max_length=100, blank=True, default='')
     image = SorlImageField(upload_to='profile', blank=True, default='')
-    avatar_url = models.CharField(max_length=100, blank=True, default='')
+    avatar_url = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
         return f'{self.name}'

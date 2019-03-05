@@ -111,7 +111,6 @@ class UpdatePresentation(graphene.Mutation):
 
         presentation.full_clean()
         presentation.save()
-        print('!!!')
         return UpdatePresentation(presentation=presentation)
 
 
