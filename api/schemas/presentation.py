@@ -121,8 +121,8 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     owner = graphene.Field(UserNode)
     place = graphene.Field(PlaceNode)
-    category = graphene.Field(CategoryNode)
-    difficulty = graphene.Field(DifficultyNode)
+    categories = graphene.List(CategoryNode)
+    difficulties = graphene.List(DifficultyNode)
 
     presentations = graphene.List(PresentationNode)
 
@@ -132,3 +132,9 @@ class Query(graphene.ObjectType):
         if user.is_authenticated:
             condition = condition | Q(owner=user)
         return Presentation.objects.filter(condition)
+
+    def resolve_categories(self, info):
+        return Category.objects.filter(visible=True)
+
+    def resolve_difficulties(self, info):
+        return Difficulty.objects.all()
