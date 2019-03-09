@@ -13,10 +13,7 @@ A git repository for PyCon Korea api.
 ```bash
 $ git clone git@github.com:pythonkr/pyconkr-api.git
 $ cd pyconkr-api
-$ pip install -r requirements.txt
-$ python manage.py makemigrations
-$ python manage.py migrate
-$ python manage.py runserver
+$ make up
 ```
 
 ## Contribution
