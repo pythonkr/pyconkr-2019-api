@@ -135,8 +135,8 @@
   "model": "api.category",
   "pk": 13,
   "fields": {
-    "name": "Ã¬ÂÂ¤Ã­ÂÂ°Ã¬ÂÂÃ¬ÂÂ¸Ã¬ÂÂ",
-    "name_ko": "Ã¬ÂÂ¤Ã­ÂÂ°Ã¬ÂÂÃ¬ÂÂ¸Ã¬ÂÂ",
+    "name": "스폰서 세션",
+    "name_ko": "스폰서 세션",
     "name_en": "Sponsors Session",
     "slug": "sponsors_session",
     "visible": true
@@ -146,8 +146,8 @@
   "model": "api.category",
   "pk": 14,
   "fields": {
-    "name": "Ã«ÂÂ¼Ã¬ÂÂ´Ã­ÂÂ¸Ã«ÂÂ Ã­ÂÂ Ã­ÂÂ¬",
-    "name_ko": "Ã«ÂÂ¼Ã¬ÂÂ´Ã­ÂÂ¸Ã«ÂÂ Ã­ÂÂ Ã­ÂÂ¬",
+    "name": "라이트닝 토크",
+    "name_ko": "라이트닝 토크",
     "name_en": "Lighting Talk",
     "slug": "lighting_talk",
     "visible": true
