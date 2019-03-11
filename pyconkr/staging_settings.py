@@ -15,6 +15,6 @@ DATABASES = {
 }
 
 MEDIA_ROOT = '/media'
-MEDIA_URL = 'https://dev.pycon.kr/media/'
+MEDIA_URL = 'https://dev.pycon.kr/api/media/'
 STATIC_URL = '/api/static'
 STATIC_ROOT = '/static'
