@@ -72,15 +72,28 @@ class Program(models.Model):
 
 
 class Presentation(Program):
+    DURATION_SHORT = 'S'
+    DURATION_LONG = 'L'
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
+    duration = models.CharField(max_length=1,
+                                choices=(
+                                    (DURATION_SHORT, ('25')),
+                                    (DURATION_LONG, ('40')),
+                                ), default=DURATION_SHORT)
     started_at = models.DateTimeField(null=True, blank=True)
     finished_at = models.DateTimeField(null=True, blank=True)
     category = models.ForeignKey(
         Category, null=True, blank=True, on_delete=models.SET_NULL)
+    background_desc = models.TextField(null=True, blank=True)
+    is_presented_before = models.BooleanField(default=False)
+    place_presented_before = models.CharField(max_length=255, null=True, blank=True)
+    presented_slide_url_before = models.CharField(max_length=255, null=True, blank=True)
+    question = models.TextField(null=True, blank=True)
     slide_url = models.CharField(max_length=255, null=True, blank=True)
     pdf_url = models.CharField(max_length=255, null=True, blank=True)
     video_url = models.CharField(max_length=255, null=True, blank=True)

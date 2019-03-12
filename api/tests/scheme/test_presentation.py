@@ -60,12 +60,18 @@ class PresentationTestCase(BaseTestCase):
             createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
                 presentation {
                     id
+                    name
                     nameKo
                     nameEn
                     descKo
                     descEn
                     language
                     submitted
+                    duration
+                    backgroundDesc
+                    isPresentedBefore
+                    presentedSlideUrlBefore
+                    question
                     slideUrl
                     pdfUrl
                     videoUrl
@@ -85,12 +91,19 @@ class PresentationTestCase(BaseTestCase):
             'categoryId': 1,
             'difficultyId': 1,
             'presentationInput': {
+                'name': '흥미로운 GraphQL',
                 'nameKo': '흥미로운 GraphQL',
                 'nameEn': 'Interesting GraphQL',
                 'descKo': 'GraphQL은 재미있다는 설명!',
                 'descEn': 'The description that GraphQL is fun',
                 'language': 'KOREAN',
                 'submitted': True,
+                'duration': 'SHORT',
+                'backgroundDesc': '파이썬 기초, 머신러닝',
+                'isPresentedBefore': True,
+                # 'placePresentedBefore': '학교 강당 앞',
+                'presentedSlideUrlBefore': 'my.previous.url',
+                'question': '밥은 주시는거죠?',
                 'slideUrl': 'my.slide.url',
                 'pdfUrl': 'my.pdf.url',
                 'videoUrl': 'my.video.url',
@@ -134,6 +147,7 @@ class PresentationTestCase(BaseTestCase):
             createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
                 presentation {
                     id
+                    name
                     nameKo
                     nameEn
                 }
@@ -143,6 +157,7 @@ class PresentationTestCase(BaseTestCase):
 
         variables = {
             'presentationInput': {
+                'name': '흥미로운 GraphQL',
                 'nameKo': '흥미로운 GraphQL',
                 'nameEn': 'Interesting GraphQL',
             }

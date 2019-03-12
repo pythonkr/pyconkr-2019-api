@@ -13,6 +13,9 @@ class LanguageNode(graphene.Enum):
     KOREAN = Presentation.LANGUAGE_KOREAN
     ENGLISH = Presentation.LANGUAGE_ENGLISH
 
+class DurationNode(graphene.Enum):
+    SHORT = Presentation.DURATION_SHORT
+    LONG = Presentation.DURATION_LONG
 
 class PresentationNode(DjangoObjectType):
     class Meta:
@@ -22,6 +25,7 @@ class PresentationNode(DjangoObjectType):
         It is one of the the most important program in Pycon Korea.
         """
     language = graphene.Field(LanguageNode)
+    duration = graphene.Field(DurationNode)
     started_at = graphene.Field(SeoulDateTime)
     finished_at = graphene.Field(SeoulDateTime)
 
@@ -52,12 +56,20 @@ class DifficultyNode(DjangoObjectType):
 
 
 class PresentationInput(graphene.InputObjectType):
-    name_ko = graphene.String(required=True)
+    name = graphene.String(required=True)
+    name_ko = graphene.String()
     name_en = graphene.String()
+    desc = graphene.String()
     desc_ko = graphene.String()
     desc_en = graphene.String()
     language = graphene.Field(LanguageNode)
     submitted = graphene.Boolean()
+    duration = graphene.Field(DurationNode)
+    background_desc = graphene.String()
+    is_presented_before = graphene.Boolean()
+    place_presented_before = graphene.String()
+    presented_slide_url_before = graphene.String()
+    question = graphene.String()
     slide_url = graphene.String()
     pdf_url = graphene.String()
     video_url = graphene.String()
