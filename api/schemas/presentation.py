@@ -94,10 +94,13 @@ class CreateOrUpdatePresentation(graphene.Mutation):
     @login_required
     def mutate(self, info, presentation_input):
         user = info.context.user
-        presentation = user.presentation
-        if not presentation:
+
+        if hasattr(user, 'presentation'):
+            presentation = user.presentation
+        else:
             presentation = Presentation()
             presentation.owner = user
+
         if 'category_id' in presentation_input:
             presentation.category = Category.objects.get(
                 pk=presentation_input['category_id'])
