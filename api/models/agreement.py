@@ -17,6 +17,7 @@ class Agreement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 @receiver(post_save, sender=UserModel)
 def create_user_agreement(sender, instance, created, **kwargs):
     if created:
@@ -25,7 +26,10 @@ def create_user_agreement(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=UserModel)
 def save_user_agreement(sender, instance, **kwargs):
-    instance.agreement.save()
+    if hasattr(instance, 'agreement'):
+        instance.agreement.save()
+    else:
+        Agreement.objects.create(user=instance)
 
 
 def create_agreement_if_not_exists(user):
