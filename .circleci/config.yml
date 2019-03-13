@@ -35,7 +35,8 @@ jobs:
           path: test-reports
 
   docker:
-    machine: true
+    machine: 
+      docker_layer_caching: true
     steps:
       - checkout
       - run:
