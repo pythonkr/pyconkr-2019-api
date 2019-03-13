@@ -72,7 +72,7 @@ class Program(models.Model):
 class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
-    
+
     owner = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     short_desc = models.TextField(blank=True, default='')
     background_desc = models.TextField(blank=True, default='')

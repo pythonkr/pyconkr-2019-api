@@ -164,7 +164,7 @@ class Query(graphene.ObjectType):
     def resolve_my_presentation(self, info):
         user = info.context.user
         return user.presentation
-        
+
     def resolve_categories(self, info):
         return Category.objects.filter(visible=True)
 
