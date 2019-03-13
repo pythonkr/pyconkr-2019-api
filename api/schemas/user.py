@@ -73,7 +73,7 @@ class UpdateProfile(graphene.Mutation):
 
 
 class UpdateAgreement(graphene.Mutation):
-    is_active = graphene.Boolean()
+    agreed = graphene.Boolean()
     user = graphene.Field(UserNode)
 
     class Arguments:
@@ -90,7 +90,7 @@ class UpdateAgreement(graphene.Mutation):
         if user.agreement.terms_of_service_agreed_at and user.agreement.privacy_policy_agreed_at:
             user.profile.agreed = True
         user.save()
-        return UpdateProfile(is_active=user.is_active, user=user)
+        return UpdateProfile(agreed=user.profile.agreed, user=user)
 
 
 class UploadProfileImage(graphene.Mutation):
