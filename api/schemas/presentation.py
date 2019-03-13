@@ -156,6 +156,7 @@ class Query(graphene.ObjectType):
     difficulties = graphene.List(DifficultyNode)
 
     presentations = graphene.List(PresentationNode)
+    my_presentation = graphene.Field(PresentationNode)
 
     def resolve_presentations(self, info):
         condition = Q(accepted=True)
@@ -163,6 +164,11 @@ class Query(graphene.ObjectType):
         if user.is_authenticated:
             condition = condition | Q(owner=user)
         return Presentation.objects.filter(condition)
+
+    @login_required
+    def resolve_my_presentation(self, info):
+        user = info.context.user
+        return user.presentation_set.latest('updated_at')
 
     def resolve_categories(self, info):
         return Category.objects.filter(visible=True)
