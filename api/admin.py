@@ -45,8 +45,8 @@ admin.site.register(Conference, ConferenceAdmin)
 
 
 class PresentationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'language',
-                    'place', 'started_at', 'slide_url', 'submitted', 'accepted',)
+    list_display = ('id', 'owner', 'name', 'language', 'category', 'difficulty',
+                    'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
 
 
 admin.site.register(Presentation, PresentationAdmin)
