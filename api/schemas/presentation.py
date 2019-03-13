@@ -58,7 +58,7 @@ class DifficultyNode(DjangoObjectType):
 
 
 class PresentationInput(graphene.InputObjectType):
-    name = graphene.String(required=True)
+    name = graphene.String()
     name_ko = graphene.String()
     name_en = graphene.String()
     desc = graphene.String()
