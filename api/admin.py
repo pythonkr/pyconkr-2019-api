@@ -18,17 +18,21 @@ class ProfileInline(AdminImageMixin, admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'profile'
 
-class AgreementInline(admin.StackedInline):
-    model = Agreement
-    can_delete = False
-    verbose_name_plural = 'agreement'
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (ProfileInline, AgreementInline,)
+    inlines = (ProfileInline,)
 
 
 admin.site.unregister(UserModel)
 admin.site.register(UserModel, UserAdmin)
+
+
+class AgreementAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'terms_of_service_agreed_at',
+                    'privacy_policy_agreed_at')
+
+
+admin.site.register(Agreement, AgreementAdmin)
 
 
 class OAuthSettingAdmin(admin.ModelAdmin):
@@ -79,7 +83,8 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 
 class SponsorLevelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'limit', 'ticket_count', 'presentation_count')
+    list_display = ('id', 'name', 'price', 'limit',
+                    'ticket_count', 'presentation_count')
 
 
 admin.site.register(SponsorLevel, SponsorLevelAdmin)
