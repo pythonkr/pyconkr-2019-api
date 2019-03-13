@@ -5,7 +5,7 @@ from graphql_extensions.auth.decorators import login_required
 from django.db.models import Q
 from api.models.program import Presentation
 from api.models.program import Place, Category, Difficulty
-from api.schemas.profile import UserNode
+from api.schemas.user import UserNode
 from api.schemas.common import SeoulDateTime
 
 

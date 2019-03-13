@@ -2,7 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.schemas.common import SeoulDateTime
-from api.schemas.profile import UserNode
+from api.schemas.user import UserNode
 
 
 class SponsorNode(DjangoObjectType):

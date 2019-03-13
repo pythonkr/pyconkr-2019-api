@@ -64,6 +64,7 @@ class OAuthTokenBackend:
             user.email = profile_data['email']
             user.is_staff = False
             user.is_superuser = False
+            user.is_active = False
             user.save()
         user.profile.oauth_type = profile_data['oauth_type']
         if not user.profile.email:

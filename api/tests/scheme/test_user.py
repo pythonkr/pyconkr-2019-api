@@ -19,15 +19,17 @@ UserModel = get_user_model()
 
 PROFILE_QUERY = '''
 query {
-    profile {        
-        nameKo
-        nameEn
-        bioKo
-        bioEn
-        email
-        phone
-        organization
-        nationality
+    me {
+        profile {
+            nameKo
+            nameEn
+            bioKo
+            bioEn
+            email
+            phone
+            organization
+            nationality
+        }
     }
 }
 '''
@@ -132,15 +134,17 @@ class UserTestCase(BaseTestCase):
         # When
         result = schema.execute(PROFILE_QUERY, context_value=request)
         expected = {
-            'profile': {
-                'nameKo': '파이콘 천사',
-                'nameEn': 'pycon_angel',
-                'bioKo': '파이콘 천사입니다.',
-                'bioEn': "I'm pycon angel.",
-                'email': 'me@pycon.kr',
-                'phone': '222-2222-2222',
-                'organization': '좋은회사',
-                'nationality': '우리나라',
+            'me': {
+                'profile': {
+                    'nameKo': '파이콘 천사',
+                    'nameEn': 'pycon_angel',
+                    'bioKo': '파이콘 천사입니다.',
+                    'bioEn': "I'm pycon angel.",
+                    'email': 'me@pycon.kr',
+                    'phone': '222-2222-2222',
+                    'organization': '좋은회사',
+                    'nationality': '우리나라',
+                }
             }
         }
 

@@ -6,6 +6,7 @@ from api.models.oauth_setting import OAuthSetting
 from api.models.program import Conference, Presentation
 from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
+from api.models.agreement import Agreement
 from api.models.sponsor import Sponsor, SponsorLevel
 
 
@@ -17,9 +18,13 @@ class ProfileInline(AdminImageMixin, admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'profile'
 
+class AgreementInline(admin.StackedInline):
+    model = Agreement
+    can_delete = False
+    verbose_name_plural = 'agreement'
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (ProfileInline, )
+    inlines = (ProfileInline, AgreementInline,)
 
 
 admin.site.unregister(UserModel)
