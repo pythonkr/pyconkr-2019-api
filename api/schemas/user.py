@@ -5,6 +5,7 @@ from django.utils import timezone
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.types import Email
+from graphql_extensions import exceptions
 from graphene_file_upload.scalars import Upload
 
 from api.schemas.common import ImageUrl
@@ -14,11 +15,13 @@ from api.models.profile import create_profile_if_not_exists
 
 UserModel = get_user_model()
 
+
 class OauthTypeNode(graphene.Enum):
     GITHUB = Profile.OAUTH_GITHUB
     GOOGLE = Profile.OAUTH_GOOGLE
     FACEBOOK = Profile.OAUTH_FACEBOOK
     NAVER = Profile.OAUTH_NAVER
+
 
 class ProfileNode(DjangoObjectType):
     class Meta:
@@ -28,6 +31,7 @@ class ProfileNode(DjangoObjectType):
     oauth_type = graphene.Field(OauthTypeNode)
     image = graphene.Field(ImageUrl)
 
+
 class UserNode(DjangoObjectType):
     class Meta:
         model = UserModel
@@ -36,6 +40,7 @@ class UserNode(DjangoObjectType):
         description = "User information"
 
     profile = graphene.Field(ProfileNode)
+
 
 class ProfileInput(graphene.InputObjectType):
     name = graphene.String()
@@ -75,9 +80,11 @@ class UpdateAgreement(graphene.Mutation):
         is_terms_of_service = graphene.Boolean()
         is_privacy_policy = graphene.Boolean()
 
-    @login_required
     def mutate(self, info, is_terms_of_service=False, is_privacy_policy=False):
         user = info.context.user
+        if user is None or user.is_anonymous:
+            raise exceptions.PermissionDenied()
+
         if is_terms_of_service:
             user.agreement.terms_of_service_agreed_at = timezone.now()
         if is_privacy_policy:
