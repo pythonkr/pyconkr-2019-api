@@ -55,9 +55,9 @@ class Program(models.Model):
 
     objects = InheritanceManager()
 
-    name = models.CharField(max_length=255, null=True, blank=True,
+    name = models.CharField(max_length=255, blank=True, default='',
                             validators=[MinLengthValidator(1)])
-    desc = models.TextField(null=True, blank=True)
+    desc = models.TextField(blank=True, default='')
     price = models.IntegerField(default=0)
     visible = models.BooleanField(default=False)
 
@@ -76,8 +76,8 @@ class Presentation(Program):
     DURATION_LONG = 'L'
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    short_desc = models.TextField(null=True, blank=True)
-    background_desc = models.TextField(null=True, blank=True)
+    short_desc = models.TextField(blank=True, default='')
+    background_desc = models.TextField(blank=True, default='')
     submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
     place = models.ForeignKey(
@@ -93,17 +93,17 @@ class Presentation(Program):
         Category, null=True, blank=True, on_delete=models.SET_NULL)
     difficulty = models.ForeignKey(
         Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
-    slide_url = models.CharField(max_length=255, null=True, blank=True)
-    pdf_url = models.CharField(max_length=255, null=True, blank=True)
-    video_url = models.CharField(max_length=255, null=True, blank=True)
+    slide_url = models.CharField(max_length=255, blank=True, default='')
+    pdf_url = models.CharField(max_length=255, blank=True, default='')
+    video_url = models.CharField(max_length=255, blank=True, default='')
     recordable = models.BooleanField(default=True)
 
     is_presented_before = models.BooleanField(default=False)
     place_presented_before = models.CharField(
-        max_length=255, null=True, blank=True)
+        max_length=255, blank=True, default='')
     presented_slide_url_before = models.CharField(
-        max_length=255, null=True, blank=True)
-    question = models.TextField(null=True, blank=True)
+        max_length=255, blank=True, default='')
+    question = models.TextField(blank=True, default='')
 
     def __str__(self):
         return f'{self.owner}/{self.name}'
