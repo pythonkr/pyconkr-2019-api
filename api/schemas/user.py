@@ -80,17 +80,15 @@ class UpdateAgreement(graphene.Mutation):
         is_terms_of_service = graphene.Boolean()
         is_privacy_policy = graphene.Boolean()
 
+    @login_required
     def mutate(self, info, is_terms_of_service=False, is_privacy_policy=False):
         user = info.context.user
-        if user is None or user.is_anonymous:
-            raise exceptions.PermissionDenied()
-
         if is_terms_of_service:
             user.agreement.terms_of_service_agreed_at = timezone.now()
         if is_privacy_policy:
             user.agreement.privacy_policy_agreed_at = timezone.now()
         if user.agreement.terms_of_service_agreed_at and user.agreement.privacy_policy_agreed_at:
-            user.is_active = True
+            user.profile.agreed = True
         user.save()
         return UpdateProfile(is_active=user.is_active, user=user)
 

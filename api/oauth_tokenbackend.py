@@ -31,6 +31,7 @@ FACEBOOK_PROFILE_URL = 'https://graph.facebook.com/me?fields=id,email,name,pictu
 NAVER_ACCESS_TOKEN_URL = "https://nid.naver.com/oauth2.0/token"
 NAVER_PROFILE_URL = 'https://openapi.naver.com/v1/nid/me'
 
+
 class OAuthTokenBackend:
     def authenticate(self, request, oauth_type, client_id, code, redirect_uri):
         try:
@@ -64,7 +65,7 @@ class OAuthTokenBackend:
             user.email = profile_data['email']
             user.is_staff = False
             user.is_superuser = False
-            user.is_active = False
+            user.is_active = True
             user.save()
         user.profile.oauth_type = profile_data['oauth_type']
         if not user.profile.email:
@@ -94,7 +95,8 @@ class OAuthTokenBackend:
                 'GitHub client information should be registered by admin(OAuthSetting')
 
         github = OAuth2Session(client_id, redirect_uri=redirect_uri)
-        github.fetch_token(GITHUB_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        github.fetch_token(GITHUB_ACCESS_TOKEN_URL,
+                           client_secret=client_secret, code=code)
         response = github.get(GITHUB_PROFILE_URL)
         response.raise_for_status()
         data = response.json()
@@ -120,8 +122,10 @@ class OAuthTokenBackend:
         if not client_id or not client_secret:
             raise ValueError(
                 'Google client information should be registered by admin(OAuthSetting')
-        google = OAuth2Session(client_id, scope=GOOGLE_SCOPE, redirect_uri=redirect_uri)
-        google.fetch_token(GOOGLE_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        google = OAuth2Session(
+            client_id, scope=GOOGLE_SCOPE, redirect_uri=redirect_uri)
+        google.fetch_token(GOOGLE_ACCESS_TOKEN_URL,
+                           client_secret=client_secret, code=code)
         response = google.get(GOOGLE_PROFILE_URL)
         response.raise_for_status()
         data = response.json()
@@ -138,7 +142,8 @@ class OAuthTokenBackend:
             raise ValueError(
                 'Facebook client information should be registered by admin(OAuthSetting')
         facebook = OAuth2Session(client_id, redirect_uri=redirect_uri)
-        facebook.fetch_token(FACEBOOK_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        facebook.fetch_token(FACEBOOK_ACCESS_TOKEN_URL,
+                             client_secret=client_secret, code=code)
         response = facebook.get(FACEBOOK_PROFILE_URL)
         response.raise_for_status()
         data = response.json()
@@ -155,7 +160,8 @@ class OAuthTokenBackend:
             raise ValueError(
                 'Naver client information should be registered by admin(OAuthSetting')
         naver = OAuth2Session(client_id, redirect_uri=redirect_uri)
-        naver.fetch_token(NAVER_ACCESS_TOKEN_URL, client_secret=client_secret, code=code)
+        naver.fetch_token(NAVER_ACCESS_TOKEN_URL,
+                          client_secret=client_secret, code=code)
         response = naver.get(NAVER_PROFILE_URL)
         response.raise_for_status()
         data = response.json()
