@@ -35,7 +35,7 @@ class ProgramTranslationOptions(TranslationOptions):
 
 @register(Presentation)
 class PresentationTranslationOptions(TranslationOptions):
-    fields = ()
+    fields = ('short_desc', 'background_desc')
 
 @register(SponsorLevel)
 class SponsorLevelTranslationOptions(TranslationOptions):

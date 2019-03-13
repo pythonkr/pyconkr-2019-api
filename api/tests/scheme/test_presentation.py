@@ -55,9 +55,8 @@ query {
 class PresentationTestCase(BaseTestCase):
     def test_create_presentation(self):
         mutation = '''
-        mutation CreatePresentation($presentationInput: PresentationInput!,
-                $categoryId: Int, $difficultyId: Int) {
-            createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
+        mutation CreateOrUpdatePresentation($presentationInput: PresentationInput!) {
+            createOrUpdatePresentation(presentationInput: $presentationInput) {
                 presentation {
                     id
                     name
@@ -70,26 +69,19 @@ class PresentationTestCase(BaseTestCase):
                     duration
                     backgroundDesc
                     isPresentedBefore
+                    placePresentedBefore
                     presentedSlideUrlBefore
                     question
                     slideUrl
                     pdfUrl
                     videoUrl
                     recordable
-                    category {
-                        id
-                    }
-                    difficulty {
-                        id
-                    }
                 }
             }
         }
         '''
 
         variables = {
-            'categoryId': 1,
-            'difficultyId': 1,
             'presentationInput': {
                 'name': '흥미로운 GraphQL',
                 'nameKo': '흥미로운 GraphQL',
@@ -101,7 +93,7 @@ class PresentationTestCase(BaseTestCase):
                 'duration': 'SHORT',
                 'backgroundDesc': '파이썬 기초, 머신러닝',
                 'isPresentedBefore': True,
-                # 'placePresentedBefore': '학교 강당 앞',
+                'placePresentedBefore': '학교 강당 앞',
                 'presentedSlideUrlBefore': 'my.previous.url',
                 'question': '밥은 주시는거죠?',
                 'slideUrl': 'my.slide.url',
@@ -112,15 +104,9 @@ class PresentationTestCase(BaseTestCase):
         }
 
         expected = {
-            'createPresentation': {
+            'createOrUpdatePresentation': {
                 'presentation': {
                     **variables['presentationInput'],
-                    'category': {
-                        'id': '1'
-                    },
-                    'difficulty': {
-                        'id': '1'
-                    }
                 }
             }
         }
@@ -136,15 +122,14 @@ class PresentationTestCase(BaseTestCase):
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)
         self.assertIsNotNone(
-            actual['createPresentation']['presentation']['id'])
-        del actual['createPresentation']['presentation']['id']
+            actual['createOrUpdatePresentation']['presentation']['id'])
+        del actual['createOrUpdatePresentation']['presentation']['id']
         self.assertDictEqual(actual, expected)
 
     def test_create_presentation_only_name(self):
         mutation = '''
-        mutation CreatePresentation($presentationInput: PresentationInput!,
-                $categoryId: Int, $difficultyId: Int) {
-            createPresentation(presentationInput: $presentationInput, categoryId: $categoryId, difficultyId: $difficultyId) {
+        mutation CreateOrUpdatePresentation($presentationInput: PresentationInput!) {
+            createOrUpdatePresentation(presentationInput: $presentationInput) {
                 presentation {
                     id
                     name
@@ -164,7 +149,7 @@ class PresentationTestCase(BaseTestCase):
         }
 
         expected = {
-            'createPresentation': {
+            'createOrUpdatePresentation': {
                 'presentation': {
                     **variables['presentationInput'],
                 }
@@ -182,8 +167,8 @@ class PresentationTestCase(BaseTestCase):
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)
         self.assertIsNotNone(
-            actual['createPresentation']['presentation']['id'])
-        del actual['createPresentation']['presentation']['id']
+            actual['createOrUpdatePresentation']['presentation']['id'])
+        del actual['createOrUpdatePresentation']['presentation']['id']
         self.assertDictEqual(actual, expected)
 
     def test_retrieve_presentation(self):

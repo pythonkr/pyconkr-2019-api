@@ -76,6 +76,8 @@ class Presentation(Program):
     DURATION_LONG = 'L'
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    short_desc = models.TextField(null=True, blank=True)
+    background_desc = models.TextField(null=True, blank=True)
     submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
     place = models.ForeignKey(
@@ -89,17 +91,19 @@ class Presentation(Program):
     finished_at = models.DateTimeField(null=True, blank=True)
     category = models.ForeignKey(
         Category, null=True, blank=True, on_delete=models.SET_NULL)
-    background_desc = models.TextField(null=True, blank=True)
-    is_presented_before = models.BooleanField(default=False)
-    place_presented_before = models.CharField(max_length=255, null=True, blank=True)
-    presented_slide_url_before = models.CharField(max_length=255, null=True, blank=True)
-    question = models.TextField(null=True, blank=True)
+    difficulty = models.ForeignKey(
+        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     slide_url = models.CharField(max_length=255, null=True, blank=True)
     pdf_url = models.CharField(max_length=255, null=True, blank=True)
     video_url = models.CharField(max_length=255, null=True, blank=True)
-    difficulty = models.ForeignKey(
-        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     recordable = models.BooleanField(default=True)
+
+    is_presented_before = models.BooleanField(default=False)
+    place_presented_before = models.CharField(
+        max_length=255, null=True, blank=True)
+    presented_slide_url_before = models.CharField(
+        max_length=255, null=True, blank=True)
+    question = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.owner}/{self.name}'
