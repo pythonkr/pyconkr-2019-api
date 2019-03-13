@@ -58,7 +58,6 @@ class DifficultyNode(DjangoObjectType):
 
 
 class PresentationInput(graphene.InputObjectType):
-    id = graphene.ID()
     name = graphene.String(required=True)
     name_ko = graphene.String()
     name_en = graphene.String()
@@ -95,14 +94,10 @@ class CreateOrUpdatePresentation(graphene.Mutation):
     @login_required
     def mutate(self, info, presentation_input):
         user = info.context.user
-        if 'id' in presentation_input:
-            presentation = Presentation.objects.get(
-                pk=presentation_input['id'])
-            del presentation_input['id']
-        else:
+        presentation = user.presentation
+        if not presentation:
             presentation = Presentation()
             presentation.owner = user
-
         if 'category_id' in presentation_input:
             presentation.category = Category.objects.get(
                 pk=presentation_input['category_id'])
@@ -168,8 +163,8 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_my_presentation(self, info):
         user = info.context.user
-        return user.presentation_set.latest('updated_at')
-
+        return user.presentation
+        
     def resolve_categories(self, info):
         return Category.objects.filter(visible=True)
 
