@@ -17,6 +17,9 @@ class Agreement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def is_agreed_all(self):
+        return self.terms_of_service_agreed_at and self.privacy_policy_agreed_at
+
 
 @receiver(post_save, sender=UserModel)
 def create_user_agreement(sender, instance, created, **kwargs):
