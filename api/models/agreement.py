@@ -24,7 +24,6 @@ class Agreement(models.Model):
             return False
         return True
 
-
 @receiver(post_save, sender=UserModel)
 def create_user_agreement(sender, instance, created, **kwargs):
     if created:
