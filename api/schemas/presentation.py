@@ -1,3 +1,4 @@
+from datetime import datetime
 import graphene
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
@@ -76,7 +77,6 @@ class PresentationProposalInput(graphene.InputObjectType):
     is_coc_agreed = graphene.Boolean()
     is_contents_agreed = graphene.Boolean()
     is_etc_agreed = graphene.Boolean()
-    is_proposal_agreed = graphene.Boolean()
 
 
 class CreateOrUpdatePresentationProposal(graphene.Mutation):
@@ -105,6 +105,12 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
             presentation.difficulty = Difficulty.objects.get(
                 pk=data['difficulty_id'])
             del data['difficulty_id']
+        if 'is_coc_agreed' in data:
+            presentation.proposal.coc_agreed_at = datetime.now()
+        if 'is_contents_agreed' in data:
+            presentation.proposal.contents_agreed_at = datetime.now()
+        if 'is_etc_agreed' in data:
+            presentation.proposal.etc_agreed_at = datetime.now()
         if hasattr(presentation, 'proposal'):
             proposal = presentation.proposal
         else:

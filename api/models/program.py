@@ -122,7 +122,7 @@ class PresentationProposal(models.Model):
     coc_agreed_at = models.DateTimeField(null=True, blank=True)
     contents_agreed_at = models.DateTimeField(null=True, blank=True)
     etc_agreed_at = models.DateTimeField(null=True, blank=True)
-    proposal_agreed_at = models.DateTimeField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -180,8 +180,6 @@ class PresentationProposal(models.Model):
         if not self.contents_agreed_at:
             return False
         if not self.etc_agreed_at:
-            return False
-        if not self.proposal_agreed_at:
             return False
         return True
 
