@@ -1,10 +1,6 @@
-from json import loads, dumps
-import unittest
-from django.utils.timezone import get_current_timezone
 from django.contrib.auth import get_user_model
-
-from graphql_extensions.testcases import SchemaTestCase
-from api.tests.common import generate_request_authenticated
+from django.utils.timezone import get_current_timezone
+from graphql_jwt.testcases import JSONWebTokenTestCase
 
 TIMEZONE = get_current_timezone()
 
@@ -46,8 +42,8 @@ query {
 '''
 
 PROPOSAL_UPDATE_MUTATION = '''
-mutation createOrUpdatePresentationProposal($input: PresentationProposalInput!) {
-    createOrUpdatePresentationProposal(input: $input) {
+mutation createOrUpdatePresentationProposal($data: PresentationProposalInput!) {
+    createOrUpdatePresentationProposal(data: $data) {
         proposal {
           name
           backgroundDesc
@@ -66,11 +62,16 @@ mutation createOrUpdatePresentationProposal($input: PresentationProposalInput!) 
 '''
 
 
-class PresentationTestCase(SchemaTestCase):
-    @unittest.skip('TODO 로그인 처리 후 살릴 예정')
-    def test_create_proposal(self):
+class PresentationTestCase(JSONWebTokenTestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create(
+            username='develop_github_123',
+            email='me@pycon.kr')
+        self.client.authenticate(self.user)
+
+    def test_create_user(self):
         variables = {
-            'input': {
+            'data': {
                 'name': '흥미로운 GraphQL',
                 'backgroundDesc': '자바',
                 'detailDesc': 'GraphQL은 재미있다는 설명!',
@@ -87,21 +88,11 @@ class PresentationTestCase(SchemaTestCase):
         expected = {
             'createOrUpdatePresentationProposal': {
                 'proposal': {
-                    **variables['input'],
+                    **variables['data'],
                 },
                 'success': True
             }
         }
-        user = UserModel(username='develop_github_123', email='me@pycon.kr')
-        user.save()
-        request = generate_request_authenticated(user)
-        self.client.force_login(user)
 
-        # When
-        result = self.client.execute(
-            PROPOSAL_UPDATE_MUTATION, variables=variables, context_value=request)
-
-        # Then
-        actual = loads(dumps(result.data))
-        self.assertIsNotNone(actual)
-        self.assertDictEqual(actual, expected)
+        response = self.client.execute(PROPOSAL_UPDATE_MUTATION, variables)
+        self.assertDictEqual(response.data, expected)
