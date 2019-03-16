@@ -1,6 +1,6 @@
 [
 {
-  "model": "api.presentation_proposal",
+  "model": "api.presentationproposal",
   "pk": 1,
   "fields": {
     "presentation": 1,
@@ -43,7 +43,7 @@
   }
 },
 {
-  "model": "api.presentation_proposal",
+  "model": "api.presentationproposal",
   "pk": 2,
   "fields": {
     "presentation": 2,
@@ -86,7 +86,7 @@
   }
 },
 {
-  "model": "api.presentation_proposal",
+  "model": "api.presentationproposal",
   "pk": 3,
   "fields": {
     "presentation": 3,
@@ -129,7 +129,7 @@
   }
 },
 {
-  "model": "api.presentation_proposal",
+  "model": "api.presentationproposal",
   "pk": 4,
   "fields": {
     "presentation": 3,

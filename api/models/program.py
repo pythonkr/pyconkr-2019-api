@@ -124,8 +124,10 @@ class PresentationProposal(models.Model):
     @property
     def name(self):
         return self.presentation.name
+
     @name.setter
     def name(self, value):
+        self.presentation.name = value
         self.presentation.nameKo = value
         self.presentation.nameEn = value
 
@@ -139,6 +141,7 @@ class PresentationProposal(models.Model):
     
     @background_desc.setter
     def background_desc(self, value):
+        self.presentation.backgroundDesc = value
         self.presentation.backgroundDescKo = value
         self.presentation.backgroundDescEn = value
     
@@ -179,12 +182,12 @@ class PresentationProposal(models.Model):
 
 @receiver(post_save, sender=Presentation)
 def create_presentation_proposal(sender, instance, created, **kwargs):
-    if created:
+    if created and hasattr(instance, 'proposal'):
         PresentationProposal.objects.create(presentation=instance)
 
 @receiver(post_save, sender=Presentation)
 def save_presentation_proposal(sender, instance, **kwargs):
-    if hasattr(instance, 'presentation_proposal'):
-        instance.profile.save()
+    if hasattr(instance, 'proposal'):
+        instance.proposal.save()
     else:
         PresentationProposal.objects.create(presentation=instance)
