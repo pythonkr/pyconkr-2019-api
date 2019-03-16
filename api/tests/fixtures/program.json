@@ -1,14 +1,5 @@
 [
 {
-  "model": "api.presentationproposal",
-  "pk": 1,
-  "fields": {
-    "presentation": 1,
-    "submitted": false,
-    "accepted": false
-  }
-},
-{
   "model": "api.presentation",
   "pk": 1,
   "fields": {
@@ -23,6 +14,15 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 1,
+  "fields": {
+    "presentation": 1,
+    "submitted": false,
+    "accepted": false
   }
 },
 {
@@ -43,15 +43,6 @@
   }
 },
 {
-  "model": "api.presentationproposal",
-  "pk": 2,
-  "fields": {
-    "presentation": 2,
-    "submitted": true,
-    "accepted": false
-  }
-},
-{
   "model": "api.presentation",
   "pk": 2,
   "fields": {
@@ -66,6 +57,15 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 2,
+  "fields": {
+    "presentation": 2,
+    "submitted": true,
+    "accepted": false
   }
 },
 {
@@ -86,15 +86,6 @@
   }
 },
 {
-  "model": "api.presentationproposal",
-  "pk": 3,
-  "fields": {
-    "presentation": 3,
-    "submitted": true,
-    "accepted": true
-  }
-},
-{
   "model": "api.presentation",
   "pk": 3,
   "fields": {
@@ -109,6 +100,15 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 3,
+  "fields": {
+    "presentation": 3,
+    "submitted": true,
+    "accepted": true
   }
 },
 {
@@ -129,15 +129,6 @@
   }
 },
 {
-  "model": "api.presentationproposal",
-  "pk": 4,
-  "fields": {
-    "presentation": 3,
-    "submitted": true,
-    "accepted": true
-  }
-},
-{
   "model": "api.presentation",
   "pk": 4,
   "fields": {
@@ -152,6 +143,15 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 4,
+  "fields": {
+    "presentation": 4,
+    "submitted": true,
+    "accepted": true
   }
 },
 {
