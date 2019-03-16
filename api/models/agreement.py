@@ -18,7 +18,11 @@ class Agreement(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def is_agreed_all(self):
-        return self.terms_of_service_agreed_at and self.privacy_policy_agreed_at
+        if not self.terms_of_service_agreed_at:
+            return False
+        if not self.privacy_policy_agreed_at:
+            return False
+        return True
 
 
 @receiver(post_save, sender=UserModel)
