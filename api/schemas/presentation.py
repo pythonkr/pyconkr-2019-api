@@ -105,8 +105,10 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
             presentation.difficulty = Difficulty.objects.get(
                 pk=data['difficulty_id'])
             del data['difficulty_id']
-
-        proposal = presentation.proposal
+        if hasattr(presentation, 'proposal'):
+            proposal = presentation.proposal
+        else:
+            proposal = PresentationProposal.objects.create(presentation=presentation)
         for k, v in data.items():
             setattr(proposal, k, v)
         presentation.full_clean()
