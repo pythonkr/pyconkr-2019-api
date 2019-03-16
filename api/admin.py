@@ -11,7 +11,6 @@ from api.models.sponsor import Sponsor, SponsorLevel
 
 UserModel = get_user_model()
 
-
 class ProfileInline(AdminImageMixin, admin.StackedInline):
     model = Profile
     can_delete = False
@@ -51,23 +50,18 @@ class ConferenceAdmin(admin.ModelAdmin):
 
 admin.site.register(Conference, ConferenceAdmin)
 
+class PresentationProposalInline(admin.StackedInline):
+    model = PresentationProposal
+    can_delete = False
+    verbose_name_plural = 'proposal'
 
 class PresentationAdmin(admin.ModelAdmin):
     list_display = ('id', 'owner', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'accepted',)
-
+    inlines = (PresentationProposalInline,)
 
 admin.site.register(Presentation, PresentationAdmin)
 
-
-class PresentationProposalAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'presentation', 'background_desc', 'duration', 'category', 'detail_desc',
-        'is_presented_before', 'place_presented_before', 'presented_slide_url_before', 'comment',
-        'proposal_agreed_at', 'submitted', 'accepted')
-
-
-admin.site.register(PresentationProposal, PresentationProposalAdmin)
 
 
 class PlaceAdmin(admin.ModelAdmin):
