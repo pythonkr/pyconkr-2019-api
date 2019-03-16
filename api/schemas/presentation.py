@@ -100,10 +100,12 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
             presentation.category = Category.objects.get(
                 pk=data['category_id'])
             del data['category_id']
+
         if 'difficulty_id' in data:
             presentation.difficulty = Difficulty.objects.get(
                 pk=data['difficulty_id'])
             del data['difficulty_id']
+
         proposal = presentation.proposal
         for k, v in data.items():
             setattr(proposal, k, v)
