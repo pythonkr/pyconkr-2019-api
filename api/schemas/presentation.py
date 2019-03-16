@@ -30,6 +30,8 @@ class PresentationNode(DjangoObjectType):
     duration = graphene.Field(DurationNode)
     started_at = graphene.Field(SeoulDateTime)
     finished_at = graphene.Field(SeoulDateTime)
+    created_at = graphene.Field(SeoulDateTime)
+    updated_at = graphene.Field(SeoulDateTime)
 
 
 class PlaceNode(DjangoObjectType):

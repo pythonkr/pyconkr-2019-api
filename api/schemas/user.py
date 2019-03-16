@@ -7,18 +7,30 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.types import Email
 from graphene_file_upload.scalars import Upload
 
-from api.schemas.common import ImageUrl
+from api.schemas.common import SeoulDateTime, ImageUrl
 from api.models.profile import Profile
 from api.models.profile import create_profile_if_not_exists
+from api.models.agreement import Agreement
 
 
 UserModel = get_user_model()
+
 
 class OauthTypeNode(graphene.Enum):
     GITHUB = Profile.OAUTH_GITHUB
     GOOGLE = Profile.OAUTH_GOOGLE
     FACEBOOK = Profile.OAUTH_FACEBOOK
     NAVER = Profile.OAUTH_NAVER
+
+
+class AgreementNode(DjangoObjectType):
+    class Meta:
+        model = Agreement
+    terms_of_service_agreed_at = graphene.Field(SeoulDateTime)
+    privacy_policy_agreed_at = graphene.Field(SeoulDateTime)
+    created_at = graphene.Field(SeoulDateTime)
+    updated_at = graphene.Field(SeoulDateTime)
+
 
 class ProfileNode(DjangoObjectType):
     class Meta:
@@ -28,6 +40,7 @@ class ProfileNode(DjangoObjectType):
     oauth_type = graphene.Field(OauthTypeNode)
     image = graphene.Field(ImageUrl)
 
+
 class UserNode(DjangoObjectType):
     class Meta:
         model = UserModel
@@ -36,6 +49,13 @@ class UserNode(DjangoObjectType):
         description = "User information"
 
     profile = graphene.Field(ProfileNode)
+    is_agreed = graphene.Boolean()
+
+    def resolve_is_agreed(self, info):
+        if not self.agreement:
+            return False
+        return self.agreement.is_agreed_all()
+
 
 class ProfileInput(graphene.InputObjectType):
     name = graphene.String()
@@ -68,7 +88,7 @@ class UpdateProfile(graphene.Mutation):
 
 
 class UpdateAgreement(graphene.Mutation):
-    is_active = graphene.Boolean()
+    agreed = graphene.Boolean()
     user = graphene.Field(UserNode)
 
     class Arguments:
@@ -82,10 +102,9 @@ class UpdateAgreement(graphene.Mutation):
             user.agreement.terms_of_service_agreed_at = timezone.now()
         if is_privacy_policy:
             user.agreement.privacy_policy_agreed_at = timezone.now()
-        if user.agreement.terms_of_service_agreed_at and user.agreement.privacy_policy_agreed_at:
-            user.is_active = True
         user.save()
-        return UpdateProfile(is_active=user.is_active, user=user)
+        return UpdateProfile(agreed=user.agreement.is_agreed_all(),
+                             user=user)
 
 
 class UploadProfileImage(graphene.Mutation):
