@@ -9,7 +9,6 @@ from graphene_file_upload.scalars import Upload
 
 from api.schemas.common import SeoulDateTime, ImageUrl
 from api.models.profile import Profile
-from api.models.profile import create_profile_if_not_exists
 from api.models.agreement import Agreement
 
 
@@ -79,7 +78,6 @@ class UpdateProfile(graphene.Mutation):
 
     @login_required
     def mutate(self, info, profile_input):
-        profile = create_profile_if_not_exists(info.context.user)
         for k, v in profile_input.items():
             setattr(profile, k, v)
         profile.full_clean()

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 from api.models.oauth_setting import OAuthSetting
-from api.models.program import Conference, Presentation
+from api.models.program import Conference, Presentation, PresentationProposal
 from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
 from api.models.agreement import Agreement
@@ -55,11 +55,18 @@ admin.site.register(Conference, ConferenceAdmin)
 
 class PresentationAdmin(admin.ModelAdmin):
     list_display = ('id', 'owner', 'name', 'language', 'category', 'difficulty',
-                    'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
+                    'place', 'duration', 'started_at', 'slide_url',  'accepted')
 
 
 admin.site.register(Presentation, PresentationAdmin)
 
+class PresentationProposalAdmin(admin.ModelAdmin):
+    list_display = ('id', 'presentation', 'background_desc', 'duration', 'category', 'detail_desc', 'is_presented_before',
+                    'place_presented_before', 'presented_slide_url_before', 'comment',
+                    'proposal_agreed_at', 'submitted', 'accepted')
+
+
+admin.site.register(PresentationProposal, PresentationProposalAdmin)
 
 class PlaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
