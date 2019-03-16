@@ -22,7 +22,9 @@
   "fields": {
     "presentation": 1,
     "submitted": false,
-    "accepted": false
+    "accepted": false,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -65,7 +67,9 @@
   "fields": {
     "presentation": 2,
     "submitted": true,
-    "accepted": false
+    "accepted": false,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -108,7 +112,9 @@
   "fields": {
     "presentation": 3,
     "submitted": true,
-    "accepted": true
+    "accepted": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -151,7 +157,9 @@
   "fields": {
     "presentation": 4,
     "submitted": true,
-    "accepted": true
+    "accepted": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {

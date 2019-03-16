@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from model_utils.managers import InheritanceManager
 
+
 class Conference(models.Model):
     name = models.CharField(max_length=50)
     conference_started_at = models.DateField(null=True, blank=True)
@@ -75,7 +76,7 @@ class Presentation(Program):
     DURATION_LONG = 'L'
     owner = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     background_desc = models.TextField(blank=True, default='')
-    
+
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
     duration = models.CharField(max_length=1,
@@ -96,17 +97,19 @@ class Presentation(Program):
 
     @property
     def accepted(self):
-        return self.presentation_proposal.accepted
+        return self.proposal.accepted
 
     @property
     def submitted(self):
-        return self.presentation_proposal.submitted
+        return self.proposal.submitted
 
     def __str__(self):
         return f'{self.owner}/{self.name}'
 
+
 class PresentationProposal(models.Model):
-    presentation = models.OneToOneField(Presentation, related_name='proposal', on_delete=models.CASCADE)
+    presentation = models.OneToOneField(
+        Presentation, related_name='proposal', on_delete=models.CASCADE)
     submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
     detail_desc = models.TextField(blank=True, default='')
@@ -120,6 +123,8 @@ class PresentationProposal(models.Model):
     contents_agreed_at = models.DateTimeField(null=True, blank=True)
     etc_agreed_at = models.DateTimeField(null=True, blank=True)
     proposal_agreed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def name(self):
@@ -128,8 +133,8 @@ class PresentationProposal(models.Model):
     @name.setter
     def name(self, value):
         self.presentation.name = value
-        self.presentation.nameKo = value
-        self.presentation.nameEn = value
+        self.presentation.name_ko = value
+        self.presentation.name_en = value
 
     @property
     def owner(self):
@@ -138,13 +143,13 @@ class PresentationProposal(models.Model):
     @property
     def background_desc(self):
         return self.presentation.background_desc
-    
+
     @background_desc.setter
     def background_desc(self, value):
-        self.presentation.backgroundDesc = value
-        self.presentation.backgroundDescKo = value
-        self.presentation.backgroundDescEn = value
-    
+        self.presentation.background_desc = value
+        self.presentation.background_desc_ko = value
+        self.presentation.background_desc_en = value
+
     @property
     def duration(self):
         return self.presentation.duration
@@ -180,10 +185,13 @@ class PresentationProposal(models.Model):
             return False
         return True
 
+
 @receiver(post_save, sender=Presentation)
 def create_presentation_proposal(sender, instance, created, **kwargs):
+    # TODO: 상수가 아닌 다른 방법으로 proposal이 존재하는지 여부를 확인해야 합니다.
     if created and hasattr(instance, 'proposal'):
         PresentationProposal.objects.create(presentation=instance)
+
 
 @receiver(post_save, sender=Presentation)
 def save_presentation_proposal(sender, instance, **kwargs):

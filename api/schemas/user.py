@@ -78,6 +78,7 @@ class UpdateProfile(graphene.Mutation):
 
     @login_required
     def mutate(self, info, profile_input):
+        profile = info.context.user.profile
         for k, v in profile_input.items():
             setattr(profile, k, v)
         profile.full_clean()

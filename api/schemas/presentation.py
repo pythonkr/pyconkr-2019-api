@@ -2,11 +2,9 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 
-from django.db.models import Q
 from api.models.program import Presentation, PresentationProposal
 from api.models.program import Place, Category, Difficulty
 from api.schemas.user import UserNode
-from api.schemas.common import SeoulDateTime
 
 
 class PlaceNode(DjangoObjectType):
@@ -44,43 +42,28 @@ class DurationNode(graphene.Enum):
     LONG = Presentation.DURATION_LONG
 
 
-class PresentationNode(DjangoObjectType):
-    class Meta:
-        model = Presentation
-        description = """
-        Program which speakers present their presentations at Pycon Korea.
-        It is one of the the most important program in Pycon Korea.
-        """
-
-    language = graphene.Field(LanguageNode)
-    duration = graphene.Field(DurationNode)
-    started_at = graphene.Field(SeoulDateTime)
-    finished_at = graphene.Field(SeoulDateTime)
-    created_at = graphene.Field(SeoulDateTime)
-    updated_at = graphene.Field(SeoulDateTime)
-
-
 class PresentationProposalNode(DjangoObjectType):
     class Meta:
         model = PresentationProposal
 
+    name = graphene.String()
     owner = graphene.Field(UserNode)
     background_desc = graphene.String()
+    language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
     category = graphene.Field(CategoryNode)
     difficulty = graphene.Field(DifficultyNode)
     recordable = graphene.Boolean()
+    is_agreed = graphene.Boolean()
 
+    def resolve_is_agreed(self, info):
+        return self.is_agreed_all()
 
 class PresentationProposalInput(graphene.InputObjectType):
     name = graphene.String()
-    name_ko = graphene.String()
-    name_en = graphene.String()
     category_id = graphene.Int()
     difficulty_id = graphene.Int()
     background_desc = graphene.String()
-    background_desc_ko = graphene.String()
-    background_desc_en = graphene.String()
     language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
     submitted = graphene.Boolean()
@@ -97,37 +80,36 @@ class PresentationProposalInput(graphene.InputObjectType):
 
 
 class CreateOrUpdatePresentationProposal(graphene.Mutation):
-    presentation_proposal = graphene.Field(PresentationProposalNode)
+    proposal = graphene.Field(PresentationProposalNode)
     success = graphene.Boolean()
 
     class Arguments:
-        input = PresentationProposalInput(required=True)
+        data = PresentationProposalInput(required=True)
 
     @login_required
-    def mutate(self, info, input):
+    def mutate(self, info, data):
         user = info.context.user
-
         if hasattr(user, 'presentation'):
             presentation = user.presentation
         else:
             presentation = Presentation()
             presentation.owner = user
-            presentation = presentation.save()
+            presentation.save()
 
-        if 'category_id' in input:
+        if 'category_id' in data:
             presentation.category = Category.objects.get(
-                pk=input['category_id'])
-            del input['category_id']
-        if 'difficulty_id' in input:
+                pk=data['category_id'])
+            del data['category_id']
+        if 'difficulty_id' in data:
             presentation.difficulty = Difficulty.objects.get(
-                pk=input['difficulty_id'])
-            del input['difficulty_id']
+                pk=data['difficulty_id'])
+            del data['difficulty_id']
         proposal = presentation.proposal
-        for k, v in input.items():
+        for k, v in data.items():
             setattr(proposal, k, v)
         presentation.full_clean()
         presentation.save()
-        return CreateOrUpdatePresentationProposal(presentation_proposal=presentation.proposal, success=True)
+        return CreateOrUpdatePresentationProposal(proposal=presentation.proposal, success=True)
 
 
 class Mutations(graphene.ObjectType):
