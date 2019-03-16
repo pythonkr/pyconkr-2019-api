@@ -166,30 +166,3 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'http://localhost:8000/media/'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': '/log/error.log',
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console',],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django': {
-            'handlers': ['file', 'console', ],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    },
-}
