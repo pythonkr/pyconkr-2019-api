@@ -143,7 +143,10 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_my_presentation_proposal(self, info):
         user = info.context.user
-        return user.presentation.proposal
+        try:
+            return PresentationProposal.objects.get(presentation__owner=user)
+        except PresentationProposal.DoesNotExist:
+            return None
 
     def resolve_categories(self, info):
         return Category.objects.filter(visible=True)
