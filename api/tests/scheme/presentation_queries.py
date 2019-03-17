@@ -63,8 +63,9 @@ mutation createOrUpdatePresentationProposal($data: PresentationProposalInput!) {
                 nameKo
                 nameEn
             }
+            isAgreed
         }
-        isAgreedAll
+        isAgreed
     }
 }
 '''
