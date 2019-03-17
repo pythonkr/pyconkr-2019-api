@@ -8,7 +8,7 @@ query getMe {
         profile { 
             id
             oauthType
-            name       
+            name
             nameKo
             nameEn
             bio
@@ -26,26 +26,26 @@ query getMe {
 '''
 
 UPDATE_PROFILE = '''
-    mutation UpdateProfile($data: ProfileInput!) {
-        updateProfile(data: $data) {
-            profile { 
-                id
-                oauthType
-                name       
-                nameKo
-                nameEn
-                bio
-                bioKo
-                bioEn
-                email
-                phone
-                organization
-                nationality
-                image
-                avatarUrl
-            }
+mutation UpdateProfile($data: ProfileInput!) {
+    updateProfile(data: $data) {
+        profile { 
+            id
+            oauthType
+            name       
+            nameKo
+            nameEn
+            bio
+            bioKo
+            bioEn
+            email
+            phone
+            organization
+            nationality
+            image
+            avatarUrl
         }
     }
+}
 '''
 
 UPDATE_AGREEMENT = '''
