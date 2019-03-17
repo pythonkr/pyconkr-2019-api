@@ -121,8 +121,9 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
             setattr(proposal, k, v)
         presentation.full_clean()
         presentation.save()
-        return CreateOrUpdatePresentationProposal(proposal=presentation.proposal,
-                                                  is_agreed_all=presentation.proposal.is_agreed_all())
+        return CreateOrUpdatePresentationProposal(
+            proposal=presentation.proposal,
+            is_agreed_all=presentation.proposal.is_agreed_all())
 
 
 class Mutations(graphene.ObjectType):
