@@ -1,5 +1,5 @@
 ME = '''
-query {
+query getMe {
     me {
         username
         isStaff
@@ -26,8 +26,8 @@ query {
 '''
 
 UPDATE_PROFILE = '''
-    mutation UpdateProfile($profileInput: ProfileInput!) {
-        updateProfile(profileInput: $profileInput) {
+    mutation UpdateProfile($data: ProfileInput!) {
+        updateProfile(data: $data) {
             profile { 
                 id
                 oauthType

@@ -74,12 +74,12 @@ class UpdateProfile(graphene.Mutation):
     profile = graphene.Field(ProfileNode)
 
     class Arguments:
-        profile_input = ProfileInput(required=True)
+        data = ProfileInput(required=True)
 
     @login_required
-    def mutate(self, info, profile_input):
+    def mutate(self, info, data):
         profile = info.context.user.profile
-        for k, v in profile_input.items():
+        for k, v in data.items():
             setattr(profile, k, v)
         profile.full_clean()
         profile.save()

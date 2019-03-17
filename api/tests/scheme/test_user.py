@@ -50,7 +50,7 @@ class UserTestCase(BaseTestCase, JSONWebTokenTestCase):
         # Given
 
         variables = {
-            'profileInput': {
+            'data': {
                 'nameKo': '코니',
                 'nameEn': 'Coni',
                 'bioKo': '파이콘 한국을 참석하고 있지요',
