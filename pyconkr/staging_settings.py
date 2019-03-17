@@ -22,9 +22,15 @@ STATIC_ROOT = '/static'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s '
+                      '%(process)d %(thread)d %(message)s'
+        },
+    },
     'handlers': {
         'file': {
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': '/log/error.log',
         },
@@ -40,8 +46,7 @@ LOGGING = {
         },
         'django': {
             'handlers': ['file', 'console', ],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': False,
         },
     },
-}
