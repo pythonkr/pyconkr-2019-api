@@ -1,10 +1,11 @@
 from datetime import datetime
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 
-from api.models.program import Presentation, PresentationProposal
 from api.models.program import Place, Category, Difficulty
+from api.models.program import Presentation, PresentationProposal
 from api.schemas.user import UserNode
 
 
@@ -60,10 +61,11 @@ class PresentationProposalNode(DjangoObjectType):
     def resolve_is_agreed(self, info):
         return self.is_agreed_all()
 
+
 class PresentationProposalInput(graphene.InputObjectType):
     name = graphene.String()
-    category_id = graphene.Int()
-    difficulty_id = graphene.Int()
+    category_id = graphene.ID()
+    difficulty_id = graphene.ID()
     background_desc = graphene.String()
     language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
@@ -81,7 +83,7 @@ class PresentationProposalInput(graphene.InputObjectType):
 
 class CreateOrUpdatePresentationProposal(graphene.Mutation):
     proposal = graphene.Field(PresentationProposalNode)
-    success = graphene.Boolean()
+    is_agreed_all = graphene.Boolean()
 
     class Arguments:
         data = PresentationProposalInput(required=True)
@@ -105,11 +107,11 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
             presentation.difficulty = Difficulty.objects.get(
                 pk=data['difficulty_id'])
             del data['difficulty_id']
-        if 'is_coc_agreed' in data:
+        if 'is_coc_agreed' in data and data['is_coc_agreed']:
             presentation.proposal.coc_agreed_at = datetime.now()
-        if 'is_contents_agreed' in data:
+        if 'is_contents_agreed' in data and data['is_contents_agreed']:
             presentation.proposal.contents_agreed_at = datetime.now()
-        if 'is_etc_agreed' in data:
+        if 'is_etc_agreed' in data and data['is_etc_agreed']:
             presentation.proposal.etc_agreed_at = datetime.now()
         if hasattr(presentation, 'proposal'):
             proposal = presentation.proposal
@@ -119,7 +121,8 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
             setattr(proposal, k, v)
         presentation.full_clean()
         presentation.save()
-        return CreateOrUpdatePresentationProposal(proposal=presentation.proposal, success=True)
+        return CreateOrUpdatePresentationProposal(proposal=presentation.proposal,
+                                                  is_agreed_all=presentation.proposal.is_agreed_all())
 
 
 class Mutations(graphene.ObjectType):

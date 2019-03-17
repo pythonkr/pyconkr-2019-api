@@ -1,7 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import User
-from django.dispatch import receiver
+from django.db import models
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
 
 
@@ -157,6 +157,14 @@ class PresentationProposal(models.Model):
     @duration.setter
     def duration(self, value):
         self.presentation.duration = value
+
+    @property
+    def language(self):
+        return self.presentation.language
+
+    @language.setter
+    def language(self, value):
+        self.presentation.language = value
 
     @property
     def category(self):

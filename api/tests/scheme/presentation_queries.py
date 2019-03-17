@@ -1,5 +1,5 @@
 MY_PRESENTATION_PROPOSAL= '''
-query {
+query getMyPresentationProposal{
     myPresentationProposal {
         name
         owner {
@@ -34,21 +34,35 @@ query {
 '''
 
 CREATE_OR_UPDATE_PRESENTATION_PROPOSAL = '''
-mutation createOrUpdatePresentationProposal($input: PresentationProposalInput!) {
-    createOrUpdatePresentationProposal(input: $input) {
+mutation createOrUpdatePresentationProposal($data: PresentationProposalInput!) {
+    createOrUpdatePresentationProposal(data: $data) {
         proposal {
-          name
-          backgroundDesc
-          detailDesc
-          language
-          duration
-          isPresentedBefore
-          placePresentedBefore
-          presentedSlideUrlBefore
-          comment
-          submitted
+            name
+            backgroundDesc
+            category {
+                id
+                name
+                nameKo
+                nameEn
+                slug
+                visible
+            }
+            difficulty {
+                id
+                name
+                nameKo
+                nameEn
+            }
+            detailDesc
+            language
+            duration
+            isPresentedBefore
+            placePresentedBefore
+            presentedSlideUrlBefore
+            comment
+            submitted
         }
-        success
+        isAgreedAll
     }
 }
 '''
