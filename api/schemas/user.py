@@ -1,16 +1,16 @@
 import os
+
 import graphene
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from graphene_django import DjangoObjectType
+from graphene_file_upload.scalars import Upload
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.types import Email
-from graphene_file_upload.scalars import Upload
 
-from api.schemas.common import SeoulDateTime, ImageUrl
-from api.models.profile import Profile
 from api.models.agreement import Agreement
-
+from api.models.profile import Profile
+from api.schemas.common import SeoulDateTime, ImageUrl
 
 UserModel = get_user_model()
 
@@ -87,7 +87,7 @@ class UpdateProfile(graphene.Mutation):
 
 
 class UpdateAgreement(graphene.Mutation):
-    agreed = graphene.Boolean()
+    is_agreed_all = graphene.Boolean()
     user = graphene.Field(UserNode)
 
     class Arguments:
@@ -102,8 +102,8 @@ class UpdateAgreement(graphene.Mutation):
         if is_privacy_policy:
             user.agreement.privacy_policy_agreed_at = timezone.now()
         user.save()
-        return UpdateProfile(agreed=user.agreement.is_agreed_all(),
-                             user=user)
+        return UpdateAgreement(is_agreed_all=user.agreement.is_agreed_all(),
+                               user=user)
 
 
 class UploadProfileImage(graphene.Mutation):
