@@ -1,65 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.utils.timezone import get_current_timezone
 from graphql_jwt.testcases import JSONWebTokenTestCase
-
+from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL
 TIMEZONE = get_current_timezone()
 
 UserModel = get_user_model()
-
-MY_PROPOSAL_QUERY = '''
-query {
-    myPresentationProposal {
-        name
-        owner {
-            username
-        }
-        backgroundDesc
-        detailDesc
-        language
-        duration
-        category {
-            name
-            nameKo
-            nameEn
-            slug
-            visible
-        }
-        difficulty {
-            name
-            nameKo
-            nameEn
-        }
-        isPresentedBefore
-        placePresentedBefore
-        presentedSlideUrlBefore
-        comment
-        isAgreed
-        recordable
-        submitted
-        accepted
-    }
-}
-'''
-
-PROPOSAL_UPDATE_MUTATION = '''
-mutation createOrUpdatePresentationProposal($data: PresentationProposalInput!) {
-    createOrUpdatePresentationProposal(data: $data) {
-        proposal {
-          name
-          backgroundDesc
-          detailDesc
-          language
-          duration
-          isPresentedBefore
-          placePresentedBefore
-          presentedSlideUrlBefore
-          comment
-          submitted
-        }
-        success
-    }
-}
-'''
 
 
 class PresentationTestCase(JSONWebTokenTestCase):
@@ -69,7 +14,7 @@ class PresentationTestCase(JSONWebTokenTestCase):
             email='me@pycon.kr')
         self.client.authenticate(self.user)
 
-    def test_create_user(self):
+    def test_create_or_update_proposal(self):
         variables = {
             'data': {
                 'name': '흥미로운 GraphQL',
@@ -94,5 +39,5 @@ class PresentationTestCase(JSONWebTokenTestCase):
             }
         }
 
-        response = self.client.execute(PROPOSAL_UPDATE_MUTATION, variables)
+        response = self.client.execute(CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, variables)
         self.assertDictEqual(response.data, expected)
