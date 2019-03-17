@@ -59,7 +59,7 @@ class PresentationProposalNode(DjangoObjectType):
     is_agreed = graphene.Boolean()
 
     def resolve_is_agreed(self, info):
-        return self.is_agreed()
+        return self.is_agreed_all()
 
 
 class PresentationProposalInput(graphene.InputObjectType):
@@ -123,7 +123,7 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
         presentation.save()
         return CreateOrUpdatePresentationProposal(
             proposal=presentation.proposal,
-            is_agreed=presentation.proposal.is_agreed())
+            is_agreed=presentation.proposal.is_agreed_all())
 
 
 class Mutations(graphene.ObjectType):

@@ -120,7 +120,7 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = response.data
         self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertTrue(data['createOrUpdatePresentationProposal']['isAgreedAll'])
+        self.assertTrue(data['createOrUpdatePresentationProposal']['isAgreed'])
 
         proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
         self.assertTrue(proposal_model.is_agreed_all())
@@ -140,7 +140,7 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = response.data
         self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreedAll'])
+        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
 
         proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
         self.assertFalse(proposal_model.is_agreed_all())
@@ -160,7 +160,7 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = response.data
         self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreedAll'])
+        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
 
         proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
         self.assertFalse(proposal_model.is_agreed_all())
@@ -180,7 +180,7 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = response.data
         self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreedAll'])
+        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
 
         proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
         self.assertFalse(proposal_model.is_agreed_all())
@@ -198,7 +198,7 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = response.data
         self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreedAll'])
+        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
 
         proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
         self.assertFalse(proposal_model.is_agreed_all())
