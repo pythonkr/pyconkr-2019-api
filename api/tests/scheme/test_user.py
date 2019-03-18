@@ -143,3 +143,4 @@ class UserTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(UPDATE_AGREEMENT, variable)
         self.assertIsNotNone(result.data['updateAgreement'])
         self.assertFalse(result.data['updateAgreement']['isAgreedAll'])
+

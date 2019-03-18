@@ -50,3 +50,5 @@ LOGGING = {
             'propagate': False,
         },
     },
+}
+
