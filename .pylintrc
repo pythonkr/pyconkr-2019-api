@@ -71,6 +71,8 @@ disable=
         unused-argument,
         duplicate-code,
         too-many-arguments,
+        no-member,
+        fixme,
         # default
         print-statement,
         parameter-unpacking,

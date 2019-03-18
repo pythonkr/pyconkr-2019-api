@@ -1,5 +1,4 @@
-[
-  {
+[{
     "model": "auth.user",
     "pk": 1,
     "fields": {
@@ -15,6 +14,33 @@
       "date_joined": "2019-02-23T06:12:04.399Z",
       "groups": [],
       "user_permissions": []
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "name_ko": "파이콘 한국",
+      "name_en": "Pycon Korea",
+      "bio_ko": "",
+      "bio_en": "",
+      "phone": "",
+      "organization": "",
+      "nationality": "",
+      "image": "",
+      "avatar_url": ""
+    }
+  },
+  {
+    "model": "api.agreement",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "terms_of_service_agreed_at": null,
+      "privacy_policy_agreed_at": null,
+      "created_at": "2019-02-24T12:48:58.636Z",
+      "updated_at": "2019-02-24T12:48:58.637Z"
     }
   },
   {
@@ -35,25 +61,10 @@
       "user_permissions": []
     }
   },
-  
+
+
   {
-    "model": "api.profile",
-    "pk": 1,
-    "fields": {
-      "user": 1,
-      "name_ko": "파이콘 한국",
-      "name_en": "Pycon Korea",
-      "bio_ko": "",
-      "bio_en": "",
-      "phone": "",
-      "organization": "",
-      "nationality": "",
-      "image": "",
-      "avatar_url": ""
-    }
-  },
-  {
-  
+
     "model": "api.profile",
     "pk": 2,
     "fields": {
@@ -67,6 +78,113 @@
       "nationality": "Korea",
       "image": "",
       "avatar_url": "http://avartar.com/me.png"
+    }
+  },
+  {
+    "model": "api.agreement",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "terms_of_service_agreed_at": null,
+      "privacy_policy_agreed_at": null,
+      "created_at": "2019-02-24T12:48:58.636Z",
+      "updated_at": "2019-02-24T12:48:58.637Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$COAqWNJv1pOT$P99n4cjzkg+3RxEbtdZ8lurFnr7DrNr0ZujOQKRpisw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "testuser3",
+      "first_name": "",
+      "last_name": "",
+      "email": "test@test.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-02-23T06:09:56Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+
+
+  {
+
+    "model": "api.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "name_ko": "테스트유저",
+      "name_en": "testuser",
+      "bio_ko": "테스트 유저입니다",
+      "bio_en": "I'm a testuser",
+      "phone": "010-0000-0000",
+      "organization": "테스트조직",
+      "nationality": "Korea",
+      "image": "",
+      "avatar_url": "http://avartar.com/me.png"
+    }
+  },
+  {
+    "model": "api.agreement",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "terms_of_service_agreed_at": null,
+      "privacy_policy_agreed_at": null,
+      "created_at": "2019-02-24T12:48:58.636Z",
+      "updated_at": "2019-02-24T12:48:58.637Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$COAqWNJv1pOT$P99n4cjzkg+3RxEbtdZ8lurFnr7DrNr0ZujOQKRpisw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "testuser4",
+      "first_name": "",
+      "last_name": "",
+      "email": "test@test.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-02-23T06:09:56Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+
+
+  {
+
+    "model": "api.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "name_ko": "테스트유저",
+      "name_en": "testuser",
+      "bio_ko": "테스트 유저입니다",
+      "bio_en": "I'm a testuser",
+      "phone": "010-0000-0000",
+      "organization": "테스트조직",
+      "nationality": "Korea",
+      "image": "",
+      "avatar_url": "http://avartar.com/me.png"
+    }
+  },
+  {
+    "model": "api.agreement",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "terms_of_service_agreed_at": null,
+      "privacy_policy_agreed_at": null,
+      "created_at": "2019-02-24T12:48:58.636Z",
+      "updated_at": "2019-02-24T12:48:58.637Z"
     }
   }
 ]

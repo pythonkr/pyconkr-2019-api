@@ -35,7 +35,8 @@ jobs:
           path: test-reports
 
   docker:
-    machine: true
+    machine: 
+      docker_layer_caching: true
     steps:
       - checkout
       - run:
@@ -46,7 +47,7 @@ jobs:
             docker-compose up -d
             sleep 20
             docker-compose logs
-            curl http://localhost:8000/api/ping
+            curl -fL http://localhost:8000/api/ping
 
   deploy-dev:
     docker:
@@ -59,9 +60,9 @@ jobs:
       - run:
           command: |
             sudo pip install fabric
-            fab -H ${DEPLOY_HOST} -p -e deploy-dev --sha1 $CIRCLE_SHA1
+            fab -H ${DEPLOY_USER}@${DEPLOY_HOST} -p -e deploy-dev --sha1 $CIRCLE_SHA1
             sleep 20
-            curl -f ${URL_ROOT}/api/ping
+            curl -fL ${URL_ROOT}/api/ping
       
   deploy-prod:
     docker:
@@ -74,9 +75,9 @@ jobs:
       - run:
           command: |
             sudo pip install fabric
-            fab -H ${DEPLOY_HOST} -p -e deploy-master --sha1 $CIRCLE_SHA1
+            fab -H ${DEPLOY_USER}@${DEPLOY_HOST} -p -e deploy-master --sha1 $CIRCLE_SHA1
             sleep 20
-            curl -f ${URL_ROOT}/api/ping
+            curl -fL ${URL_ROOT}/api/ping
 
 workflows:
   version: 2

@@ -3,23 +3,26 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 from api.models.oauth_setting import OAuthSetting
-from api.models.program import Conference, Presentation
+from api.models.program import Conference, Presentation, PresentationProposal
 from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
+from api.models.agreement import Agreement
 from api.models.sponsor import Sponsor, SponsorLevel
 
-
 UserModel = get_user_model()
-
 
 class ProfileInline(AdminImageMixin, admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = 'profile'
 
+class AgreementInline(admin.StackedInline):
+    model = Agreement
+    can_delete = False
+    verbose_name_plural = 'agreement'
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (ProfileInline, )
+    inlines = (ProfileInline, AgreementInline,)
 
 
 admin.site.unregister(UserModel)
@@ -43,13 +46,18 @@ class ConferenceAdmin(admin.ModelAdmin):
 
 admin.site.register(Conference, ConferenceAdmin)
 
+class PresentationProposalInline(admin.StackedInline):
+    model = PresentationProposal
+    can_delete = False
+    verbose_name_plural = 'proposal'
 
 class PresentationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'language',
-                    'place', 'started_at', 'slide_url', 'submitted', 'accepted',)
-
+    list_display = ('id', 'owner', 'name', 'language', 'category', 'difficulty',
+                    'place', 'duration', 'started_at', 'slide_url', 'accepted',)
+    inlines = (PresentationProposalInline,)
 
 admin.site.register(Presentation, PresentationAdmin)
+
 
 
 class PlaceAdmin(admin.ModelAdmin):
@@ -74,7 +82,8 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 
 class SponsorLevelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'limit', 'ticket_count', 'presentation_count')
+    list_display = ('id', 'name', 'price', 'limit',
+                    'ticket_count', 'presentation_count')
 
 
 admin.site.register(SponsorLevel, SponsorLevelAdmin)

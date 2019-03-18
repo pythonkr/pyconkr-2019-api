@@ -15,6 +15,7 @@ services:
       - .:/web
       - ${MEDIA_VOLUME:-./media}:/media
       - ${STATIC_VOLUME:-./static}:/static
+      - ${LOG_VOLUME:-./log}:/log
     ports:
       - ${PORT:-8000}:8000
     depends_on:

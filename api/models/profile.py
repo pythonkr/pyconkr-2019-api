@@ -15,6 +15,7 @@ class Profile(models.Model):
     OAUTH_NAVER = '4'
 
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE)
+
     oauth_type = models.CharField(max_length=1,
                                   choices=(
                                       (OAUTH_GITHUB, ('github')),
@@ -44,13 +45,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=UserModel)
 def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-
-def create_profile_if_not_exists(user):
-    try:
-        profile = Profile.objects.get(user=user)
-    except Profile.DoesNotExist:
-        profile = Profile(user=user)
-        profile.save()
-    return profile
+    if hasattr(instance, 'profile'):
+        instance.profile.save()
+    else:
+        Profile.objects.create(user=instance)

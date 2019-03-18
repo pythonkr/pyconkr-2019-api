@@ -4,8 +4,7 @@
   "pk": 1,
   "fields": {
     "owner": 2,
-    "submitted": false,
-    "accepted": false,
+    "background_desc": "이건 알아야 겠지요",
     "place": 1,
     "started_at": "2019-08-21T04:00:00Z",
     "finished_at": "2019-08-21T06:00:00Z",
@@ -15,6 +14,17 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 1,
+  "fields": {
+    "presentation": 1,
+    "submitted": false,
+    "accepted": false,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -38,9 +48,8 @@
   "model": "api.presentation",
   "pk": 2,
   "fields": {
-    "owner": 2,
-    "submitted": true,
-    "accepted": false,
+    "owner": 3,
+    "background_desc": "이건 알아야 겠지요",
     "place": 1,
     "started_at": "2019-08-21T04:00:00Z",
     "finished_at": "2019-08-21T06:00:00Z",
@@ -50,6 +59,17 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 2,
+  "fields": {
+    "presentation": 2,
+    "submitted": true,
+    "accepted": false,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -73,9 +93,8 @@
   "model": "api.presentation",
   "pk": 3,
   "fields": {
-    "owner": 2,
-    "submitted": true,
-    "accepted": true,
+    "owner": 4,
+    "background_desc": "이건 알아야 겠지요",
     "place": 1,
     "started_at": "2019-08-21T04:00:00Z",
     "finished_at": "2019-08-21T06:00:00Z",
@@ -85,6 +104,17 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 3,
+  "fields": {
+    "presentation": 3,
+    "submitted": true,
+    "accepted": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -106,11 +136,10 @@
 },
 {
   "model": "api.presentation",
-  "pk": 3,
+  "pk": 4,
   "fields": {
-    "owner": 2,
-    "submitted": true,
-    "accepted": true,
+    "owner": 1,
+    "background_desc": "이건 알아야 겠지요",
     "place": 1,
     "started_at": "2019-08-21T04:00:00Z",
     "finished_at": "2019-08-21T06:00:00Z",
@@ -120,6 +149,17 @@
     "video_url": "https://video/1",
     "difficulty": 1,
     "recordable": true
+  }
+},
+{
+  "model": "api.presentationproposal",
+  "pk": 4,
+  "fields": {
+    "presentation": 4,
+    "submitted": true,
+    "accepted": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
