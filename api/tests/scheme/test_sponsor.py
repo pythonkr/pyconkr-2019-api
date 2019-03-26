@@ -63,7 +63,7 @@ class SponsorTestCase(BaseTestCase):
         }
 
         expected = {
-            'createOrUpdatePresentation': {
+            'createOrUpdateSponsor': {
                 'sponsor': {
                     **variables['sponsorInput'],
                 }
@@ -81,8 +81,8 @@ class SponsorTestCase(BaseTestCase):
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)
         self.assertIsNotNone(
-            actual['createOrUpdatePresentation']['presentation']['id'])
-        del actual['createOrUpdatePresentation']['presentation']['id']
+            actual['createOrUpdateSponsor']['sponsor']['id'])
+        del actual['createOrUpdateSponsor']['sponsor']['id']
         self.assertDictEqual(actual, expected)
 
     def test_retrieve_sponsor(self):

@@ -24,6 +24,7 @@ class SponsorLevelNode(DjangoObjectType):
         The level of sponsors, python conference in Korea.
         """
 
+
 class SponsorInput(graphene.InputObjectType):
     name = graphene.String()
     name_ko = graphene.String()
@@ -52,7 +53,6 @@ class CreateOrUpdateSponsor(graphene.Mutation):
             sponsor = Sponsor()
             sponsor.owner = user
 
-
         for k, v in sponsor_input.items():
             setattr(sponsor, k, v)
 
@@ -61,10 +61,8 @@ class CreateOrUpdateSponsor(graphene.Mutation):
         return CreateOrUpdateSponsor(sponsor=sponsor)
 
 
-
 class Mutations(graphene.ObjectType):
-    create_or_update_presentation = CreateOrUpdateSponsor.Field()
-
+    create_or_update_sponsor = CreateOrUpdateSponsor.Field()
 
 
 class Query(graphene.ObjectType):
