@@ -29,6 +29,7 @@ query {
 }
 '''
 
+
 class SponsorTestCase(BaseTestCase):
     def test_create_sponsor(self):
         mutation = '''
