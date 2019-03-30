@@ -33,18 +33,13 @@ query {
 class SponsorTestCase(BaseTestCase):
     def test_create_sponsor(self):
         mutation = '''
-        mutation CreateOrUpdateSponsor($SponsorInput: SponsorInput!) {
+        mutation CreateOrUpdateSponsor($sponsorInput: SponsorInput!) {
             createOrUpdateSponsor(sponsorInput: $sponsorInput) {
                 sponsor {
                     id
                     name
                     nameKo
                     nameEn
-                    descKo
-                    descEn
-                    url
-                    level
-                    paidAt
                 }
             }
         }
@@ -52,14 +47,9 @@ class SponsorTestCase(BaseTestCase):
 
         variables = {
             'sponsorInput': {
-                'name': '안 흥미로운 GraphQL',
-                'nameKo': '안 흥미로운 GraphQL',
-                'nameEn': 'Not Interesting GraphQL',
-                'descKo': 'GraphQL은 재미있다는 설명은함정!',
-                'descEn': 'The description that GraphQL is Trap!',
-                'url': 'my.slide.url',
-                'level': '6',
-                'paidAt': '2019-03-20'
+                'name': '흥미로운 GraphQL',
+                'nameKo': '흥미로운 GraphQL',
+                'nameEn': 'Interesting GraphQL',
             }
         }
 
@@ -77,7 +67,54 @@ class SponsorTestCase(BaseTestCase):
         # When
         result = schema.execute(
             mutation, variables=variables, context_value=request)
+        print(request, result.data)
+        print(result.data)
+        # Then
+        actual = loads(dumps(result.data))
+        self.assertIsNotNone(actual)
+        self.assertIsNotNone(
+            actual['createOrUpdateSponsor']['sponsor']['id'])
+        del actual['createOrUpdateSponsor']['sponsor']['id']
+        self.assertDictEqual(actual, expected)
 
+    def test_create_sponsor_only_name(self):
+        mutation = '''
+        mutation CreateOrUpdateSponsor($sponsorInput: SponsorInput!) {
+            createOrUpdateSponsor(sponsorInput: $sponsorInput) {
+                sponsor {
+                    id
+                    name
+                    nameKo
+                    nameEn
+                }
+            }
+        }
+        '''
+
+        variables = {
+            'sponsorInput': {
+                'name': '흥미로운 GraphQL',
+                'nameKo': '흥미로운 GraphQL',
+                'nameEn': 'Interesting GraphQL',
+            }
+        }
+
+        expected = {
+            'createOrUpdateSponsor': {
+                'sponsor': {
+                    **variables['sponsorInput'],
+                }
+            }
+        }
+
+        user = UserModel(username='develop_github_123', email='me@pycon.kr')
+        user.save()
+        request = generate_request_authenticated(user)
+
+        # When
+        result = schema.execute(
+            mutation, variables=variables, context_value=request)
+        print(result.data)
         # Then
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)

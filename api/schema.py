@@ -6,6 +6,7 @@ import api.schemas.presentation
 import api.schemas.conference
 import api.schemas.sponsor
 
+
 class Mutations(api.schemas.conference.Mutations,
                 api.schemas.auth.Mutations,
                 api.schemas.user.Mutations,

@@ -33,9 +33,8 @@ class SponsorInput(graphene.InputObjectType):
     desc_ko = graphene.String()
     desc_en = graphene.String()
     url = graphene.String()
-    level = graphene.Field(SponsorLevelNode)
     paidAt = graphene.Date()
-
+    level = "6"
 
 class CreateOrUpdateSponsor(graphene.Mutation):
     sponsor = graphene.Field(SponsorNode)
@@ -46,12 +45,20 @@ class CreateOrUpdateSponsor(graphene.Mutation):
     @login_required
     def mutate(self, info, sponsor_input):
         user = info.context.user
+        print("?")
 
         if hasattr(user, 'sponsor'):
             sponsor = user.sponsor
         else:
             sponsor = Sponsor()
             sponsor.owner = user
+        print("?")
+        '''
+        if 'sponsor_level' in sponsor_input:
+            sponsor.level = SponsorLevel.objects.get(
+                pk=sponsor_input['level'])
+            del sponsor_input['level']
+        '''
 
         for k, v in sponsor_input.items():
             setattr(sponsor, k, v)
@@ -67,7 +74,7 @@ class Mutations(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     ticketUsers = graphene.List(UserNode)
-    sponsorLevel = graphene.Field(SponsorLevelNode)
+    level = graphene.List(SponsorLevelNode)
 
     sponsor = graphene.Field(SponsorNode)
     sponsors = graphene.List(SponsorNode)
