@@ -1,4 +1,5 @@
 import graphene
+from django.db.models import Q
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 
@@ -33,8 +34,9 @@ class SponsorInput(graphene.InputObjectType):
     desc_ko = graphene.String()
     desc_en = graphene.String()
     url = graphene.String()
+    level_id = graphene.Int()
     paidAt = graphene.Date()
-    level = "6"
+
 
 class CreateOrUpdateSponsor(graphene.Mutation):
     sponsor = graphene.Field(SponsorNode)
@@ -45,20 +47,17 @@ class CreateOrUpdateSponsor(graphene.Mutation):
     @login_required
     def mutate(self, info, sponsor_input):
         user = info.context.user
-        print("?")
 
         if hasattr(user, 'sponsor'):
             sponsor = user.sponsor
         else:
             sponsor = Sponsor()
             sponsor.owner = user
-        print("?")
-        '''
-        if 'sponsor_level' in sponsor_input:
+
+        if 'level_id' in sponsor_input:
             sponsor.level = SponsorLevel.objects.get(
-                pk=sponsor_input['level'])
-            del sponsor_input['level']
-        '''
+                pk=sponsor_input['level_id'])
+            del sponsor_input['level_id']
 
         for k, v in sponsor_input.items():
             setattr(sponsor, k, v)
@@ -80,4 +79,16 @@ class Query(graphene.ObjectType):
     sponsors = graphene.List(SponsorNode)
 
     def resolve_sponsors(self, info):
-        return Sponsor.objects.all()
+        condition = Q(accepted=True)
+        user = info.context.user
+        if user.is_authenticated:
+            condition = condition | Q(owner=user)
+        return Sponsor.objects.filter(condition)
+
+    @login_required
+    def resolve_my_sponsor(self, info):
+        user = info.context.user
+        return user.presentation
+
+    def resolve_level(self, info):
+        return SponsorLevel.objects.filter(visible=True)

@@ -40,6 +40,7 @@ class SponsorTestCase(BaseTestCase):
                     name
                     nameKo
                     nameEn
+                    
                 }
             }
         }
@@ -50,6 +51,7 @@ class SponsorTestCase(BaseTestCase):
                 'name': '흥미로운 GraphQL',
                 'nameKo': '흥미로운 GraphQL',
                 'nameEn': 'Interesting GraphQL',
+
             }
         }
 
@@ -114,7 +116,7 @@ class SponsorTestCase(BaseTestCase):
         # When
         result = schema.execute(
             mutation, variables=variables, context_value=request)
-        print(result.data)
+        print(request,result.data)
         # Then
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)

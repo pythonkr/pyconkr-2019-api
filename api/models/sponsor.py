@@ -21,7 +21,7 @@ class Sponsor(models.Model):
     image = SorlImageField(upload_to='sponsor', null=True, blank=True)
     url = models.CharField(max_length=255, null=True, blank=True)
     level = models.ForeignKey(SponsorLevel, null=True,
-                              on_delete=models.SET_NULL)
+                              on_delete=models.SET_NULL, blank=True)
     paid_at = models.DateTimeField(null=True, blank=True)
     ticket_users = models.ForeignKey(User, on_delete=models.SET_NULL,
                                      null=True, blank=True, related_name='sponsor_ticket_users')
