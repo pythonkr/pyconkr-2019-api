@@ -155,6 +155,7 @@ class PresentationTestCase(BaseTestCase):
                 }
             }
         }
+
         user = UserModel(username='develop_github_123', email='me@pycon.kr')
         user.save()
         request = generate_request_authenticated(user)

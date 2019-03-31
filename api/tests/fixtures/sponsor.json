@@ -91,6 +91,19 @@
   }
 },
 {
+  "model": "api.sponsorlevel",
+  "pk": 0,
+  "fields": {
+    "name": "미입금",
+    "name_ko": "미입금",
+    "name_en": "NotPaid",
+    "price": 0,
+    "limit": 10000000,
+    "ticket_count": 0,
+    "presentation_count": 0
+  }
+},
+{
   "model": "api.sponsor",
   "pk": 1,
   "fields": {
@@ -121,7 +134,7 @@
     "desc_en": "We haven't paid yet",
     "image": "",
     "url": "http://unpaid.com",
-    "level": 6,
+    "level": 0,
     "paid_at": null,
     "ticket_users": 2
   }
