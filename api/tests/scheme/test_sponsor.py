@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import get_current_timezone
 from api.tests.base import BaseTestCase
 from api.schema import schema
-from api.tests.common import generate_request_authenticated
+from api.tests.common import generate_request_authenticated, generate_request_anonymous
 
 TIMEZONE = get_current_timezone()
 
@@ -14,11 +14,16 @@ UserModel = get_user_model()
 SPONSOR_QUERY = '''
 query {
    sponsors {
+        name
         nameKo
         nameEn
+        desc
         descKo
         descEn
         url
+        owner {
+            username
+        }
         level {
             name
             price
@@ -40,7 +45,9 @@ class SponsorTestCase(BaseTestCase):
                     name
                     nameKo
                     nameEn
-                    
+                    descKo
+                    descEn
+                    url
                 }
             }
         }
@@ -48,10 +55,12 @@ class SponsorTestCase(BaseTestCase):
 
         variables = {
             'sponsorInput': {
-                'name': '흥미로운 GraphQL',
-                'nameKo': '흥미로운 GraphQL',
-                'nameEn': 'Interesting GraphQL',
-
+                'name': '안 흥미로운 GraphQL',
+                'nameKo': '안 흥미로운 GraphQL',
+                'nameEn': 'Not Interesting GraphQL',
+                'descKo': 'GraphQL은 재미있다는 설명은함정!',
+                'descEn': 'The description that GraphQL is Trap!',
+                'url': 'my.slide.url'
             }
         }
 
@@ -69,8 +78,7 @@ class SponsorTestCase(BaseTestCase):
         # When
         result = schema.execute(
             mutation, variables=variables, context_value=request)
-        print(request, result.data)
-        print(result.data)
+
         # Then
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)
@@ -116,7 +124,7 @@ class SponsorTestCase(BaseTestCase):
         # When
         result = schema.execute(
             mutation, variables=variables, context_value=request)
-        print(request,result.data)
+
         # Then
         actual = loads(dumps(result.data))
         self.assertIsNotNone(actual)
@@ -127,24 +135,30 @@ class SponsorTestCase(BaseTestCase):
 
     def test_retrieve_sponsor(self):
         # Given
-        query = SPONSOR_QUERY
-
         expected = {
-            'nameKo': '파이콘한국',
-            'nameEn': 'Pycon Korea',
-            'descKo': '파이콘 한국입니다',
-            'descEn': 'we are pycon korea',
-            'url': 'http://pythonkr/1',
+            'name': '입금전후원사',
+            'nameKo': '입금전후원사',
+            'nameEn': 'NotPaid',
+            'desc': '아직 입금하지 않은 후원사입니다',
+            'descKo': '아직 입금하지 않은 후원사입니다',
+            'descEn': 'We have not paid yet',
+            'url': 'http://unpaid.com',
+            'owner': {
+                'username': 'testuser'
+            },
             'level': {
-                'name': '키스톤',
-                'price': 20000000,
-                'ticketCount': 20
+                'name': '미입금',
+                'price': 0,
+                'ticketCount': 0
             },
             'paidAt': datetime(2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE).isoformat(),
         }
 
+        user = UserModel.objects.get(username='testuser')
+        request = generate_request_authenticated(user)
+
         # When
-        result = schema.execute(query)
+        result = schema.execute(SPONSOR_QUERY, context_value=request)
 
         # Then
         actual = loads(dumps(result.data))

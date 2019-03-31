@@ -79,7 +79,7 @@ class Query(graphene.ObjectType):
     sponsors = graphene.List(SponsorNode)
 
     def resolve_sponsors(self, info):
-        condition = Q(accepted=True)
+        condition = Q()
         user = info.context.user
         if user.is_authenticated:
             condition = condition | Q(owner=user)
