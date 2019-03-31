@@ -3,9 +3,10 @@ import graphene
 from django.contrib.auth import authenticate
 
 import graphql_jwt
+from graphql_jwt.decorators import login_required
 from graphql_jwt.exceptions import JSONWebTokenError
 from graphql_jwt.utils import jwt_encode, jwt_payload
-
+from django.contrib.auth import login
 
 class OAuthTokenAuth(graphene.Mutation):
     class Arguments:

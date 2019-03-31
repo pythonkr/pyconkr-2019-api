@@ -51,10 +51,15 @@ class PresentationProposalInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'proposal'
 
+
 class PresentationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'name', 'language', 'category', 'difficulty',
+    list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'accepted',)
     inlines = (PresentationProposalInline,)
+
+    def owner_profile(self, obj):
+        profile = obj.owner.profile
+        return profile if profile else ''
 
 admin.site.register(Presentation, PresentationAdmin)
 

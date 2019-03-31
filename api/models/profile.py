@@ -34,7 +34,7 @@ class Profile(models.Model):
     avatar_url = models.CharField(max_length=500, blank=True, default='')
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name}({self.email})'
 
 
 @receiver(post_save, sender=UserModel)
