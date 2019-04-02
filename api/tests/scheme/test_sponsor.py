@@ -10,26 +10,32 @@ from api.tests.common import generate_request_authenticated, generate_request_an
 TIMEZONE = get_current_timezone()
 
 UserModel = get_user_model()
-
 SPONSOR_QUERY = '''
 query {
    sponsors {
+        creator {
+            username
+        }
         name
         nameKo
         nameEn
-        desc
-        descKo
-        descEn
-        url
-        owner {
-            username
-        }
+        manager_name
+        manager_phone
+        manager_secondary_phone
+        manager_email
         level {
             name
             price
             ticketCount
         }
+        business_registration_number
+        contact_process_required
+        url  
+        desc
+        descKo
+        descEn
         paidAt
+        accepted
     }
 }
 '''
@@ -133,29 +139,37 @@ class SponsorTestCase(BaseTestCase):
         del actual['createOrUpdateSponsor']['sponsor']['id']
         self.assertDictEqual(actual, expected)
 
+
     def test_retrieve_sponsor(self):
         # Given
         expected = {
+            'creator': {
+                'username': 'testuser'
+            },
             'name': '입금전후원사',
             'nameKo': '입금전후원사',
             'nameEn': 'NotPaid',
-            'desc': '아직 입금하지 않은 후원사입니다',
-            'descKo': '아직 입금하지 않은 후원사입니다',
-            'descEn': 'We have not paid yet',
-            'url': 'http://unpaid.com',
-            'owner': {
-                'username': 'testuser'
-            },
+            'manager_name': '이현호',
+            'manager_phone': '01040555880',
+            'manager_secondary_phone': '01072705880',
+            'manager_email': 'mizzking75@gmail.com',
             'level': {
                 'name': '미입금',
                 'price': 0,
                 'ticketCount': 0
             },
+            'business_registration_number': '1002302-01',
+            'contact_process_required': False,
+            'url': 'http://unpaid.com',
+            'desc': '아직 입금하지 않은 후원사입니다',
+            'descKo': '아직 입금하지 않은 후원사입니다',
+            'descEn': 'We have not paid yet',
             'paidAt': datetime(2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE).isoformat(),
+            'accepted': datetime(2019, 8, 21, 13, 00).astimezone(tz=TIMEZONE).isoformat(),
         }
 
-        user = UserModel.objects.get(username='testuser')
-        request = generate_request_authenticated(user)
+        creator = UserModel.objects.get(username='testuser')
+        request = generate_request_authenticated(creator)
 
         # When
         result = schema.execute(SPONSOR_QUERY, context_value=request)
