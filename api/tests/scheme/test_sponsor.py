@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import get_current_timezone
 from api.tests.base import BaseTestCase
 from api.schema import schema
-from api.tests.common import generate_request_authenticated, generate_request_anonymous
+from api.tests.common import generate_request_authenticated
 
 TIMEZONE = get_current_timezone()
 

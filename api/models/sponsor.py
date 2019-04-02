@@ -24,7 +24,8 @@ class Sponsor(models.Model):
     level = models.ForeignKey(SponsorLevel, null=True,
                               on_delete=models.SET_NULL, blank=True)
     business_registration_number = models.CharField(max_length=100, blank=True, default='')
-    business_registration_image = SorlImageField(upload_to='sponsor_business_registration', blank=True, default='')
+    business_registration_image = SorlImageField(
+        upload_to='sponsor_business_registration', blank=True, default='')
 
     contact_process_required = models.BooleanField(default=False)
     url = models.CharField(max_length=255, null=True, blank=True)
