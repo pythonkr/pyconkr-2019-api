@@ -24,7 +24,8 @@ class Sponsor(models.Model):
     level = models.ForeignKey(SponsorLevel, null=True,
                               on_delete=models.SET_NULL, blank=True)
     business_registration_number = models.CharField(max_length=100, blank=True, default='')
-    business_registration_image = SorlImageField(upload_to='sponsor_business_registration', blank=True, default='')
+    business_registration_image = SorlImageField(upload_to='sponsor_business_registration',
+                                                 blank=True, default='')
 
     contact_process_required = models.BooleanField(default=False)
     url = models.CharField(max_length=255, null=True, blank=True)
@@ -41,8 +42,6 @@ class Sponsor(models.Model):
     # # one to many로 변경해야함
     # presentations = models.ForeignKey(Presentation, on_delete=models.SET_NULL,
     #                                  null=True, blank=True, related_name='sponsor_presentations')
-
-
 
     def __str__(self):
         return f'{self.name}/{self.level}'
