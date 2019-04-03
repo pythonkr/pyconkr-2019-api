@@ -33,6 +33,12 @@ except UserModel.DoesNotExist:
 "
 echo "${CREATE_ADMIN_SOURCE}"  | python manage.py shell
 
+echo "==== Starting cron ====="
+python manage.py crontab show
+python manage.py crontab add
+python manage.py crontab show
+service cron start
+
 echo
 echo "==== Starting server ====="
 gunicorn pyconkr.wsgi:application --bind=0.0.0.0:8000

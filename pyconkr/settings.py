@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
 ) + (
     # thirt-party apps
     'corsheaders',
@@ -166,3 +167,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'http://localhost:8000/media/'
+
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+CRONJOBS = [
+    ('* * * * *', 'pyconkr.cron.my_cron_job', '>> /web/cron.log')
+]

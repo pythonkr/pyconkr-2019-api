@@ -8,6 +8,7 @@ from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
 from api.models.agreement import Agreement
 from api.models.sponsor import Sponsor, SponsorLevel
+from api.models.notices import Notice
 
 UserModel = get_user_model()
 
@@ -95,7 +96,14 @@ admin.site.register(SponsorLevel, SponsorLevelAdmin)
 
 
 class SponsorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'name', 'level', 'paid_at')
+    list_display = ('id', 'name', 'level', 'paid_at')
 
 
 admin.site.register(Sponsor, SponsorAdmin)
+
+
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = ('message', 'created_at')
+
+
+admin.site.register(Notice, NoticeAdmin)
