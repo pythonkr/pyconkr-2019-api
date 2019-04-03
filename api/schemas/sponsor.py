@@ -52,7 +52,7 @@ class CreateOrUpdateSponsor(graphene.Mutation):
             sponsor = user.sponsor
         else:
             sponsor = Sponsor()
-            sponsor.owner = user
+            sponsor.creator = user
 
         if 'level_id' in sponsor_input:
             sponsor.level = SponsorLevel.objects.get(
@@ -82,7 +82,7 @@ class Query(graphene.ObjectType):
         condition = Q()
         user = info.context.user
         if user.is_authenticated:
-            condition = condition | Q(owner=user)
+            condition = condition | Q(creator=user)
         return Sponsor.objects.filter(condition)
 
     @login_required

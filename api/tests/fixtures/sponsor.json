@@ -107,36 +107,48 @@
   "model": "api.sponsor",
   "pk": 1,
   "fields": {
-    "owner": 1,
+    "creator": 1,
     "name": "파이콘한국",
     "name_ko": "파이콘한국",
     "name_en": "Pycon Korea",
+    "manager_name": "이현호",
+    "manager_phone": "01040555880",
+    "manager_secondary_phone": "01072705880",
+    "manager_email": "mizzking75@gmail.com",
+    "level": 1,
+    "business_registration_number": "1002302-01",
+    "contact_process_required": "False",
     "desc": "파이콘 한국입니다",
     "desc_ko": "파이콘 한국입니다",
     "desc_en": "we are pycon korea",
-    "image": "",
+    "logo_image": "",
     "url": "http://pythonkr/1",
-    "level": 1,
     "paid_at": "2019-08-21T04:00:00Z",
-    "ticket_users": 2
+    "accepted": "True"
   }
 },
 {
   "model": "api.sponsor",
   "pk": 2,
   "fields": {
-    "owner": 2,
+    "creator": 2,
     "name": "입금전후원사",
     "name_ko": "입금전후원사",
     "name_en": "NotPaid",
+    "manager_name": "이현호",
+    "manager_phone": "01040555880",
+    "manager_secondary_phone": "01072705880",
+    "logo_image": "",
+    "level": 0,
+    "business_registration_number": "1002302-01",
+    "contact_process_required": "False",
+    "manager_email": "mizzking75@gmail.com",
     "desc": "아직 입금하지 않은 후원사입니다",
     "desc_ko": "아직 입금하지 않은 후원사입니다",
     "desc_en": "We have not paid yet",
-    "image": "",
     "url": "http://unpaid.com",
-    "level": 0,
     "paid_at": "2019-08-21T13:00:00+09:00",
-    "ticket_users": 2
+    "accepted": "False"
   }
 }
 ]

@@ -95,7 +95,7 @@ admin.site.register(SponsorLevel, SponsorLevelAdmin)
 
 
 class SponsorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'name', 'level', 'paid_at')
+    list_display = ('id', 'creator', 'name', 'level', 'paid_at')
 
 
 admin.site.register(Sponsor, SponsorAdmin)
