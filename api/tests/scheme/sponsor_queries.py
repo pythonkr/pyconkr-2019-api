@@ -110,7 +110,7 @@ SUBMIT_SPONSOR = '''
 mutation SubmitSponsor($submitted: Boolean!) {
     submitSponsor(submitted: $submitted) {
         success
-    		submitted
+        submitted
     }
 }
 '''
