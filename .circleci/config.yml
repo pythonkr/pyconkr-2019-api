@@ -45,7 +45,7 @@ jobs:
             set -x
             docker-compose build --no-cache
             docker-compose up -d
-            sleep 20
+            sleep 40
             docker-compose logs
             curl -fL http://localhost:8000/api/ping
 
@@ -61,7 +61,7 @@ jobs:
           command: |
             sudo pip install fabric
             fab -H ${DEPLOY_USER}@${DEPLOY_HOST} -p -e deploy-dev --sha1 $CIRCLE_SHA1
-            sleep 20
+            sleep 40
             curl -fL ${URL_ROOT}/api/ping
       
   deploy-prod:
@@ -76,7 +76,7 @@ jobs:
           command: |
             sudo pip install fabric
             fab -H ${DEPLOY_USER}@${DEPLOY_HOST} -p -e deploy-master --sha1 $CIRCLE_SHA1
-            sleep 20
+            sleep 40
             curl -fL ${URL_ROOT}/api/ping
 
 workflows:
