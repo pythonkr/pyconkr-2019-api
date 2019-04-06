@@ -42,56 +42,44 @@
 #
 #
 # class SponsorTestCase(BaseTestCase):
-#     def test_create_sponsor(self):
-#         mutation = '''
-#         mutation CreateOrUpdateSponsor($sponsorInput: SponsorInput!) {
-#             createOrUpdateSponsor(sponsorInput: $sponsorInput) {
-#                 sponsor {
-#                     id
-#                     name
-#                     nameKo
-#                     nameEn
-#                     descKo
-#                     descEn
-#                     url
-#                 }
-#             }
-#         }
-#         '''
-#
-#         variables = {
-#             'sponsorInput': {
-#                 'name': '안 흥미로운 GraphQL',
-#                 'nameKo': '안 흥미로운 GraphQL',
-#                 'nameEn': 'Not Interesting GraphQL',
-#                 'descKo': 'GraphQL은 재미있다는 설명은함정!',
-#                 'descEn': 'The description that GraphQL is Trap!',
-#                 'url': 'my.slide.url'
-#             }
-#         }
-#
-#         expected = {
-#             'createOrUpdateSponsor': {
-#                 'sponsor': {
-#                     **variables['sponsorInput'],
-#                 }
-#             }
-#         }
-#         user = UserModel(username='develop_github_123', email='me@pycon.kr')
-#         user.save()
-#         request = generate_request_authenticated(user)
-#
-#         # When
-#         result = schema.execute(
-#             mutation, variables=variables, context_value=request)
-#
-#         # Then
-#         actual = loads(dumps(result.data))
-#         self.assertIsNotNone(actual)
-#         self.assertIsNotNone(
-#             actual['createOrUpdateSponsor']['sponsor']['id'])
-#         del actual['createOrUpdateSponsor']['sponsor']['id']
-#         self.assertDictEqual(actual, expected)
+
+from django.test import RequestFactory
+from graphql_jwt.testcases import JSONWebTokenTestCase
+from django.contrib.auth import get_user_model
+from api.tests.base import BaseTestCase
+from api.tests.scheme.sponsor_queries import CREATE_OR_UPDATE_SPONSER
+
+
+class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create(
+            username='develop_github_123',
+            email='me@pycon.kr')
+        self.client.authenticate(self.user)
+        self.factory = RequestFactory()
+
+    def test_create_or_update_sponsor(self):
+        variables = {
+            'sponsorInput': {
+                'nameKo': '안 흥미로운 GraphQL',
+                'nameEn': 'Not Interesting GraphQL',
+                'descKo': 'GraphQL은 재미있다는 설명은함정!',
+                'descEn': 'The description that GraphQL is Trap!',
+                'managerName': '김스폰서',
+                'managerPhone': '0102222222',
+                'managerSecondaryPhone': '0103333333',
+                'managerEmail': 'sponsor@sponsor.com',
+                'levelId': 1,
+                'businessRegistrationNumber': '30-3535-3535',
+                'contract_process_required': True,
+                'url': 'my.slide.url'
+            }
+        }
+
+        # When
+        result = self.client.execute(CREATE_OR_UPDATE_SPONSER, variables=variables)
+        result
+
 #
 #     def test_create_sponsor_only_name(self):
 #         mutation = '''

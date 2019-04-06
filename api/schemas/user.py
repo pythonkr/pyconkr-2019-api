@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
+from graphql_extensions import exceptions
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.types import Email
 
@@ -118,6 +119,10 @@ class UploadProfileImage(graphene.Mutation):
         profile = info.context.user.profile
         if profile.image.name:
             profile.image.delete()
+        if not len(info.context.FILES):
+            raise exceptions.ValidationError(message='File is not exists')
+        if isinstance(file, str):
+            file = info.context.FILES[0]
         extension = os.path.splitext(file.name)[1]
         profile.image.save(f'{profile.id}{extension}', file)
         return UploadProfileImage(success=True, image=profile.image)
