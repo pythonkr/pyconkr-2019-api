@@ -9,6 +9,7 @@ def robots(request):
         return render(request, 'dev-robots.txt', content_type='text/plain')
     return render(request, 'robots.txt', content_type='text/plain')
 
+
 class GraphQLView(ExtentionGraphQLView):
     def parse_body(self, request):
         """Handle multipart request spec for multipart/form-data"""

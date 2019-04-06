@@ -11,6 +11,7 @@ class BaseTestCase(TestCase):
         'api/tests/fixtures/difficulty.json',
         'api/tests/fixtures/place.json',
         'api/tests/fixtures/program.json',
+        'api/tests/fixtures/sponsor_level.json',
         'api/tests/fixtures/sponsor.json',
     ]
 
