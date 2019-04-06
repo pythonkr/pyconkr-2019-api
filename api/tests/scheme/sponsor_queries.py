@@ -25,6 +25,33 @@ UPLOAD_BUSINESS_REGISTRATION_FILE = '''
 mutation UploadBusinessRegistrationFile($file: Upload!) {
     uploadBusinessRegistrationFile(file: $file) {
         success
+        file
+    }
+}
+'''
+
+DELETE_BUSINESS_REGISTRATION_FILE = '''
+mutation DeleteBusinessRegistrationFile($sponsorId: ID!) {
+    deleteBusinessRegistrationFile(sponsorId: $sponsorId) {
+        success
+    }
+}
+'''
+
+UPLOAD_LOGO_IMAGE = '''
+mutation UploadLogoImage($file: Upload!) {
+    uploadLogoImage(file: $file) {
+        success
+        image
+    }
+}
+'''
+
+UPLOAD_LOGO_VECTOR = '''
+mutation UploadLogoVector($file: Upload!) {
+    uploadLogoVector(file: $file) {
+        success
+        image
     }
 }
 '''
