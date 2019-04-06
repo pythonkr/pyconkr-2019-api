@@ -11,8 +11,9 @@ coreapi==2.3.3
 coreschema==0.0.4
 coverage==4.5.2
 cryptography==2.4.2
-Django==2.1.5
+Django==2.2
 django-cors-headers==2.4.0
+django-crontab==0.7.1
 django-filter==2.1.0
 django-graphql-extensions==0.0.6
 django-graphql-jwt==0.2.0
@@ -22,6 +23,7 @@ django-rest-swagger==2.2.0
 djangorestframework==3.9.0
 djangorestframework-jwt==1.11.0
 fabric==2.4.0
+facebook-sdk==3.1.0
 graphene==2.1.3
 graphene-django==2.2.0
 graphene-file-upload==1.2.2
@@ -60,10 +62,9 @@ simplejson==3.16.0
 singledispatch==3.4.0.3
 six==1.11.0
 sorl-thumbnail==12.5.0
+sqlparse==0.3.0
 typed-ast==1.3.1
 unittest-xml-reporting==2.2.0
 uritemplate==3.0.0
 urllib3==1.24.1
 wrapt==1.10.11
-django-crontab==0.7.1
-facebook-sdk==3.1.0
