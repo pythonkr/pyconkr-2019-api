@@ -88,8 +88,9 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 
 class SponsorLevelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'limit',
-                    'ticket_count', 'presentation_count')
+    list_display = ('id', 'name', 'visible', 'price', 'limit',
+                    'ticket_count', 'presentation_count', 'booth_info',
+                    'program_guide', 'can_provide_goods', 'logo_locations', 'can_recruit')
 
 
 admin.site.register(SponsorLevel, SponsorLevelAdmin)
