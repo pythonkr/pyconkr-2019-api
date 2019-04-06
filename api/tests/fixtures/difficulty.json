@@ -5,7 +5,9 @@
   "fields": {
     "name": "초급",
     "name_ko": "초급",
-    "name_en": "Beginner"
+    "name_en": "Beginner",
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -14,7 +16,9 @@
   "fields": {
     "name": "중급",
     "name_ko": "중급",
-    "name_en": "Intermediate"
+    "name_en": "Intermediate",
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -23,7 +27,9 @@
   "fields": {
     "name": "고급",
     "name_ko": "고급",
-    "name_en": "Experienced"
+    "name_en": "Experienced",
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 }
 ]

@@ -28,6 +28,8 @@ class SponsorLevel(models.Model):
                                       help_text='로고가 노출되는 위치에 대한 설명입니다.')
     can_recruit = models.BooleanField(default=True,
                                       help_text='후원사 채용 공고를 할 수 있는지 여부')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -100,6 +102,8 @@ class Sponsor(models.Model):
     # # one to many로 변경해야함
     # presentations = models.ForeignKey(Presentation, on_delete=models.SET_NULL,
     #                                  null=True, blank=True, related_name='sponsor_presentations')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name}/{self.level}'

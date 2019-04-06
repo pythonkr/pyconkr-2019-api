@@ -1,4 +1,26 @@
 
+SPONSOR_LEVELS = '''
+query {
+    sponsorLevels {
+        id
+        name
+        nameKo
+        nameEn
+        visible
+        price
+        limit
+        ticketCount
+        presentationCount
+        boothInfo
+        programGuide
+        canProvideGoods
+        openLunch
+        logoLocations
+        canRecruit
+    }
+}
+'''
+
 UPLOAD_BUSINESS_REGISTRATION_FILE = '''
 mutation UploadBusinessRegistrationFile($file: Upload!) {
     uploadBusinessRegistrationFile(file: $file) {
