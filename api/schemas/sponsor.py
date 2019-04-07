@@ -44,6 +44,7 @@ class SponsorInput(graphene.InputObjectType):
     url = graphene.String()
     desc_ko = graphene.String()
     desc_en = graphene.String()
+    submitted = graphene.Boolean()
 
 
 class CreateOrUpdateSponsor(graphene.Mutation):
