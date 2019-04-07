@@ -1,6 +1,6 @@
 
 SPONSOR_LEVELS = '''
-query {
+query getSponsorLevels {
     sponsorLevels {
         id
         name
@@ -57,8 +57,8 @@ mutation UploadLogoVector($file: Upload!) {
 '''
 
 CREATE_OR_UPDATE_SPONSER = '''
-mutation CreateOrUpdateSponsor($sponsorInput: SponsorInput!) {
-    createOrUpdateSponsor(sponsorInput: $sponsorInput) {
+mutation CreateOrUpdateSponsor($data: SponsorInput!) {
+    createOrUpdateSponsor(data: $data) {
         sponsor {
             id
             creator {
@@ -116,7 +116,7 @@ mutation SubmitSponsor($submitted: Boolean!) {
 '''
 
 MY_SPONSOR = '''
-query {
+query getMySponsor {
     mySponsor {
         id
         creator {

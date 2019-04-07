@@ -17,7 +17,7 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     def test_create_or_update_sponsor(self):
         variables = {
-            'sponsorInput': {
+            'data': {
                 'nameKo': '안 흥미로운 GraphQL',
                 'nameEn': 'Not Interesting GraphQL',
                 'descKo': 'GraphQL은 재미있다는 설명은함정!',

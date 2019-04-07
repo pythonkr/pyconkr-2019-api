@@ -50,17 +50,17 @@ class CreateOrUpdateSponsor(graphene.Mutation):
     sponsor = graphene.Field(SponsorNode)
 
     class Arguments:
-        sponsor_input = SponsorInput(required=True)
+        data = SponsorInput(required=True)
 
     @login_required
-    def mutate(self, info, sponsor_input):
+    def mutate(self, info, data):
         sponsor, _ = Sponsor.objects.get_or_create(creator=info.context.user)
-        if 'level_id' in sponsor_input:
+        if 'level_id' in data:
             sponsor.level = SponsorLevel.objects.get(
-                pk=sponsor_input['level_id'])
-            del sponsor_input['level_id']
+                pk=data['level_id'])
+            del data['level_id']
 
-        for k, v in sponsor_input.items():
+        for k, v in data.items():
             setattr(sponsor, k, v)
 
         sponsor.full_clean()
