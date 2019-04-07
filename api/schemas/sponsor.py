@@ -72,7 +72,7 @@ class SubmitSponsor(graphene.Mutation):
     class Arguments:
         submitted = graphene.Boolean(required=True)
 
-    success = graphene.Boolean()
+    success = graphene.Boolean(default_value=False)
     submitted = graphene.Boolean()
 
     @login_required
@@ -91,7 +91,7 @@ class UploadBusinessRegistrationFile(graphene.Mutation):
     class Arguments:
         file = Upload(required=True)
 
-    success = graphene.Boolean()
+    success = graphene.Boolean(default_value=False)
     file = graphene.Field(FileUrl)
 
     @login_required
@@ -111,7 +111,7 @@ class DeleteBusinessRegistrationFile(graphene.Mutation):
     class Arguments:
         sponsor_id = graphene.ID()
 
-    success = graphene.Boolean()
+    success = graphene.Boolean(default_value=False)
 
     @login_required
     def mutate(self, info, sponsor_id):
@@ -126,7 +126,7 @@ class UploadLogoImage(graphene.Mutation):
     class Arguments:
         file = Upload(required=True)
 
-    success = graphene.Boolean()
+    success = graphene.Boolean(default_value=False)
     image = graphene.Field(ImageUrl)
 
     @login_required
@@ -142,7 +142,7 @@ class UploadLogoVector(graphene.Mutation):
     class Arguments:
         file = Upload(required=True)
 
-    success = graphene.Boolean()
+    success = graphene.Boolean(default_value=False)
     image = graphene.Field(ImageUrl)
 
     @login_required
