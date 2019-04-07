@@ -100,11 +100,7 @@ class UploadBusinessRegistrationFile(graphene.Mutation):
         if sponsor.business_registration_file.name:
             sponsor.business_registration_file.delete()
         sponsor.business_registration_file.save(file.name, file)
-
-        return {
-            'success': True,
-            'file': sponsor.business_registration_file
-        }
+        return UploadBusinessRegistrationFile(success=True, file=sponsor.business_registration_file)
 
 
 class DeleteBusinessRegistrationFile(graphene.Mutation):
