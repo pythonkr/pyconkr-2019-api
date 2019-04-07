@@ -127,7 +127,7 @@ class UploadLogoImage(graphene.Mutation):
 
     @login_required
     def mutate(self, info, file, **kwargs):
-        sponsor = Sponsor.objects.get_or_create(creator=info.context.user)
+        sponsor, _ = Sponsor.objects.get_or_create(creator=info.context.user)
         if sponsor.logo_image.name:
             sponsor.logo_image.delete()
         sponsor.logo_image.save(file.name, file)
@@ -143,7 +143,7 @@ class UploadLogoVector(graphene.Mutation):
 
     @login_required
     def mutate(self, info, file, **kwargs):
-        sponsor = Sponsor.objects.get_or_create(creator=info.context.user)
+        sponsor, _ = Sponsor.objects.get_or_create(creator=info.context.user)
         if sponsor.logo_vector.name:
             sponsor.logo_vector.delete()
         sponsor.logo_vector.save(file.name, file)
