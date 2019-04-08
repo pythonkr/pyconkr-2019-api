@@ -36,24 +36,21 @@ class SponsorLevel(models.Model):
 
 
 def registration_file_upload_to(instance, filename):
-    _, ext = os.path.splitext(filename)
     m = hashlib.md5()
     m.update(f'{instance.id}{filename}'.encode('utf-8'))
-    return f'sponsor/business_registration/{m.hexdigest()}{ext}'
+    return f'sponsor/business_registration/{m.hexdigest()}/{filename}'
 
 
 def logo_image_upload_to(instance, filename):
-    _, ext = os.path.splitext(filename)
     m = hashlib.md5()
     m.update(f'{instance.id}{filename}'.encode('utf-8'))
-    return f'sponsor/logo/image/{m.hexdigest()}{ext}'
+    return f'sponsor/logo/image/{m.hexdigest()}/{filename}'
 
 
 def logo_vector_upload_to(instance, filename):
-    _, ext = os.path.splitext(filename)
     m = hashlib.md5()
     m.update(f'{instance.id}{filename}'.encode('utf-8'))
-    return f'sponsor/logo/vector/{m.hexdigest()}{ext}'
+    return f'sponsor/logo/vector/{m.hexdigest()}/{filename}'
 
 
 class Sponsor(models.Model):
