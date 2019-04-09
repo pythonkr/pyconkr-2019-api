@@ -65,7 +65,6 @@ class PresentationAdmin(admin.ModelAdmin):
 admin.site.register(Presentation, PresentationAdmin)
 
 
-
 class PlaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 
@@ -93,11 +92,18 @@ class SponsorLevelAdmin(admin.ModelAdmin):
                     'program_guide', 'can_provide_goods', 'logo_locations', 'can_recruit')
 
 
+
 admin.site.register(SponsorLevel, SponsorLevelAdmin)
 
 
 class SponsorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'level', 'paid_at')
+    list_display = ('id', 'creator_profile', 'name', 'level', 'manager_name', 'manager_phone',
+                    'manager_email', 'business_registration_number', 'contract_process_required',
+                    'url', 'paid_at', 'submitted', 'accepted')
+
+    def creator_profile(self, obj):
+        profile = obj.creator.profile
+        return profile if profile else ''
 
 
 admin.site.register(Sponsor, SponsorAdmin)
