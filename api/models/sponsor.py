@@ -69,7 +69,7 @@ class Sponsor(models.Model):
     manager_secondary_phone = models.CharField(max_length=100, blank=True, default='',
                                                help_text='후원사 담당자 외의 연락이 가능한 연락처입니다.')
     manager_email = models.CharField(max_length=100, blank=True, default='',
-                                      help_text='후원사 담당자의 이메일 주소입니다.')
+                                     help_text='후원사 담당자의 이메일 주소입니다.')
     business_registration_number = models.CharField(max_length=100, blank=True, default='',
                                                     help_text='후원사 사업자 등록번호입니다.')
     business_registration_file = models.FileField(
