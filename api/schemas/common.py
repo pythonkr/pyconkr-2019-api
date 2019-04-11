@@ -44,6 +44,20 @@ class ImageUrl(graphene.types.Scalar):
             return ''
         return obj.url
 
+class FileUrl(graphene.types.Scalar):
+    '''
+    It is used to get file url for graphene queries.
+    e.g)
+    file = graphene.Field(FileUrl)
+    to)
+    file: http://www.pycon.kr/media/profile/image.pdf
+    '''
+
+    @staticmethod
+    def serialize(obj):
+        if not obj.name:
+            return ''
+        return obj.url
 
 class ProgramNode(DjangoObjectType):
     class Meta:

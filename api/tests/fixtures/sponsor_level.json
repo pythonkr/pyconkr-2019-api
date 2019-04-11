@@ -1,0 +1,156 @@
+[
+{
+  "model": "api.sponsorlevel",
+  "pk": 1,
+  "fields": {
+    "name": "\ud0a4\uc2a4\ud1a4",
+    "name_ko": "\ud0a4\uc2a4\ud1a4",
+    "name_en": "Keystone",
+    "visible": true,
+    "price": 20000000,
+    "limit": 1,
+    "ticket_count": 20,
+    "presentation_count": 2,
+    "booth_info": "5\uce78",
+    "program_guide": "",
+    "can_provide_goods": true,
+    "open_lunch": "2\uc77c (210\ud638, 20\uc11d)",
+    "logo_locations": "\ucc38\uac00\uc790 \ubaa9\uc904\r\n\ud604\uc218\ub9c9\r\n\uc2a4\ud0e0\ub529\ubc30\ub108/\ud3ec\uc2a4\ud130\r\n\uc26c\ub294 \uc2dc\uac04 \ub85c\uace0 \ub178\ucd9c 1p\r\n\ud648\ud398\uc774\uc9c0",
+    "can_recruit": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 2,
+  "fields": {
+    "name": "\ub2e4\uc774\uc544\ubaac\ub4dc",
+    "name_ko": "\ub2e4\uc774\uc544\ubaac\ub4dc",
+    "name_en": "Diamond",
+    "visible": true,
+    "price": 15000000,
+    "limit": 2,
+    "ticket_count": 15,
+    "presentation_count": 1,
+    "booth_info": "3\uce78",
+    "program_guide": "",
+    "can_provide_goods": true,
+    "open_lunch": "1\uc77c (209A\ud638, 30\uc11d)",
+    "logo_locations": "\ud604\uc218\ub9c9\r\n\uc2a4\ud0e0\ub529\ubc30\ub108/\ud3ec\uc2a4\ud130\r\n\uc26c\ub294 \uc2dc\uac04 \ub85c\uace0 \ub178\ucd9c 1/2p\r\n\ud648\ud398\uc774\uc9c0",
+    "can_recruit": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 3,
+  "fields": {
+    "name": "\uc0ac\ud30c\uc774\uc5b4",
+    "name_ko": "\uc0ac\ud30c\uc774\uc5b4",
+    "name_en": "Sapphire",
+    "visible": true,
+    "price": 10000000,
+    "limit": 2,
+    "ticket_count": 10,
+    "presentation_count": 1,
+    "booth_info": "",
+    "program_guide": "",
+    "can_provide_goods": true,
+    "open_lunch": "1\uc77c (209B\ud638, 20\uc11d)",
+    "logo_locations": "\ud604\uc218\ub9c9\r\n\uc2a4\ud0e0\ub529\ubc30\ub108/\ud3ec\uc2a4\ud130\r\n\uc26c\ub294 \uc2dc\uac04 \ub85c\uace0 \ub178\ucd9c 1p\r\n\ud648\ud398\uc774\uc9c0",
+    "can_recruit": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 4,
+  "fields": {
+    "name": "\ud50c\ub798\ud2f0\ub118",
+    "name_ko": "\ud50c\ub798\ud2f0\ub118",
+    "name_en": "Platinum",
+    "visible": true,
+    "price": 8000000,
+    "limit": 6,
+    "ticket_count": 8,
+    "presentation_count": 0,
+    "booth_info": "2\uce78",
+    "program_guide": "",
+    "can_provide_goods": true,
+    "open_lunch": "1\uc77c (201\ud638, 20\uc11d)",
+    "logo_locations": "\ud604\uc218\ub9c9\r\n\uc2a4\ud0e0\ub529\ubc30\ub108/\ud3ec\uc2a4\ud130\r\n\uc26c\ub294 \uc2dc\uac04 \ub85c\uace0 \ub178\ucd9c 1/3p\r\n\ud648\ud398\uc774\uc9c0",
+    "can_recruit": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 5,
+  "fields": {
+    "name": "\uace8\ub4dc",
+    "name_ko": "\uace8\ub4dc",
+    "name_en": "Gold",
+    "visible": true,
+    "price": 5000000,
+    "limit": 10,
+    "ticket_count": 5,
+    "presentation_count": 0,
+    "booth_info": "1\uce78",
+    "program_guide": "",
+    "can_provide_goods": false,
+    "open_lunch": "",
+    "logo_locations": "\uc2a4\ud0e0\ub529\ubc30\ub108/\ud3ec\uc2a4\ud130\r\n\uc26c\ub294 \uc2dc\uac04 \ub85c\uace0 \ub178\ucd9c 1/5p\r\n\ud648\ud398\uc774\uc9c0",
+    "can_recruit": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 6,
+  "fields": {
+    "name": "\uc2e4\ubc84",
+    "name_ko": "\uc2e4\ubc84",
+    "name_en": "Silver",
+    "visible": true,
+    "price": 2000000,
+    "limit": 999,
+    "ticket_count": 4,
+    "presentation_count": 0,
+    "booth_info": "",
+    "program_guide": "",
+    "can_provide_goods": false,
+    "open_lunch": "",
+    "logo_locations": "\uc26c\ub294 \uc2dc\uac04 \ub85c\uace0 \ub178\ucd9c 1/6p\r\n\ud648\ud398\uc774\uc9c0",
+    "can_recruit": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
+  }
+},
+{
+  "model": "api.sponsorlevel",
+  "pk": 7,
+  "fields": {
+    "name": "\ucee4\ubba4\ub2c8\ud2f0",
+    "name_ko": "\ucee4\ubba4\ub2c8\ud2f0",
+    "name_en": "Community",
+    "visible": true,
+    "price": 300000,
+    "limit": 999,
+    "ticket_count": 0,
+    "presentation_count": 0,
+    "booth_info": "\ud14c\uc774\ube14 \uc81c\uacf5 (2\uce35 \ub85c\ube44)",
+    "program_guide": "",
+    "can_provide_goods": false,
+    "open_lunch": "",
+    "logo_locations": "\ud648\ud398\uc774\uc9c0",
+    "can_recruit": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
+  }
+}
+]

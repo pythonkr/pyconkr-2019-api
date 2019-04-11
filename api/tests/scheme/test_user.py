@@ -143,3 +143,8 @@ class UserTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(UPDATE_AGREEMENT, variable)
         self.assertIsNotNone(result.data['updateAgreement'])
         self.assertFalse(result.data['updateAgreement']['isAgreedAll'])
+
+    def test_WHEN_최초에는_THEN_is_agreed_all이_False_여야한다(self):
+        # Given
+        user = UserModel.objects.create(username='develop_github_123')
+        self.assertFalse(user.agreement.is_agreed_all())

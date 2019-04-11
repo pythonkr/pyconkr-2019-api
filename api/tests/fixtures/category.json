@@ -7,7 +7,9 @@
     "name_ko": "Python Library",
     "name_en": "Python Library",
     "slug": "python_library",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -18,7 +20,9 @@
     "name_ko": "Development Method with Python",
     "name_en": "Development Method with Python",
     "slug": "development_method_with_python",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -29,7 +33,9 @@
     "name_ko": "Data Analytics",
     "name_en": "Data Analytics",
     "slug": "data_analytics",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -40,7 +46,9 @@
     "name_ko": "Life/Social",
     "name_en": "Life/Social",
     "slug": "life_social",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -51,7 +59,9 @@
     "name_ko": "Computer Vision",
     "name_en": "Computer Vision",
     "slug": "computer_vision",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -62,7 +72,9 @@
     "name_ko": "Robotics / Embedded System",
     "name_en": "Robotics / Embedded System",
     "slug": "robotics_embedded_system",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -73,7 +85,9 @@
     "name_ko": "Data Gathering",
     "name_en": "Data Gathering",
     "slug": "data_gathering",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -84,7 +98,9 @@
     "name_ko": "Blockchain",
     "name_en": "Blockchain",
     "slug": "blockchain",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -95,7 +111,9 @@
     "name_ko": "Python Community",
     "name_en": "Python Community",
     "slug": "python_community",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -106,7 +124,9 @@
     "name_ko": "Web Service",
     "name_en": "Web Service",
     "slug": "web_service",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -117,7 +137,9 @@
     "name_ko": "Deep Learning & AI",
     "name_en": "Deep Learning & AI",
     "slug": "deep_learning_ai",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -128,7 +150,9 @@
     "name_ko": "Python Core & Fundamental",
     "name_en": "Python Core & Fundamental",
     "slug": "python_core_fundamental",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -139,7 +163,9 @@
     "name_ko": "스폰서 세션",
     "name_en": "Sponsors Session",
     "slug": "sponsors_session",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 },
 {
@@ -150,7 +176,9 @@
     "name_ko": "라이트닝 토크",
     "name_en": "Lighting Talk",
     "slug": "lighting_talk",
-    "visible": true
+    "visible": true,
+    "created_at": "2019-02-24T12:48:58.636Z",
+    "updated_at": "2019-02-24T12:48:58.637Z"
   }
 }
 ]

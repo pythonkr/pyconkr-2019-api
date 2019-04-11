@@ -8,6 +8,7 @@ from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
 from api.models.agreement import Agreement
 from api.models.sponsor import Sponsor, SponsorLevel
+from api.models.notices import Notice
 
 UserModel = get_user_model()
 
@@ -51,13 +52,17 @@ class PresentationProposalInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'proposal'
 
+
 class PresentationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'name', 'language', 'category', 'difficulty',
+    list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'accepted',)
     inlines = (PresentationProposalInline,)
 
-admin.site.register(Presentation, PresentationAdmin)
+    def owner_profile(self, obj):
+        profile = obj.owner.profile
+        return profile if profile else ''
 
+admin.site.register(Presentation, PresentationAdmin)
 
 
 class PlaceAdmin(admin.ModelAdmin):
@@ -82,15 +87,30 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 
 class SponsorLevelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'limit',
-                    'ticket_count', 'presentation_count')
+    list_display = ('id', 'name', 'visible', 'price', 'limit',
+                    'ticket_count', 'presentation_count', 'booth_info',
+                    'program_guide', 'can_provide_goods', 'logo_locations', 'can_recruit')
+
 
 
 admin.site.register(SponsorLevel, SponsorLevelAdmin)
 
 
 class SponsorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'name', 'level', 'paid_at')
+    list_display = ('id', 'creator_profile', 'name', 'level', 'manager_name', 'manager_phone',
+                    'manager_email', 'business_registration_number', 'contract_process_required',
+                    'url', 'paid_at', 'submitted', 'accepted')
+
+    def creator_profile(self, obj):
+        profile = obj.creator.profile
+        return profile if profile else ''
 
 
 admin.site.register(Sponsor, SponsorAdmin)
+
+
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = ('message', 'created_at')
+
+
+admin.site.register(Notice, NoticeAdmin)
