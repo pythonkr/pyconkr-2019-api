@@ -28,7 +28,7 @@ class SponsorNode(DjangoObjectType):
     paid_at = graphene.Field(SeoulDateTime)
     business_registration_file = graphene.Field(FileUrl)
     logo_image = graphene.Field(ImageUrl)
-    logoVector = graphene.Field(ImageUrl)
+    logo_vector = graphene.Field(ImageUrl)
 
 
 class SponsorInput(graphene.InputObjectType):
