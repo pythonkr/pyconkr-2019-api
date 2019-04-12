@@ -14,6 +14,10 @@ class SponsorLevelNode(DjangoObjectType):
         description = """
         The level of sponsors, python conference in Korea.
         """
+    current_remaining_number = graphene.Int()
+
+    def resolve_current_remaining_number(self, info):
+        return self.limit - Sponsor.objects.filter(level=self, accepted=True).count()
 
 
 class SponsorNode(DjangoObjectType):
@@ -25,10 +29,14 @@ class SponsorNode(DjangoObjectType):
 
     creator = graphene.Field(UserNode)
     level = graphene.Field(SponsorLevelNode)
+    is_paid = graphene.Boolean()
     paid_at = graphene.Field(SeoulDateTime)
     business_registration_file = graphene.Field(FileUrl)
     logo_image = graphene.Field(ImageUrl)
     logo_vector = graphene.Field(ImageUrl)
+
+    def resolve_is_paid(self, info):
+        return self.paid_at is not None and self.paid_at != ''
 
 
 class SponsorInput(graphene.InputObjectType):

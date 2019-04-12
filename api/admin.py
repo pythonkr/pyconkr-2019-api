@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 from api.models.oauth_setting import OAuthSetting
-from api.models.program import Conference, Presentation, PresentationProposal
+from api.models.pyconkorea import PyconKorea
+from api.models.program import Presentation, PresentationProposal
 from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
 from api.models.agreement import Agreement
@@ -12,15 +13,18 @@ from api.models.notices import Notice
 
 UserModel = get_user_model()
 
+
 class ProfileInline(AdminImageMixin, admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = 'profile'
 
+
 class AgreementInline(admin.StackedInline):
     model = Agreement
     can_delete = False
     verbose_name_plural = 'agreement'
+
 
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline, AgreementInline,)
@@ -39,13 +43,60 @@ class OAuthSettingAdmin(admin.ModelAdmin):
 admin.site.register(OAuthSetting, OAuthSettingAdmin)
 
 
-class ConferenceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'conference_started_at',
-                    'conference_finished_at', 'sprint_started_at',
-                    'sprint_finished_at', 'tutorial_started_at', 'tutorial_finished_at')
+class PyconKoreaAdmin(admin.ModelAdmin):
+    list_display = ('name', 'conference_start_at',
+                    'conference_finish_at', 'tutorial_start_at',
+                    'tutorial_finish_at', 'sprint_start_at', 'sprint_finish_at',
+                    'earlybird_ticket_start_at', 'earlybird_ticket_finish_at',
+                    'conference_ticket_start_at', 'conference_ticket_finish_at')
+
+    fieldsets = (
+        (None, {
+           'fields': ('name_ko', 'name_en')
+        }),
+        ('주요 일정', {
+            'fields': ('conference_start_at', 'conference_finish_at',
+                       'tutorial_start_at', 'tutorial_finish_at',
+                       'sprint_start_at', 'sprint_finish_at')
+        }),
+        ('세션', {
+            'fields': (
+                'keynote_recommendation_start_at', 'keynote_recommendation_finish_at',
+                'keynote_recommendation_announce_at',
+                'presentation_proposal_start_at', 'presentation_proposal_finish_at',
+                'presentation_review_start_at', 'presentation_review_finish_at', 'presentation_announce_at')
+        }),
+        ('튜토리얼', {
+            'fields': ('tutorial_proposal_start_at', 'tutorial_proposal_finish_at', 'tutorial_proposal_announce_at')
+        }),
+        ('스프린트', {
+            'fields': ('sprint_proposal_start_at', 'sprint_proposal_finish_at', 'sprint_proposal_announce_at')
+        }),
+        ('스폰서', {
+            'fields': ('sponsor_proposal_start_at', 'sponsor_proposal_finish_at')
+        }),
+        ('자원봉사', {
+            'fields': ('volunteer_recruiting_start_at', 'volunteer_recruiting_finish_at', 'volunteer_announce_at')
+        }),
+        ('라이트닝토크', {
+            'fields': (
+                'lightning_talk_proposal_start_at', 'lightning_talk_proposal_finish_at', 'lightning_talk_announce_at')
+        }),
+        ('티켓', {
+            'fields': ('earlybird_ticket_start_at', 'earlybird_ticket_finish_at', 'patron_ticket_start_at',
+                       'patron_ticket_finish_at', 'conference_ticket_start_at', 'conference_ticket_finish_at',
+                       'tutorial_ticket_start_at', 'tutorial_ticket_finish_at',
+                       'sprint_ticket_start_at', 'sprint_ticket_finish_at',
+                       'babycare_ticket_start_at', 'babycare_ticket_finish_at',
+                       'youngcoder_ticket_start_at', 'youngcoder_ticket_finish_at')
+        }),
+        ('재정지원', {
+            'fields': ('financial_aid_start_at', 'financial_aid_finish_at', 'financial_aid_announce_at')
+        })
+    )
 
 
-admin.site.register(Conference, ConferenceAdmin)
+admin.site.register(PyconKorea, PyconKoreaAdmin)
 
 class PresentationProposalInline(admin.StackedInline):
     model = PresentationProposal
@@ -61,6 +112,7 @@ class PresentationAdmin(admin.ModelAdmin):
     def owner_profile(self, obj):
         profile = obj.owner.profile
         return profile if profile else ''
+
 
 admin.site.register(Presentation, PresentationAdmin)
 
@@ -90,7 +142,6 @@ class SponsorLevelAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'visible', 'price', 'limit',
                     'ticket_count', 'presentation_count', 'booth_info',
                     'program_guide', 'can_provide_goods', 'logo_locations', 'can_recruit')
-
 
 
 admin.site.register(SponsorLevel, SponsorLevelAdmin)
