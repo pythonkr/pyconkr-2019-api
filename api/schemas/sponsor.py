@@ -14,6 +14,10 @@ class SponsorLevelNode(DjangoObjectType):
         description = """
         The level of sponsors, python conference in Korea.
         """
+    current_remaining_number = graphene.Int()
+
+    def resolve_current_remaining_number(self, info):
+        return self.limit - Sponsor.objects.filter(level=self, accepted=True).count()
 
 
 class SponsorNode(DjangoObjectType):

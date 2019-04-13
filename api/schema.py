@@ -3,11 +3,11 @@ import graphene
 import api.schemas.auth
 import api.schemas.user
 import api.schemas.presentation
-import api.schemas.conference
+import api.schemas.pyconkorea
 import api.schemas.sponsor
 
 
-class Mutations(api.schemas.conference.Mutations,
+class Mutations(api.schemas.pyconkorea.Mutations,
                 api.schemas.auth.Mutations,
                 api.schemas.user.Mutations,
                 api.schemas.presentation.Mutations,
@@ -16,7 +16,7 @@ class Mutations(api.schemas.conference.Mutations,
     pass
 
 
-class Query(api.schemas.conference.Query,
+class Query(api.schemas.pyconkorea.Query,
             api.schemas.auth.Query,
             api.schemas.user.Query,
             api.schemas.presentation.Query,

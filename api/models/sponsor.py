@@ -34,6 +34,8 @@ class SponsorLevel(models.Model):
         return self.name
 
 
+
+
 def registration_file_upload_to(instance, filename):
     m = hashlib.md5()
     m.update(f'{instance.id}{filename}'.encode('utf-8'))

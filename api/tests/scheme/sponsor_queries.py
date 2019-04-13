@@ -17,6 +17,7 @@ query getSponsorLevels {
         openLunch
         logoLocations
         canRecruit
+        currentRemainingNumber
     }
 }
 '''
