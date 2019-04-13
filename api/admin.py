@@ -52,7 +52,7 @@ class PyconKoreaAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-           'fields': ('name_ko', 'name_en')
+            'fields': ('name_ko', 'name_en')
         }),
         ('주요 일정', {
             'fields': ('conference_start_at', 'conference_finish_at',
@@ -64,39 +64,47 @@ class PyconKoreaAdmin(admin.ModelAdmin):
                 'keynote_recommendation_start_at', 'keynote_recommendation_finish_at',
                 'keynote_recommendation_announce_at',
                 'presentation_proposal_start_at', 'presentation_proposal_finish_at',
-                'presentation_review_start_at', 'presentation_review_finish_at', 'presentation_announce_at')
+                'presentation_review_start_at', 'presentation_review_finish_at',
+                'presentation_announce_at')
         }),
         ('튜토리얼', {
-            'fields': ('tutorial_proposal_start_at', 'tutorial_proposal_finish_at', 'tutorial_proposal_announce_at')
+            'fields': ('tutorial_proposal_start_at', 'tutorial_proposal_finish_at',
+                       'tutorial_proposal_announce_at')
         }),
         ('스프린트', {
-            'fields': ('sprint_proposal_start_at', 'sprint_proposal_finish_at', 'sprint_proposal_announce_at')
+            'fields': ('sprint_proposal_start_at', 'sprint_proposal_finish_at',
+                       'sprint_proposal_announce_at')
         }),
         ('스폰서', {
             'fields': ('sponsor_proposal_start_at', 'sponsor_proposal_finish_at')
         }),
         ('자원봉사', {
-            'fields': ('volunteer_recruiting_start_at', 'volunteer_recruiting_finish_at', 'volunteer_announce_at')
+            'fields': ('volunteer_recruiting_start_at', 'volunteer_recruiting_finish_at',
+                       'volunteer_announce_at')
         }),
         ('라이트닝토크', {
             'fields': (
-                'lightning_talk_proposal_start_at', 'lightning_talk_proposal_finish_at', 'lightning_talk_announce_at')
+                'lightning_talk_proposal_start_at', 'lightning_talk_proposal_finish_at',
+                'lightning_talk_announce_at')
         }),
         ('티켓', {
-            'fields': ('earlybird_ticket_start_at', 'earlybird_ticket_finish_at', 'patron_ticket_start_at',
-                       'patron_ticket_finish_at', 'conference_ticket_start_at', 'conference_ticket_finish_at',
+            'fields': ('earlybird_ticket_start_at', 'earlybird_ticket_finish_at',
+                       'patron_ticket_start_at', 'patron_ticket_finish_at',
+                       'conference_ticket_start_at', 'conference_ticket_finish_at',
                        'tutorial_ticket_start_at', 'tutorial_ticket_finish_at',
                        'sprint_ticket_start_at', 'sprint_ticket_finish_at',
                        'babycare_ticket_start_at', 'babycare_ticket_finish_at',
                        'youngcoder_ticket_start_at', 'youngcoder_ticket_finish_at')
         }),
         ('재정지원', {
-            'fields': ('financial_aid_start_at', 'financial_aid_finish_at', 'financial_aid_announce_at')
+            'fields': ('financial_aid_start_at', 'financial_aid_finish_at',
+                       'financial_aid_announce_at')
         })
     )
 
 
 admin.site.register(PyconKorea, PyconKoreaAdmin)
+
 
 class PresentationProposalInline(admin.StackedInline):
     model = PresentationProposal

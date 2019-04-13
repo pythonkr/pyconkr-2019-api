@@ -29,14 +29,10 @@ class SponsorNode(DjangoObjectType):
 
     creator = graphene.Field(UserNode)
     level = graphene.Field(SponsorLevelNode)
-    is_paid = graphene.Boolean()
     paid_at = graphene.Field(SeoulDateTime)
     business_registration_file = graphene.Field(FileUrl)
     logo_image = graphene.Field(ImageUrl)
     logo_vector = graphene.Field(ImageUrl)
-
-    def resolve_is_paid(self, info):
-        return self.paid_at is not None and self.paid_at != ''
 
 
 class SponsorInput(graphene.InputObjectType):
