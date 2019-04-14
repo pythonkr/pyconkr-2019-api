@@ -4,7 +4,7 @@ from django.test import TestCase
 
 class BaseTestCase(TestCase):
     fixtures = [
-        'api/tests/fixtures/pyconkorea.json',
+        'api/tests/fixtures/schedule.json',
         'api/tests/fixtures/oauthsetting.json',
         'api/tests/fixtures/user.json',
         'api/tests/fixtures/category.json',

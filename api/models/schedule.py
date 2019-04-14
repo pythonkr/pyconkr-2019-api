@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class PyconKorea(models.Model):
+class Schedule(models.Model):
     name = models.CharField(max_length=50)
 
     conference_start_at = models.DateField(null=True, blank=True)
