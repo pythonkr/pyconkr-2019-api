@@ -119,7 +119,8 @@ class PresentationAdmin(admin.ModelAdmin):
 
     def owner_profile(self, obj):
         if obj.owner:
-            return Profile.objects.get_or_create(user=obj.owner)
+            profile, _ = Profile.objects.get_or_create(user=obj.owner)
+            return profile
         return ''
 
 
@@ -164,7 +165,8 @@ class SponsorAdmin(admin.ModelAdmin):
 
     def creator_profile(self, obj):
         if obj.creator:
-            return Profile.objects.get_or_create(user=obj.creator)
+            profile, _ =  Profile.objects.get_or_create(user=obj.creator)
+            return profile
         return ''
 
     def accept(self, request, queryset):
