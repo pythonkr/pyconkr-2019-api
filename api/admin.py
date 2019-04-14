@@ -118,7 +118,7 @@ class PresentationAdmin(admin.ModelAdmin):
     inlines = (PresentationProposalInline,)
 
     def owner_profile(self, obj):
-        return Profile.objects.get_or_create(user = obj.owner)
+        return Profile.objects.get_or_create(user=obj.owner)
 
 
 admin.site.register(Presentation, PresentationAdmin)
