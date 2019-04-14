@@ -17,7 +17,7 @@ class SponsorLevelNode(DjangoObjectType):
     current_remaining_number = graphene.Int()
 
     def resolve_current_remaining_number(self, info):
-        return self.limit - Sponsor.objects.filter(level=self, accepted=True).count()
+        return self.current_remaining_number
 
 
 class SponsorNode(DjangoObjectType):

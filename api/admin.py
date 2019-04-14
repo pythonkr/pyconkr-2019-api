@@ -147,7 +147,7 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 
 class SponsorLevelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'visible', 'price', 'limit',
+    list_display = ('id', 'name', 'visible', 'price', 'limit', 'current_remaining_number',
                     'ticket_count', 'presentation_count', 'booth_info',
                     'program_guide', 'can_provide_goods', 'logo_locations', 'can_recruit')
 
@@ -158,11 +158,21 @@ admin.site.register(SponsorLevel, SponsorLevelAdmin)
 class SponsorAdmin(admin.ModelAdmin):
     list_display = ('id', 'creator_profile', 'name', 'level', 'manager_name', 'manager_phone',
                     'manager_email', 'business_registration_number', 'contract_process_required',
-                    'url', 'paid_at', 'submitted', 'accepted')
+                    'url', 'submitted', 'accepted', 'paid_at')
+    actions = ['accept', 'reject']
 
     def creator_profile(self, obj):
         profile = obj.creator.profile
         return profile if profile else ''
+
+    def accept(self, request, queryset):
+        queryset.update(accepted=True)
+
+    def reject(self, request, queryset):
+        queryset.update(accepted=False)
+
+    accept.short_description = "Accept sponsorship"
+    reject.short_description = "Reject sponsorship"
 
 
 admin.site.register(Sponsor, SponsorAdmin)

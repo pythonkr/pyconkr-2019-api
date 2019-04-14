@@ -30,10 +30,13 @@ class SponsorLevel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def current_remaining_number(self):
+        return self.limit - Sponsor.objects.filter(
+            level=self, submitted=True, accepted=True, paid_at__isnull=False).count()
+
     def __str__(self):
         return self.name
-
-
 
 
 def registration_file_upload_to(instance, filename):
