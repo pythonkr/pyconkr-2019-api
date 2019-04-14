@@ -1,12 +1,12 @@
 from modeltranslation.translator import register, TranslationOptions
 
-from api.models.pyconkorea import PyconKorea
+from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.models.profile import Profile
 from api.models.program import Place, Category, Difficulty, Program, Presentation
 
-@register(PyconKorea)
-class PyconKoreaTranslationOptions(TranslationOptions):
+@register(Schedule)
+class ScheduleTranslationOptions(TranslationOptions):
     fields = ('name',)
 
 @register(Profile)

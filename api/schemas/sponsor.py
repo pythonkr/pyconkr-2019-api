@@ -64,7 +64,6 @@ class CreateOrUpdateSponsor(graphene.Mutation):
             sponsor.level = SponsorLevel.objects.get(
                 pk=data['level_id'])
             del data['level_id']
-
         for k, v in data.items():
             setattr(sponsor, k, v)
 

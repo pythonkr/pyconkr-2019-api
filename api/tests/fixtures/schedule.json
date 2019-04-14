@@ -1,6 +1,6 @@
 [
 {
-  "model": "api.pyconkorea",
+  "model": "api.schedule",
   "pk": 1,
   "fields": {
     "name": "\ud30c\uc774\ucf58 \ud55c\uad6d 2019",

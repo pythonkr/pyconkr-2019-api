@@ -5,11 +5,11 @@ from api.schema import schema
 TIMEZONE = get_current_timezone()
 
 
-class PyconKoreaTest(BaseTestCase):
-    def test_retrieve_conference(self):
+class ScheduleTest(BaseTestCase):
+    def test_retrieve_schedule(self):
         query = '''
         query {
-            pyconKorea {
+            schedule {
                 name
                 nameKo
                 nameEn
@@ -76,7 +76,7 @@ class PyconKoreaTest(BaseTestCase):
         '''
 
         result = schema.execute(query)
-        response_pyconkorea = result.data['pyconKorea']
-        self.assertIsNotNone(response_pyconkorea)
-        self.assertEqual('파이콘 한국 2019', response_pyconkorea['nameKo'])
-        self.assertEqual('PyCon Korea 2019', response_pyconkorea['nameEn'])
+        response_schedule = result.data['schedule']
+        self.assertIsNotNone(response_schedule)
+        self.assertEqual('파이콘 한국 2019', response_schedule['nameKo'])
+        self.assertEqual('PyCon Korea 2019', response_schedule['nameEn'])

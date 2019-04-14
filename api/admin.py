@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 from api.models.oauth_setting import OAuthSetting
-from api.models.pyconkorea import PyconKorea
+from api.models.schedule import Schedule
 from api.models.program import Presentation, PresentationProposal
 from api.models.program import Place, Category, Difficulty
 from api.models.profile import Profile
@@ -43,7 +43,7 @@ class OAuthSettingAdmin(admin.ModelAdmin):
 admin.site.register(OAuthSetting, OAuthSettingAdmin)
 
 
-class PyconKoreaAdmin(admin.ModelAdmin):
+class ScheduleAdmin(admin.ModelAdmin):
     list_display = ('name', 'conference_start_at',
                     'conference_finish_at', 'tutorial_start_at',
                     'tutorial_finish_at', 'sprint_start_at', 'sprint_finish_at',
@@ -103,7 +103,7 @@ class PyconKoreaAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(PyconKorea, PyconKoreaAdmin)
+admin.site.register(Schedule, ScheduleAdmin)
 
 
 class PresentationProposalInline(admin.StackedInline):
