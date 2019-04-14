@@ -118,8 +118,7 @@ class PresentationAdmin(admin.ModelAdmin):
     inlines = (PresentationProposalInline,)
 
     def owner_profile(self, obj):
-        profile = obj.owner.profile
-        return profile if profile else ''
+        return Profile.objects.get_or_create(user = obj.owner)
 
 
 admin.site.register(Presentation, PresentationAdmin)
@@ -162,8 +161,7 @@ class SponsorAdmin(admin.ModelAdmin):
     actions = ['accept', 'reject']
 
     def creator_profile(self, obj):
-        profile = obj.creator.profile
-        return profile if profile else ''
+        return Profile.objects.get_or_create(user=obj.creator)
 
     def accept(self, request, queryset):
         queryset.update(accepted=True)
