@@ -165,7 +165,7 @@ class SponsorAdmin(admin.ModelAdmin):
 
     def creator_profile(self, obj):
         if obj.creator:
-            profile, _ =  Profile.objects.get_or_create(user=obj.creator)
+            profile, _ = Profile.objects.get_or_create(user=obj.creator)
             return profile
         return ''
 
