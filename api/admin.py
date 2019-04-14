@@ -114,7 +114,7 @@ class PresentationProposalInline(admin.StackedInline):
 
 class PresentationAdmin(admin.ModelAdmin):
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
-                    'place', 'duration', 'started_at', 'slide_url', 'accepted',)
+                    'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
     inlines = (PresentationProposalInline,)
 
     def owner_profile(self, obj):
