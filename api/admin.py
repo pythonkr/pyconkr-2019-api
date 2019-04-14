@@ -159,10 +159,20 @@ class SponsorAdmin(admin.ModelAdmin):
     list_display = ('id', 'creator_profile', 'name', 'level', 'manager_name', 'manager_phone',
                     'manager_email', 'business_registration_number', 'contract_process_required',
                     'url', 'submitted', 'accepted', 'paid_at')
+    actions = ['accept', 'reject']
 
     def creator_profile(self, obj):
         profile = obj.creator.profile
         return profile if profile else ''
+
+    def accept(self, request, queryset):
+        queryset.update(accepted=True)
+
+    def reject(self, request, queryset):
+        queryset.update(accepted=False)
+
+    accept.short_description = "Accept sponsorship"
+    reject.short_description = "Reject sponsorship"
 
 
 admin.site.register(Sponsor, SponsorAdmin)
