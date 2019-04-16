@@ -116,6 +116,15 @@ class PresentationAdmin(admin.ModelAdmin):
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
     inlines = (PresentationProposalInline,)
+    list_filter = (
+        'language',
+        ('proposal__submitted', admin.BooleanFieldListFilter),
+        ('proposal__accepted', admin.BooleanFieldListFilter),
+        ('category', admin.RelatedOnlyFieldListFilter),
+        ('difficulty', admin.RelatedOnlyFieldListFilter),
+        ('place', admin.RelatedOnlyFieldListFilter),
+        'duration'
+    )
 
     def owner_profile(self, obj):
         if obj.owner:
@@ -162,6 +171,13 @@ class SponsorAdmin(admin.ModelAdmin):
                     'manager_email', 'business_registration_number', 'contract_process_required',
                     'url', 'submitted', 'accepted', 'paid_at')
     actions = ['accept', 'reject']
+
+    list_filter = (
+        ('submitted', admin.BooleanFieldListFilter),
+        ('accepted', admin.BooleanFieldListFilter),
+        'paid_at',
+        ('level', admin.RelatedOnlyFieldListFilter),
+    )
 
     def creator_profile(self, obj):
         if obj.creator:
