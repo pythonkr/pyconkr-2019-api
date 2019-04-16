@@ -6,8 +6,7 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.tests.base import BaseTestCase
 from api.tests.scheme.sponsor_queries \
-    import CREATE_OR_UPDATE_SPONSER, SUBMIT_SPONSOR, SPONSOR_LEVELS
-
+    import CREATE_OR_UPDATE_SPONSER, SUBMIT_SPONSOR, SPONSOR_LEVELS, MY_SPONSOR
 
 
 class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
@@ -17,6 +16,17 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
             email='me@pycon.kr')
         self.client.authenticate(self.user)
         self.factory = RequestFactory()
+
+
+    def test_후원사_등록_이력이_없을_때에는_None_반환(self):
+        result = self.client.execute(MY_SPONSOR)
+        self.assertIsNone(result.data['mySponsor'])
+
+    def test_후원사_등록_이력이_있을_때에는_정상적으로_반환(self):
+        Sponsor.objects.create(name='스폰서사', creator=self.user)
+        result = self.client.execute(MY_SPONSOR)
+        self.assertIsNotNone(result.data['mySponsor'])
+
 
     def test_create_or_update_sponsor(self):
         variables = {
