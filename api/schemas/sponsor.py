@@ -14,6 +14,10 @@ class SponsorLevelNode(DjangoObjectType):
         description = """
         The level of sponsors, python conference in Korea.
         """
+    current_remaining_number = graphene.Int()
+
+    def resolve_current_remaining_number(self, info):
+        return self.current_remaining_number
 
 
 class SponsorNode(DjangoObjectType):
@@ -60,7 +64,6 @@ class CreateOrUpdateSponsor(graphene.Mutation):
             sponsor.level = SponsorLevel.objects.get(
                 pk=data['level_id'])
             del data['level_id']
-
         for k, v in data.items():
             setattr(sponsor, k, v)
 
@@ -170,8 +173,11 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_my_sponsor(self, info):
-        sponsor, _ = Sponsor.objects.get_or_create(creator=info.context.user)
-        return sponsor
+        try:
+            sponsor = Sponsor.objects.get(creator=info.context.user)
+            return sponsor
+        except Sponsor.DoesNotExist:
+            return None
 
     def resolve_sponsor_levels(self, info):
         return SponsorLevel.objects.all()

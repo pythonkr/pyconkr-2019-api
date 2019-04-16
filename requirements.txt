@@ -68,3 +68,5 @@ unittest-xml-reporting==2.2.0
 uritemplate==3.0.0
 urllib3==1.24.1
 wrapt==1.10.11
+pytest
+pytest-django

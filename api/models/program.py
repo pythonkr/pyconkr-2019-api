@@ -5,28 +5,6 @@ from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
 
 
-class Conference(models.Model):
-    name = models.CharField(max_length=50)
-    conference_started_at = models.DateField(null=True, blank=True)
-    conference_finished_at = models.DateField(null=True, blank=True)
-    sprint_started_at = models.DateField(null=True, blank=True)
-    sprint_finished_at = models.DateField(null=True, blank=True)
-    tutorial_started_at = models.DateField(null=True, blank=True)
-    tutorial_finished_at = models.DateField(null=True, blank=True)
-
-    earlybird_started_at = models.DateTimeField(null=True, blank=True)
-    earlybird_finished_at = models.DateTimeField(null=True, blank=True)
-
-    presentation_proposal_started_at = models.DateTimeField(
-        null=True, blank=True)
-    presentation_proposal_finished_at = models.DateTimeField(
-        null=True, blank=True)
-    sprint_proposal_started_at = models.DateTimeField(null=True, blank=True)
-    sprint_proposal_finished_at = models.DateTimeField(null=True, blank=True)
-    tutorial_proposal_started_at = models.DateTimeField(null=True, blank=True)
-    tutorial_proposal_finished_at = models.DateTimeField(null=True, blank=True)
-
-
 class Place(models.Model):
     name = models.CharField(max_length=50, default='', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
