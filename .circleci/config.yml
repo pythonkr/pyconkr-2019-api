@@ -28,7 +28,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            coverage run ./manage.py test
+            coverage run -m pytest
             codecov
 
       - store_test_results:
