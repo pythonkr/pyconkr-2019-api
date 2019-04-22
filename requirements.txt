@@ -70,3 +70,4 @@ urllib3==1.24.1
 wrapt==1.10.11
 pytest
 pytest-django
+slacker==0.12.0
