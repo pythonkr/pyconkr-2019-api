@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import os, sys
 from configparser import ConfigParser
 
 
 def load_permitted_settings_from_ini(inifile):
-    PERMITTED_SETTINGS=["EMAIL_USE_TLS","EMAIL_HOST","EMAIL_HOST_USER","EMAIL_HOST_PASSWORD","EMAIL_PORT"]
+    PERMITTED_SETTINGS = ["EMAIL_USE_TLS", "EMAIL_HOST", "EMAIL_HOST_USER", "EMAIL_HOST_PASSWORD", "EMAIL_PORT",
+                          "SLACK_TOKEN"]
     from django.conf import settings
     configured = {}
     try:
@@ -21,5 +21,3 @@ def load_permitted_settings_from_ini(inifile):
                 setattr(settings, setting_name, value)
                 configured[setting_name] = value
     return configured
-
-
