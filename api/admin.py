@@ -1,15 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from import_export import fields
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 from sorl.thumbnail.admin import AdminImageMixin
-from api.models.oauth_setting import OAuthSetting
-from api.models.schedule import Schedule
-from api.models.program import Presentation, PresentationProposal
-from api.models.program import Place, Category, Difficulty
-from api.models.profile import Profile
+
 from api.models.agreement import Agreement
-from api.models.sponsor import Sponsor, SponsorLevel
 from api.models.notices import Notice
+from api.models.oauth_setting import OAuthSetting
+from api.models.profile import Profile
+from api.models.program import Place, Category, Difficulty
+from api.models.program import Presentation, PresentationProposal
+from api.models.schedule import Schedule
+from api.models.sponsor import Sponsor, SponsorLevel
 
 UserModel = get_user_model()
 
@@ -106,13 +110,34 @@ class ScheduleAdmin(admin.ModelAdmin):
 admin.site.register(Schedule, ScheduleAdmin)
 
 
+class PresentationResource(resources.ModelResource):
+    proposal__submitted = fields.Field(column_name='submitted', attribute='proposal__submitted')
+    proposal__accepted = fields.Field(column_name='accepted', attribute='proposal__accepted')
+    proposal__detail_desc = fields.Field(column_name='detail_desc', attribute='proposal__detail_desc')
+    proposal__is_presented_before = fields.Field(column_name='is_presented_before',
+                                                 attribute='proposal__is_presented_before')
+    proposal__place_presented_before = fields.Field(column_name='place_presented_before',
+                                                    attribute='proposal__place_presented_before')
+    proposal__presented_slide_url_before = fields.Field(column_name='presented_slide_url_before',
+                                                        attribute='proposal__presented_slide_url_before')
+    proposal__created_at = fields.Field(column_name='created_at', attribute='proposal__created_at')
+    proposal__updated_at = fields.Field(column_name='updated_at', attribute='proposal__updated_at')
+    owner = fields.Field(column_name='owner', attribute='owner__profile__name')
+    category = fields.Field(column_name='category', attribute='category__name')
+    difficulty = fields.Field(column_name='category', attribute='difficulty__name')
+
+    class Meta:
+        model = Presentation
+
+
 class PresentationProposalInline(admin.StackedInline):
     model = PresentationProposal
     can_delete = False
     verbose_name_plural = 'proposal'
 
 
-class PresentationAdmin(admin.ModelAdmin):
+class PresentationAdmin(ImportExportModelAdmin):
+    resource_class = PresentationResource
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
     inlines = (PresentationProposalInline,)
@@ -159,6 +184,7 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 class SponsorLevelAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'visible', 'price', 'limit', 'current_remaining_number',
+                    'current_remaining_number_compare_with_accepted',
                     'ticket_count', 'presentation_count', 'booth_info',
                     'program_guide', 'can_provide_goods', 'logo_locations', 'can_recruit')
 
@@ -166,7 +192,16 @@ class SponsorLevelAdmin(admin.ModelAdmin):
 admin.site.register(SponsorLevel, SponsorLevelAdmin)
 
 
-class SponsorAdmin(admin.ModelAdmin):
+class SponsorResource(resources.ModelResource):
+    class Meta:
+        model = Sponsor
+
+    creator = fields.Field(column_name='creator', attribute='creator__profile__name')
+    level = fields.Field(column_name='level', attribute='level__name')
+
+
+class SponsorAdmin(ImportExportModelAdmin):
+    resource_class = SponsorResource
     list_display = ('id', 'creator_profile', 'name', 'level', 'manager_name', 'manager_phone',
                     'manager_email', 'business_registration_number', 'contract_process_required',
                     'url', 'submitted', 'accepted', 'paid_at')

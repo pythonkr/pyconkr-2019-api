@@ -35,6 +35,10 @@ class SponsorLevel(models.Model):
         return self.limit - Sponsor.objects.filter(
             level=self, submitted=True, accepted=True, paid_at__isnull=False).count()
 
+    @property
+    def current_remaining_number_compare_with_accepted(self):
+        return self.limit - Sponsor.objects.filter(level=self, submitted=True, accepted=True).count()
+
     def __str__(self):
         return self.name
 
