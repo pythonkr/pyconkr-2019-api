@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'graphene_django',
     'sorl.thumbnail',
+    'import_export',
 ) + (
     # local apps
     'api',
