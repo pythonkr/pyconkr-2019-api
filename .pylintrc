@@ -72,6 +72,7 @@ disable=
         duplicate-code,
         too-many-arguments,
         no-member,
+        bare-except,
         fixme,
         # default
         print-statement,
