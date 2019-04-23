@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import pytest
 import textwrap
 
 from .utils import load_permitted_settings_from_ini
