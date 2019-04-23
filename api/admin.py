@@ -202,8 +202,8 @@ class SponsorResource(resources.ModelResource):
 
 class SponsorAdmin(ImportExportModelAdmin):
     resource_class = SponsorResource
-    list_display = ('id', 'creator_profile', 'name', 'level', 'manager_name', 'manager_phone',
-                    'manager_email', 'business_registration_number', 'contract_process_required',
+    list_display = ('id', 'creator_profile', 'name', 'level', 'manager_name',
+                    'manager_email', 'business_registration_number',
                     'url', 'submitted', 'accepted', 'paid_at')
     actions = ['accept', 'reject']
 
