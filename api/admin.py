@@ -111,17 +111,18 @@ admin.site.register(Schedule, ScheduleAdmin)
 
 
 class PresentationResource(resources.ModelResource):
-    proposal__submitted = fields.Field(column_name='submitted', attribute='proposal__submitted')
-    proposal__accepted = fields.Field(column_name='accepted', attribute='proposal__accepted')
-    proposal__detail_desc = fields.Field(column_name='detail_desc', attribute='proposal__detail_desc')
-    proposal__is_presented_before = fields.Field(column_name='is_presented_before',
-                                                 attribute='proposal__is_presented_before')
-    proposal__place_presented_before = fields.Field(column_name='place_presented_before',
-                                                    attribute='proposal__place_presented_before')
-    proposal__presented_slide_url_before = fields.Field(column_name='presented_slide_url_before',
-                                                        attribute='proposal__presented_slide_url_before')
-    proposal__created_at = fields.Field(column_name='created_at', attribute='proposal__created_at')
-    proposal__updated_at = fields.Field(column_name='updated_at', attribute='proposal__updated_at')
+    submitted = fields.Field(column_name='submitted', attribute='proposal__submitted')
+    accepted = fields.Field(column_name='accepted', attribute='proposal__accepted')
+    detail_desc = fields.Field(column_name='detail_desc',
+                               attribute='proposal__detail_desc')
+    is_presented_before = fields.Field(column_name='is_presented_before',
+                                       attribute='proposal__is_presented_before')
+    place_presented_before = fields.Field(column_name='place_presented_before',
+                                          attribute='proposal__place_presented_before')
+    presented_slide_url_before = fields.Field(column_name='presented_slide_url_before',
+                                              attribute='proposal__presented_slide_url_before')
+    created_at = fields.Field(column_name='created_at', attribute='proposal__created_at')
+    updated_at = fields.Field(column_name='updated_at', attribute='proposal__updated_at')
     owner = fields.Field(column_name='owner', attribute='owner__profile__name')
     category = fields.Field(column_name='category', attribute='category__name')
     difficulty = fields.Field(column_name='category', attribute='difficulty__name')

@@ -14,6 +14,7 @@ class SponsorLevelNode(DjangoObjectType):
         description = """
         The level of sponsors, python conference in Korea.
         """
+
     current_remaining_number = graphene.Int()
 
     def resolve_current_remaining_number(self, info):
@@ -44,9 +45,11 @@ class PublicSponsorNode(DjangoObjectType):
         description = """
         Sponsors which spon python conference in Korea.
         """
+
     level = graphene.Field(SponsorLevelNode)
     logo_image = graphene.Field(ImageUrl)
     logo_vector = graphene.Field(ImageUrl)
+
 
 class SponsorInput(graphene.InputObjectType):
     name_ko = graphene.String()
@@ -179,7 +182,8 @@ class Query(graphene.ObjectType):
     sponsors = graphene.List(PublicSponsorNode)
 
     def resolve_sponsors(self, info):
-        return Sponsor.objects.filter(submitted=True, accepted=True, paid_at__isnull=False).order_by('paid_at')
+        return Sponsor.objects. \
+            filter(submitted=True, accepted=True, paid_at__isnull=False).order_by('paid_at')
 
     @login_required
     def resolve_my_sponsor(self, info):
