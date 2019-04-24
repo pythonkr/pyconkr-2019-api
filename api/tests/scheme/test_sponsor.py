@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory
 from django.utils.timezone import now
@@ -6,7 +8,7 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.tests.base import BaseTestCase
 from api.tests.scheme.sponsor_queries \
-    import CREATE_OR_UPDATE_SPONSER, SUBMIT_SPONSOR, SPONSOR_LEVELS, MY_SPONSOR
+    import CREATE_OR_UPDATE_SPONSER, SUBMIT_SPONSOR, SPONSOR_LEVELS, MY_SPONSOR, SPONSORS
 
 
 class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
@@ -17,7 +19,6 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.client.authenticate(self.user)
         self.factory = RequestFactory()
 
-
     def test_후원사_등록_이력이_없을_때에는_None_반환(self):
         result = self.client.execute(MY_SPONSOR)
         self.assertIsNone(result.data['mySponsor'])
@@ -27,7 +28,6 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(MY_SPONSOR)
         self.assertIsNotNone(result.data['mySponsor'])
 
-
     def test_create_or_update_sponsor(self):
         variables = {
             'data': {
@@ -36,12 +36,9 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
                 'descKo': 'GraphQL은 재미있다는 설명은함정!',
                 'descEn': 'The description that GraphQL is Trap!',
                 'managerName': '김스폰서',
-                'managerPhone': '0102222222',
-                'managerSecondaryPhone': '0103333333',
                 'managerEmail': 'sponsor@sponsor.com',
                 'levelId': 1,
                 'businessRegistrationNumber': '30-3535-3535',
-                'contractProcessRequired': True,
                 'url': 'my.slide.url'
             }
         }
@@ -139,3 +136,47 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         gold_level = [level for level in response_levels if level['nameKo'] == '골드'][0]
         self.assertIsNotNone(gold_level)
         self.assertEqual(gold_level['limit'] - 2, gold_level['currentRemainingNumber'])
+
+    def test_get_public_sponsors_입금_순으로_들어오는지_확인(self):
+        sponsor_level = SponsorLevel.objects.get(name_ko='골드')
+        Sponsor.objects.create(
+            creator=self.user, level=sponsor_level, name='느린스폰서',
+            accepted=True, submitted=True, paid_at=now())
+        user2 = get_user_model().objects.create(
+            username='user2',
+            email='me@pycon.kr')
+        past_dt = now() - timedelta(days=1)
+        Sponsor.objects.create(
+            creator=user2, level=sponsor_level, name='빠른스폰서',
+            accepted=True, submitted=True, paid_at=past_dt)
+
+        # When
+        result = self.client.execute(SPONSORS)
+
+        # Then
+        sponsors = result.data['sponsors']
+        self.assertEqual(sponsors[0]['name'], '빠른스폰서')
+        self.assertEqual(sponsors[1]['name'], '느린스폰서')
+
+    def test_get_public_sponsors_입금_순으로_들어오는지_확인_2(self):
+        sponsor_level = SponsorLevel.objects.get(name_ko='골드')
+        user2 = get_user_model().objects.create(
+            username='user2',
+            email='me@pycon.kr')
+        past_dt = now() - timedelta(days=1)
+        Sponsor.objects.create(
+            creator=user2, level=sponsor_level, name='빠른스폰서',
+            accepted=True, submitted=True, paid_at=past_dt)
+
+        Sponsor.objects.create(
+            creator=self.user, level=sponsor_level, name='느린스폰서',
+            accepted=True, submitted=True, paid_at=now())
+
+        sponsors = list(Sponsor.objects.all())
+        # When
+        result = self.client.execute(SPONSORS)
+
+        # Then
+        sponsors = result.data['sponsors']
+        self.assertEqual(sponsors[0]['name'], '빠른스폰서')
+        self.assertEqual(sponsors[1]['name'], '느린스폰서')
