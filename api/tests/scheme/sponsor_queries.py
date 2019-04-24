@@ -90,12 +90,9 @@ mutation CreateOrUpdateSponsor($data: SponsorInput!) {
             descKo
             descEn
             managerName
-            managerPhone
-            managerSecondaryPhone
             managerEmail
             businessRegistrationNumber
             businessRegistrationFile
-            contractProcessRequired
             url
             logoImage
             logoVector
@@ -148,12 +145,9 @@ query getMySponsor {
         descKo
         descEn
         managerName
-        managerPhone
-        managerSecondaryPhone
         managerEmail
         businessRegistrationNumber
         businessRegistrationFile
-        contractProcessRequired
         url
         logoImage
         logoVector
@@ -161,5 +155,25 @@ query getMySponsor {
         submitted
         accepted
     }
+}
+'''
+
+SPONSORS = '''
+query getSponsors {
+  sponsors {
+    name
+    nameKo
+    nameEn
+    level {
+      id
+      name
+    }
+    desc
+    descKo
+    descEn
+    url
+    logoImage
+    logoVector
+  }
 }
 '''

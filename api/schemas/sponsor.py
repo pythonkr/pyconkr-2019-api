@@ -14,6 +14,7 @@ class SponsorLevelNode(DjangoObjectType):
         description = """
         The level of sponsors, python conference in Korea.
         """
+
     current_remaining_number = graphene.Int()
 
     def resolve_current_remaining_number(self, info):
@@ -35,16 +36,28 @@ class SponsorNode(DjangoObjectType):
     logo_vector = graphene.Field(ImageUrl)
 
 
+class PublicSponsorNode(DjangoObjectType):
+    class Meta:
+        model = Sponsor
+        only_fields = ('name', 'name_ko', 'name_en', 'level', 'desc', 'desc_ko', 'desc_en',
+                       'url', 'logo_image', 'logo_vector')
+
+        description = """
+        Sponsors which spon python conference in Korea.
+        """
+
+    level = graphene.Field(SponsorLevelNode)
+    logo_image = graphene.Field(ImageUrl)
+    logo_vector = graphene.Field(ImageUrl)
+
+
 class SponsorInput(graphene.InputObjectType):
     name_ko = graphene.String()
     name_en = graphene.String()
     manager_name = graphene.String()
-    manager_phone = graphene.String()
-    manager_secondary_phone = graphene.String()
     manager_email = graphene.String()
     level_id = graphene.Int()
     business_registration_number = graphene.String()
-    contract_process_required = graphene.Boolean()
     url = graphene.String()
     desc_ko = graphene.String()
     desc_en = graphene.String()
@@ -166,10 +179,11 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     sponsor_levels = graphene.List(SponsorLevelNode)
     my_sponsor = graphene.Field(SponsorNode)
-    sponsors = graphene.List(SponsorNode)
+    sponsors = graphene.List(PublicSponsorNode)
 
     def resolve_sponsors(self, info):
-        return Sponsor.objects.exclude(paid_at=False, accepted=False).order_by('-paid_at')
+        return Sponsor.objects. \
+            filter(submitted=True, accepted=True, paid_at__isnull=False).order_by('paid_at')
 
     @login_required
     def resolve_my_sponsor(self, info):
