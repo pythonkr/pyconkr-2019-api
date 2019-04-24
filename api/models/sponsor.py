@@ -1,8 +1,12 @@
 import hashlib
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+
 from sorl.thumbnail import ImageField as SorlImageField
+from .utils import notify_slack
 
 
 class SponsorLevel(models.Model):
@@ -106,3 +110,18 @@ class Sponsor(models.Model):
 
     def __str__(self):
         return f'{self.name}/{self.level}'
+
+
+@receiver(post_save, sender=Sponsor)
+def send_slack_notification_sponsor_created(sender, instance, created, raw, using, update_fields,
+                                            **kwargs):
+    def check_attr(obj, name):
+        if hasattr(obj, name) and getattr(obj, name) not in [None, ""]:
+            return True
+        return False
+
+    # name and level should be created
+    if check_attr(instance, 'name') and check_attr(instance, 'level'):
+        to_channel = "#sponsor"
+        message = "%s sponsor requested with %s level" % (instance.name, instance.level)
+        notify_slack(to_channel, message)
