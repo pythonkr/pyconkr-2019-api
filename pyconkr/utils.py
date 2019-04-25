@@ -5,7 +5,7 @@ from configparser import ConfigParser
 
 def load_permitted_settings_from_ini(inifile):
     PERMITTED_SETTINGS = ["EMAIL_USE_TLS", "EMAIL_HOST", "EMAIL_HOST_USER", "EMAIL_HOST_PASSWORD",
-                          "EMAIL_PORT", "SLACK_TOKEN", "IAM", "IMP_KEY", "IMP_SECRET"]
+                          "EMAIL_PORT", "SLACK_TOKEN", "IMP_KEY", "IMP_SECRET"]
     from django.conf import settings
     configured = {}
     try:

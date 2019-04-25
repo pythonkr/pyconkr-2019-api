@@ -38,7 +38,7 @@ graphene-file-upload==1.2.2
 graphql-core==2.1
 graphql-relay==0.4.5
 gunicorn==19.9.0
-iamport-rest-client==0.7.0
+iamporter==0.2.1
 idna==2.7
 invoke==1.2.0
 isort==4.3.4

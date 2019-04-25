@@ -6,6 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 
+from api.models import EarlyBirdTicket
 from api.models.agreement import Agreement
 from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
@@ -239,3 +240,15 @@ class NoticeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Notice, NoticeAdmin)
+
+
+class EarlyBirdTicketAdmin(admin.ModelAdmin):
+    list_display = ('id', 'paid_at')
+
+    # def owner_profile(self, obj):
+    #     if obj.owner:
+    #         profile, _ = Profile.objects.get_or_create(user=obj.owner)
+    #         return profile
+    #     return ''
+
+admin.site.register(EarlyBirdTicket, EarlyBirdTicketAdmin)

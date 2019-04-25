@@ -175,7 +175,7 @@ CRONJOBS = [
     ('* * * * *', 'pyconkr.cron.my_cron_job', '>> /web/cron.log')
 ]
 
-PERMITTED_SETTINGS_PATH='/etc/pycon_korea_settings.ini'
+PERMITTED_SETTINGS_PATH='/etc/pyconkr-conf/permitted_settings.ini'
 PERMITTED_SETTINGS = {}
 if os.path.isfile(PERMITTED_SETTINGS_PATH):
     PERMITTED_SETTINGS = load_permitted_settings_from_ini(PERMITTED_SETTINGS_PATH)

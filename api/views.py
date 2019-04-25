@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from graphql_extensions.views import GraphQLView as ExtentionGraphQLView
+from graphql_extensions.views import GraphQLView as ExtentionGraphQLView, GraphQLView
 from graphene_file_upload.utils import place_files_in_operations
 
 def robots(request):
@@ -10,7 +10,7 @@ def robots(request):
     return render(request, 'robots.txt', content_type='text/plain')
 
 
-class GraphQLView(ExtentionGraphQLView):
+class GraphQLView(GraphQLView):
     def parse_body(self, request):
         """Handle multipart request spec for multipart/form-data"""
         content_type = self.get_content_type(request)
