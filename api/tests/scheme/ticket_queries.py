@@ -11,4 +11,3 @@ mutation BuyEarlyBirdTicket($payment: PaymentInput!) {
     }
 }
 '''
-

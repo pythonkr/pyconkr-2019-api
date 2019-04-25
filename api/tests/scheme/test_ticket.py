@@ -6,7 +6,6 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 
 from api.models import EarlyBirdTicket
 from api.tests.base import BaseTestCase
-from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL
 from api.tests.scheme.ticket_queries import BUY_EARLY_BIRD_TICKET
 
 TIMEZONE = get_current_timezone()

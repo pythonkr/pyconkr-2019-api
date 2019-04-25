@@ -78,6 +78,7 @@ Rx==1.6.1
 simplejson==3.16.0
 singledispatch==3.4.0.3
 six==1.11.0
+slacker==0.13.0
 sorl-thumbnail==12.5.0
 sqlparse==0.3.0
 tablib==0.13.0
