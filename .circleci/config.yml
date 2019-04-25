@@ -28,11 +28,6 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            sudo mkdir /etc/pyconkr-conf
-            echo '[IAMPORT]' | sudo tee -a /etc/pyconkr-conf/permitted_settings.ini
-            echo 'IMP_KEY=key' | sudo tee -a /etc/pyconkr-conf/permitted_settings.ini
-            echo 'IMP_SECRET=secret' | sudo tee -a /etc/pyconkr-conf/permitted_settings.ini
-
             coverage run ./manage.py test
             codecov
 

@@ -20,10 +20,16 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             email='me@pycon.kr')
         self.client.authenticate(self.user)
 
-    @mock.patch('api.schemas.ticket.Iamporter.create_payment')
-    def test_create_proposal(self, mock_create_payment):
+    @mock.patch('api.schemas.ticket.settings')
+    @mock.patch('api.schemas.ticket.Iamporter', autospec=True)
+    def test_create_proposal(self, mock_iamporter, mock_settings):
         # Given
-        mock_create_payment.return_value = {
+        mock_settings.return_value = {
+            'IMP_KEY': 'KEY',
+            'IMP_SECRET': 'SECRET'
+        }
+        iamporter_instance = mock_iamporter.return_value
+        iamporter_instance.create_payment.return_value = {
             'amount': '60000',
             'name': 'name',
             'status': 'paid',
@@ -46,7 +52,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = response.data
         self.assertIsNotNone(data['buyEarlyBirdTicket'])
         self.assertIsNotNone(data['buyEarlyBirdTicket']['ticket'])
-        self.assertIsNotNone(data['buyEarlyBirdTicket']['ticket']['pgTid'])
+        self.assertEqual(data['buyEarlyBirdTicket']['ticket']['pgTid'], 'pg_tid')
         self.assertIsNotNone(data['buyEarlyBirdTicket']['ticket']['receiptUrl'])
 
         self.assertEqual(1, EarlyBirdTicket.objects.all().count())
