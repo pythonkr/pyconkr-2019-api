@@ -1,11 +1,15 @@
 from datetime import datetime
 
 import graphene
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
+from graphql_extensions.exceptions import GraphQLError
 from graphql_extensions.auth.decorators import login_required
 
 from api.models.program import Place, Category, Difficulty
 from api.models.program import Presentation, PresentationProposal
+from api.models.schedule import Schedule
 from api.schemas.user import UserNode
 
 
@@ -91,12 +95,17 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
     @login_required
     def mutate(self, info, data):
         user = info.context.user
-        if hasattr(user, 'presentation'):
-            presentation = user.presentation
-        else:
-            presentation = Presentation()
-            presentation.owner = user
-            presentation.save()
+        schedule = Schedule.objects.last()
+        presentation, created = Presentation.objects.get_or_create(owner=user)
+        now = timezone.now()
+        if created and schedule.presentation_proposal_finish_at and \
+                schedule.presentation_proposal_finish_at < now:
+            raise GraphQLError(_('발표 제안 기간이 종료되었습니다.'))
+        if not schedule.presentation_proposal_start_at or \
+                schedule.presentation_proposal_start_at > now:
+            raise GraphQLError(_('발표 모집이 아직 시작되지 않았습니다.'))
+        if schedule.presentation_review_start_at < now < schedule.presentation_review_finish_at:
+            raise GraphQLError(_('오픈 리뷰 중에는 제안서를 수정할 수 없습니다.'))
 
         if 'category_id' in data:
             presentation.category = Category.objects.get(

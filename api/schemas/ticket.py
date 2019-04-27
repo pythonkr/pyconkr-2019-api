@@ -7,6 +7,7 @@ from graphql_extensions.exceptions import GraphQLError
 from iamporter import Iamporter
 from django.utils import timezone
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from api.models.schedule import Schedule
 from api.models.ticket import EarlyBirdTicket, TicketSetting
@@ -46,12 +47,13 @@ class BuyEarlyBirdTicket(graphene.Mutation):
                             EarlyBirdTicket.objects.filter(
                                 paid_at__isnull=False, is_refund=False).count()
         if remain_ticket_cnt <= 0:
-            # TODO: 영어 지원 필요
-            raise GraphQLError('얼리버드 티켓이 모두 판매되었습니다.')
-        if schedule.earlybird_ticket_start_at > timezone.now():
-            raise GraphQLError('얼리버드 티켓 판매가 아직 시작되지 않았습니다.')
-        if schedule.earlybird_ticket_finish_at < timezone.now():
-            raise GraphQLError('얼리버드 티켓 판매가 종료되었습니다.')
+            raise GraphQLError(_('얼리버드 티켓이 모두 판매되었습니다.'))
+        if not schedule.earlybird_ticket_start_at or \
+                schedule.earlybird_ticket_start_at > timezone.now():
+            raise GraphQLError(_('얼리버드 티켓 판매가 아직 시작되지 않았습니다.'))
+        if schedule.earlybird_ticket_finish_at and \
+                schedule.earlybird_ticket_finish_at < timezone.now():
+            raise GraphQLError(_('얼리버드 티켓 판매가 종료되었습니다.'))
         merchant_uid = f'merchant_{timezone.now().timestamp()}'
         amount = ticket_setting.early_bird_ticket_price
         name = "PyConKorea_EarlyBirdTicket"
@@ -66,7 +68,7 @@ class BuyEarlyBirdTicket(graphene.Mutation):
         if name != response['name']:
             pass
         if response['status'] != 'paid':
-            raise GraphQLError('결재가 실패했습니다.')
+            raise GraphQLError(_('결제가 실패했습니다.'))
 
         ticket = EarlyBirdTicket.objects.create(
             owner=info.context.user,

@@ -1,7 +1,7 @@
 import json
 from django.shortcuts import render
-from graphene_django.views import GraphQLView
 from graphene_file_upload.utils import place_files_in_operations
+from graphql_extensions.views import GraphQLView
 
 
 def robots(request):

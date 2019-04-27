@@ -147,6 +147,11 @@ LANGUAGES = (
     ('en', _('English')),
 )
 LANGUAGE_CODE = 'ko'
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ko'
 MODELTRANSLATION_LANGUAGES = ('ko', 'en')
 

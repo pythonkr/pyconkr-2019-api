@@ -1,8 +1,11 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
-from django.utils.timezone import get_current_timezone
+from django.utils.timezone import get_current_timezone, now
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 from api.models.program import Presentation, PresentationProposal
+from api.models.schedule import Schedule
 from api.tests.base import BaseTestCase
 from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL
 
@@ -17,6 +20,15 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
             username='develop_github_123',
             email='me@pycon.kr')
         self.client.authenticate(self.user)
+        self.set_proposal_period()
+
+    def set_proposal_period(self):
+        schedule = Schedule.objects.last()
+        schedule.presentation_proposal_start_at = now() - timedelta(days=2)
+        schedule.presentation_proposal_finish_at = now() + timedelta(days=2)
+        schedule.presentation_review_start_at = now() + timedelta(days=4)
+        schedule.presentation_review_finish_at = now() + timedelta(days=20)
+        schedule.save()
 
     def test_create_proposal(self):
         variables = {
