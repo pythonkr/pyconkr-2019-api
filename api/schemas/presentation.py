@@ -1,10 +1,8 @@
-from datetime import datetime
-
 import graphene
 from django.utils import timezone
 from graphene_django import DjangoObjectType
-from graphql_extensions.exceptions import GraphQLError
 from graphql_extensions.auth.decorators import login_required
+from graphql_extensions.exceptions import GraphQLError
 
 from api.models.program import Place, Category, Difficulty
 from api.models.program import Presentation
@@ -88,6 +86,7 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
         schedule = Schedule.objects.last()
         is_update = Presentation.objects.filter(owner=user).exists()
         now = timezone.now()
+        from django.utils.translation import ugettext_lazy as _
         if is_update and schedule.presentation_proposal_finish_at and \
                 schedule.presentation_proposal_finish_at < now:
             raise GraphQLError(_('발표 제안 기간이 종료되었습니다.'))

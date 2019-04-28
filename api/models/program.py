@@ -1,8 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from model_utils.managers import InheritanceManager
 
 
 class Place(models.Model):
@@ -87,4 +84,3 @@ class Presentation(Program):
 
     def __str__(self):
         return f'{self.owner}/{self.name}'
-
