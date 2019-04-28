@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 from django.utils.translation import ugettext_lazy as _
-# from .utils import load_permitted_settings_from_ini
+from .utils import load_permitted_settings_from_ini
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -147,6 +147,11 @@ LANGUAGES = (
     ('en', _('English')),
 )
 LANGUAGE_CODE = 'ko'
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ko'
 MODELTRANSLATION_LANGUAGES = ('ko', 'en')
 
@@ -174,3 +179,8 @@ CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
     ('* * * * *', 'pyconkr.cron.my_cron_job', '>> /web/cron.log')
 ]
+
+PERMITTED_SETTINGS_PATH = '/etc/pyconkr-conf/permitted_settings.ini'
+PERMITTED_SETTINGS = {}
+if os.path.isfile(PERMITTED_SETTINGS_PATH):
+    PERMITTED_SETTINGS = load_permitted_settings_from_ini(PERMITTED_SETTINGS_PATH)

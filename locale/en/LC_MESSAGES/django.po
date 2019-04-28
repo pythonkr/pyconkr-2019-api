@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-26 17:55+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: api/schemas/presentation.py:103
+msgid "발표 제안 기간이 종료되었습니다."
+msgstr "Call for proposal period is over."
+
+#: api/schemas/presentation.py:106
+msgid "발표 모집이 아직 시작되지 않았습니다."
+msgstr "Call for proposal is opened yet."
+
+#: api/schemas/presentation.py:108
+msgid "오픈 리뷰 중에는 제안서를 수정할 수 없습니다."
+msgstr "Proposals can not be edited during an open review."
+
+#: api/schemas/ticket.py:50
+msgid "얼리버드 티켓이 모두 판매되었습니다."
+msgstr "Earlybird ticket is sold out."
+
+#: api/schemas/ticket.py:53
+msgid "얼리버드 티켓 판매가 아직 시작되지 않았습니다."
+msgstr "Earlybird ticket sales have not started yet."
+
+#: api/schemas/ticket.py:56
+msgid "얼리버드 티켓 판매가 종료되었습니다."
+msgstr "The earlybird ticket sales period is over."
+
+#: api/schemas/ticket.py:71
+#, fuzzy
+#| msgid "결재가 실패했습니다."
+msgid "결제가 실패했습니다."
+msgstr "Payment has failed."
+
+#: pyconkr/settings.py:146
+msgid "Korean"
+msgstr ""
+
+#: pyconkr/settings.py:147
+msgid "English"
+msgstr ""
