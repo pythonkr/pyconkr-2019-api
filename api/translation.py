@@ -31,7 +31,7 @@ class DifficultyTranslationOptions(TranslationOptions):
 
 @register(Program)
 class ProgramTranslationOptions(TranslationOptions):
-    fields = ('name', 'desc',)
+    fields = ('name', 'desc')
 
 
 @register(Presentation)

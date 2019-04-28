@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import get_current_timezone, now
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
-from api.models.program import Presentation, PresentationProposal
+from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.tests.base import BaseTestCase
 from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL
@@ -75,12 +75,12 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(proposal['duration'], 'LONG')
         self.assertEqual(proposal['language'], 'ENGLISH')
 
-        self.assertEqual(self.user.presentation.proposal.name, '흥미로운 GraphQL')
+        self.assertEqual(self.user.presentation.name, '흥미로운 GraphQL')
         self.assertEqual(self.user.presentation.category.id, 2)
         self.assertEqual(self.user.presentation.difficulty.id, 2)
-        self.assertEqual(self.user.presentation.proposal.background_desc, '자바')
-        self.assertEqual(self.user.presentation.proposal.duration, Presentation.DURATION_LONG)
-        self.assertEqual(self.user.presentation.proposal.language, Presentation.LANGUAGE_ENGLISH)
+        self.assertEqual(self.user.presentation.background_desc, '자바')
+        self.assertEqual(self.user.presentation.duration, Presentation.DURATION_LONG)
+        self.assertEqual(self.user.presentation.language, Presentation.LANGUAGE_ENGLISH)
 
     def test_update_proposal_second_step(self):
         Presentation.objects.create(owner=self.user, name='흥미로운 GraphQL')
@@ -108,94 +108,12 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(proposal['isPresentedBefore'], True)
         self.assertEqual(proposal['placePresentedBefore'], place_presented_before)
         self.assertEqual(proposal['presentedSlideUrlBefore'], presented_slide_url_before)
-        self.assertEqual(proposal['comment'], comment)
 
-        proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
-        self.assertEqual(proposal_model.detail_desc, detail_desc)
-        self.assertEqual(proposal_model.is_presented_before, True)
-        self.assertEqual(proposal_model.place_presented_before, place_presented_before)
-        self.assertEqual(proposal_model.presented_slide_url_before, presented_slide_url_before)
-        self.assertEqual(proposal_model.comment, comment)
-
-    def test_update_proposal_third_step(self):
-        Presentation.objects.create(owner=self.user, name='흥미로운 GraphQL')
-
-        variables = {
-            'data': {
-                'isCocAgreed': True,
-                'isContentsAgreed': True,
-                'isEtcAgreed': True
-            }
-        }
-
-        response = self.client.execute(CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, variables)
-        data = response.data
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertTrue(data['createOrUpdatePresentationProposal']['isAgreed'])
-
-        proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
-        self.assertTrue(proposal_model.is_agreed_all())
-
-    def test_update_proposal_third_step_not_checked_all_1(self):
-        Presentation.objects.create(owner=self.user, name='흥미로운 GraphQL')
-
-        variables = {
-            'data': {
-                'isCocAgreed': False,
-                'isContentsAgreed': True,
-                'isEtcAgreed': True
-            }
-        }
-
-        response = self.client.execute(CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, variables)
-        data = response.data
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
-
-        proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
-        self.assertFalse(proposal_model.is_agreed_all())
-
-    def test_update_proposal_third_step_not_checked_all_2(self):
-        Presentation.objects.create(owner=self.user, name='흥미로운 GraphQL')
-
-        variables = {
-            'data': {
-                'isCocAgreed': True,
-                'isContentsAgreed': False,
-                'isEtcAgreed': True
-            }
-        }
-
-        response = self.client.execute(CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, variables)
-        data = response.data
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
-
-        proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
-        self.assertFalse(proposal_model.is_agreed_all())
-
-    def test_update_proposal_third_step_not_checked_all_3(self):
-        Presentation.objects.create(owner=self.user, name='흥미로운 GraphQL')
-
-        variables = {
-            'data': {
-                'isCocAgreed': True,
-                'isContentsAgreed': True,
-                'isEtcAgreed': False
-            }
-        }
-
-        response = self.client.execute(CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, variables)
-        data = response.data
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
-        self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
-
-        proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
-        self.assertFalse(proposal_model.is_agreed_all())
+        presentation = Presentation.objects.get(owner=self.user)
+        self.assertEqual(presentation.detail_desc, detail_desc)
+        self.assertEqual(presentation.is_presented_before, True)
+        self.assertEqual(presentation.place_presented_before, place_presented_before)
+        self.assertEqual(presentation.presented_slide_url_before, presented_slide_url_before)
 
     def test_update_proposal_submit(self):
         Presentation.objects.create(owner=self.user, name='흥미로운 GraphQL')
@@ -210,7 +128,6 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = response.data
         self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
-        self.assertFalse(data['createOrUpdatePresentationProposal']['isAgreed'])
 
-        proposal_model = PresentationProposal.objects.get(presentation__owner=self.user)
-        self.assertFalse(proposal_model.is_agreed_all())
+        presentation = Presentation.objects.get(owner=self.user)
+        self.assertTrue(presentation.submitted)

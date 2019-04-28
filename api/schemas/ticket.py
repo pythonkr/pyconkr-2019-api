@@ -10,12 +10,12 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from api.models.schedule import Schedule
-from api.models.ticket import EarlyBirdTicket, TicketSetting
+from api.models.ticket import ConferenceTicket, TicketSetting
 
 
 class EarlyBirdTicketNode(DjangoObjectType):
     class Meta:
-        model = EarlyBirdTicket
+        model = ConferenceTicket
         description = """
         EarlyBirdTicket
         """
@@ -44,7 +44,7 @@ class BuyEarlyBirdTicket(graphene.Mutation):
         schedule = Schedule.objects.last()
         ticket_setting = TicketSetting.objects.last()
         remain_ticket_cnt = ticket_setting.early_bird_ticket_cnt - \
-                            EarlyBirdTicket.objects.filter(
+                            ConferenceTicket.objects.filter(
                                 paid_at__isnull=False, is_refund=False).count()
         if remain_ticket_cnt <= 0:
             raise GraphQLError(_('얼리버드 티켓이 모두 판매되었습니다.'))
@@ -63,15 +63,13 @@ class BuyEarlyBirdTicket(graphene.Mutation):
             amount=amount,
             **payment
         )
-        if amount != response['amount']:
-            pass
-        if name != response['name']:
-            pass
         if response['status'] != 'paid':
             raise GraphQLError(_('결제가 실패했습니다.'))
 
-        ticket = EarlyBirdTicket.objects.create(
+        ticket = ConferenceTicket.objects.create(
             owner=info.context.user,
+            type=ConferenceTicket.TYPE_EARLYBIRD,
+            amount=response['amount'],
             imp_uid=response['imp_uid'],
             pg_tid=response['pg_tid'],
             receipt_url=response['receipt_url'],

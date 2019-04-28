@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 
 # pylint: disable=invalid-name
 UserModel = get_user_model()
+
 
 class TicketSetting(models.Model):
     early_bird_ticket_cnt = models.IntegerField(
@@ -23,8 +25,11 @@ class TicketSetting(models.Model):
     )
 
 
-
 class TransactionMixin(models.Model):
+    amount = models.IntegerField(
+        default=0,
+        help_text='아이엠포트를 통해 결재한 가격입니다.'
+    )
     imp_uid = models.CharField(max_length=255, null=True, blank=True,
                                help_text='아이엠포트 uid입니다. 이 값은 환불 시에 사용됩니다.')
     pg_tid = models.CharField(max_length=127, null=True, blank=True,
@@ -39,7 +44,17 @@ class TransactionMixin(models.Model):
         abstract = True
 
 
-class EarlyBirdTicket(TransactionMixin, models.Model):
+class ConferenceTicket(TransactionMixin, models.Model):
+    TYPE_EARLYBIRD = 'E'
+    TYPE_REGULAR = 'R'
+    TYPE_PATRON = 'P'
+    type = models.CharField(max_length=1,
+                            choices=(
+                                (TYPE_REGULAR, _('일반')),
+                                (TYPE_EARLYBIRD, _('얼리버드')),
+                                (TYPE_PATRON, _('개인후원')),
+                            ), default=TYPE_REGULAR)
     owner = models.OneToOneField(UserModel, null=True, on_delete=models.CASCADE)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

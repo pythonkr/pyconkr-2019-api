@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import get_current_timezone
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
-from api.models import EarlyBirdTicket
+from api.models import ConferenceTicket
 from api.tests.base import BaseTestCase
 from api.tests.scheme.ticket_queries import BUY_EARLY_BIRD_TICKET
 
@@ -55,4 +55,4 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(data['buyEarlyBirdTicket']['ticket']['pgTid'], 'pg_tid')
         self.assertIsNotNone(data['buyEarlyBirdTicket']['ticket']['receiptUrl'])
 
-        self.assertEqual(1, EarlyBirdTicket.objects.all().count())
+        self.assertEqual(1, ConferenceTicket.objects.all().count())

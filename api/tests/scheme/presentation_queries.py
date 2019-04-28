@@ -26,8 +26,6 @@ query getMyPresentationProposal {
         isPresentedBefore
         placePresentedBefore
         presentedSlideUrlBefore
-        comment
-        isAgreed
         recordable
         submitted
         accepted
@@ -47,7 +45,6 @@ mutation createOrUpdatePresentationProposal($data: PresentationProposalInput!) {
             isPresentedBefore
             placePresentedBefore
             presentedSlideUrlBefore
-            comment
             submitted
             category {
                 id
@@ -63,9 +60,7 @@ mutation createOrUpdatePresentationProposal($data: PresentationProposalInput!) {
                 nameKo
                 nameEn
             }
-            isAgreed
         }
-        isAgreed
     }
 }
 '''

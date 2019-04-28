@@ -6,13 +6,13 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 
-from api.models import EarlyBirdTicket, TicketSetting
+from api.models import TicketSetting, ConferenceTicket
 from api.models.agreement import Agreement
 from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
 from api.models.program import Place, Category, Difficulty
-from api.models.program import Presentation, PresentationProposal
+from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
 
@@ -112,18 +112,18 @@ admin.site.register(Schedule, ScheduleAdmin)
 
 
 class PresentationResource(resources.ModelResource):
-    submitted = fields.Field(column_name='submitted', attribute='proposal__submitted')
-    accepted = fields.Field(column_name='accepted', attribute='proposal__accepted')
+    submitted = fields.Field(column_name='submitted', attribute='submitted')
+    accepted = fields.Field(column_name='accepted', attribute='accepted')
     detail_desc = fields.Field(column_name='detail_desc',
-                               attribute='proposal__detail_desc')
+                               attribute='detail_desc')
     is_presented_before = fields.Field(column_name='is_presented_before',
-                                       attribute='proposal__is_presented_before')
+                                       attribute='is_presented_before')
     place_presented_before = fields.Field(column_name='place_presented_before',
-                                          attribute='proposal__place_presented_before')
+                                          attribute='place_presented_before')
     presented_slide_url_before = fields.Field(column_name='presented_slide_url_before',
-                                              attribute='proposal__presented_slide_url_before')
-    created_at = fields.Field(column_name='created_at', attribute='proposal__created_at')
-    updated_at = fields.Field(column_name='updated_at', attribute='proposal__updated_at')
+                                              attribute='presented_slide_url_before')
+    created_at = fields.Field(column_name='created_at', attribute='created_at')
+    updated_at = fields.Field(column_name='updated_at', attribute='updated_at')
     owner = fields.Field(column_name='owner', attribute='owner__profile__name')
     category = fields.Field(column_name='category', attribute='category__name')
     difficulty = fields.Field(column_name='category', attribute='difficulty__name')
@@ -132,21 +132,14 @@ class PresentationResource(resources.ModelResource):
         model = Presentation
 
 
-class PresentationProposalInline(admin.StackedInline):
-    model = PresentationProposal
-    can_delete = False
-    verbose_name_plural = 'proposal'
-
-
 class PresentationAdmin(ImportExportModelAdmin):
     resource_class = PresentationResource
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
-    inlines = (PresentationProposalInline,)
     list_filter = (
         'language',
-        ('proposal__submitted', admin.BooleanFieldListFilter),
-        ('proposal__accepted', admin.BooleanFieldListFilter),
+        ('submitted', admin.BooleanFieldListFilter),
+        ('accepted', admin.BooleanFieldListFilter),
         ('category', admin.RelatedOnlyFieldListFilter),
         ('difficulty', admin.RelatedOnlyFieldListFilter),
         ('place', admin.RelatedOnlyFieldListFilter),
@@ -250,7 +243,7 @@ class TicketSettingAdmin(admin.ModelAdmin):
 admin.site.register(TicketSetting, TicketSettingAdmin)
 
 
-class EarlyBirdTicketAdmin(admin.ModelAdmin):
+class ConferenceTicketAdmin(admin.ModelAdmin):
     list_display = ('owner_profile', 'paid_at', 'imp_uid', 'pg_tid', 'is_refund')
 
     def owner_profile(self, obj):
@@ -260,4 +253,4 @@ class EarlyBirdTicketAdmin(admin.ModelAdmin):
         return ''
 
 
-admin.site.register(EarlyBirdTicket, EarlyBirdTicketAdmin)
+admin.site.register(ConferenceTicket, ConferenceTicketAdmin)
