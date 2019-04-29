@@ -1,6 +1,6 @@
-BUY_EARLY_BIRD_TICKET = '''
-mutation BuyEarlyBirdTicket($payment: PaymentInput!) {
-    buyEarlyBirdTicket(payment: $payment) {
+BUY_TICKET = '''
+mutation BuyTicket($productId: ID, $payment: PaymentInput!, $options: JSONString) {
+    buyTicket(productId:$productId, payment: $payment, options:$options) {
         ticket{
           id
           impUid

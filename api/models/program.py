@@ -49,6 +49,7 @@ class Program(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+
 class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'

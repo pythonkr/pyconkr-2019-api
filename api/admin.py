@@ -6,7 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 
-from api.models import TicketSetting, ConferenceTicket
+from api.models import TicketProduct, Ticket
 from api.models.agreement import Agreement
 from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
@@ -235,16 +235,10 @@ class NoticeAdmin(admin.ModelAdmin):
 admin.site.register(Notice, NoticeAdmin)
 
 
-class TicketSettingAdmin(admin.ModelAdmin):
-    list_display = ('early_bird_ticket_cnt', 'early_bird_ticket_price',
-                    'conference_ticket_cnt', 'conference_ticket_price')
-
-
-admin.site.register(TicketSetting, TicketSettingAdmin)
-
-
-class ConferenceTicketAdmin(admin.ModelAdmin):
-    list_display = ('owner_profile', 'paid_at', 'imp_uid', 'pg_tid', 'is_refund')
+class TicketProductAdmin(admin.ModelAdmin):
+    list_display = ('type', 'name', 'desc', 'total', 'owner_profile', 'price',
+                    'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
+                    'ticket_open_at', 'ticket_close_at')
 
     def owner_profile(self, obj):
         if obj.owner:
@@ -253,4 +247,17 @@ class ConferenceTicketAdmin(admin.ModelAdmin):
         return ''
 
 
-admin.site.register(ConferenceTicket, ConferenceTicketAdmin)
+admin.site.register(TicketProduct, TicketProductAdmin)
+
+
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('owner_profile', 'product', 'is_foreign', 'amount', 'status',
+                    'imp_uid', 'paid_at', 'options')
+
+    def owner_profile(self, obj):
+        if obj.owner:
+            profile, _ = Profile.objects.get_or_create(user=obj.owner)
+            return profile
+        return ''
+
+admin.site.register(Ticket, TicketAdmin)
