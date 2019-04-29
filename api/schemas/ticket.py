@@ -5,11 +5,19 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 from iamporter import Iamporter
 
 from api.models.ticket import TransactionMixin, TicketProduct, Ticket
+
+
+class TicketProductNode(DjangoObjectType):
+    class Meta:
+        model = TicketProduct
+        filter_fields = ['type']
+        interfaces = (graphene.relay.Node,)
 
 
 class TicketNode(DjangoObjectType):
@@ -86,4 +94,4 @@ class Mutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    pass
+    ticket_products = DjangoFilterConnectionField(TicketProductNode)
