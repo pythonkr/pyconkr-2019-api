@@ -124,4 +124,5 @@ def send_slack_notification_sponsor_created(sender, instance, created, raw, usin
     if check_attr(instance, 'name') and check_attr(instance, 'level'):
         to_channel = "#sponsor"
         message = "%s sponsor requested with %s level" % (instance.name, instance.level)
+        print(message)
         notify_slack(to_channel, message)

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import graphene
-from django.conf import settings
+from constance import config
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
@@ -29,7 +29,7 @@ class TicketNode(DjangoObjectType):
 
 
 class PaymentInput(graphene.InputObjectType):
-    is_foreigner = graphene.Boolean()
+    is_domestic_card = graphene.Boolean()
     card_number = graphene.String()
     expiry = graphene.String()
     birth = graphene.String()
@@ -46,11 +46,14 @@ class BuyTicket(graphene.Mutation):
 
     @login_required
     def mutate(self, info, product_id, payment, options):
-        permitted_settings = settings.PERMITTED_SETTINGS
-        if not permitted_settings:
-            raise GraphQLError(f'{settings.PERMITTED_SETTINGS_PATH}가 설정되어 있지 않습니다.')
-        client = Iamporter(imp_key=permitted_settings['IMP_KEY'],
-                           imp_secret=permitted_settings['IMP_SECRET'])
+        if not config.IMP_DOM_API_KEY or not config.IMP_INTL_API_KEY:
+            raise GraphQLError(f'아이엠포트 계정 정보가 설정되어 있지 않습니다.')
+        if payment.is_domestic_card:
+            client = Iamporter(imp_key=config.IMP_DOM_API_KEY,
+                               imp_secret=config.IMP_DOM_API_SECRET)
+        else:
+            client = Iamporter(imp_key=config.IMP_INTL_API_KEY,
+                               imp_secret=config.IMP_INTL_API_SECRET)
         try:
             product = TicketProduct.objects.get(pk=product_id)
         except TicketProduct.DoesNotExist:

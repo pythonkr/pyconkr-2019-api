@@ -11,12 +11,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+
 from django.utils.translation import ugettext_lazy as _
-from .utils import load_permitted_settings_from_ini
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -40,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_crontab',
-) + (
     # thirt-party apps
     'corsheaders',
     'graphene_django',
@@ -48,11 +46,9 @@ INSTALLED_APPS = (
     'import_export',
     'constance',
     'constance.backends.database',
-) + (
     # local apps
     'api',
 )
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -87,7 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pyconkr.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -103,7 +98,6 @@ DATABASES = {
         'PORT': 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -133,7 +127,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -189,12 +182,26 @@ CRONJOBS = [
 ]
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
 CONSTANCE_CONFIG = {
-            'THE_ANSWER': (42, 'Answer to the Ultimate Question of Life, '
-                'The Universe, and Everything'),
+    'IMP_DOM_USER_CODE': ('', '아임포트 국내용 유저 번호'),
+    'IMP_DOM_API_KEY': ('', '아임포트 국내용 API KEY'),
+    'IMP_DOM_API_SECRET': ('', '아임포트 국내용 API SECRET'),
+    'IMP_INTL_USER_CODE': ('', '아임포트 해외용 유저 번호'),
+    'IMP_INTL_API_KEY': ('', '아임포트 해외용 API KEY'),
+    'IMP_INTL_API_SECRET': ('', '아임포트 해외용 API SECRET'),
+    'EMAIL_USE_TLS': (True, '이메일 서버 TLS 사용 여부', bool),
+    'EMAIL_HOST': ('email-smtp.us-west-2.amazonaws.com', '이메일 서버 Hostname'),
+    'EMAIL_PORT': (587, '이메일 서버 Port', int),
+    'EMAIL_HOST_USER': ('', '이메일 서버 Username'),
+    'EMAIL_HOST_PASSWORD': ('', '이메일 서버 Password'),
+    'SLACK_TOKEN': ('', 'Notification용 Slack Token'),
 }
 
-PERMITTED_SETTINGS_PATH = '/etc/pyconkr-conf/permitted_settings.ini'
-PERMITTED_SETTINGS = {}
-if os.path.isfile(PERMITTED_SETTINGS_PATH):
-    PERMITTED_SETTINGS = load_permitted_settings_from_ini(PERMITTED_SETTINGS_PATH)
+CONSTANCE_CONFIG_FIELDSETS = {
+    'iamport': ('IMP_DOM_USER_CODE', 'IMP_DOM_API_KEY', 'IMP_DOM_API_SECRET',
+                'IMP_INTL_USER_CODE', 'IMP_INTL_API_KEY', 'IMP_INTL_API_SECRET'),
+    'SMTP': ('EMAIL_USE_TLS', 'EMAIL_HOST', 'EMAIL_PORT',
+             'EMAIL_HOST_USER', 'EMAIL_HOST_PASSWORD'),
+    'slack': ('SLACK_TOKEN',),
+}

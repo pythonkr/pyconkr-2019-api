@@ -22,9 +22,9 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             email='me@pycon.kr')
         self.client.authenticate(self.user)
 
-    @mock.patch('api.schemas.ticket.settings')
+    @mock.patch('api.schemas.ticket.config')
     @mock.patch('api.schemas.ticket.Iamporter', autospec=True)
-    def test_buy_early_bird_ticket(self, mock_iamporter, mock_settings):
+    def test_buy_early_bird_ticket(self, mock_iamporter, mock_config):
         # Given
         product = TicketProduct(
             name='얼리버드 티켓', total=3,
@@ -32,9 +32,11 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         product.ticket_open_at = now() - timedelta(days=2)
         product.ticket_close_at = now() + timedelta(days=2)
         product.save()
-        mock_settings.return_value = {
-            'IMP_KEY': 'KEY',
-            'IMP_SECRET': 'SECRET'
+        mock_config.return_value = {
+            'IMP_DOM_API_KEY': 'KEY',
+            'IMP_DOM_API_SECRET': 'SECRET',
+            'IMP_INTL_API_KEY': 'KEY',
+            'IMP_INTL_API_SECRET': 'SECRET'
         }
         iamporter_instance = mock_iamporter.return_value
         iamporter_instance.create_payment.return_value = {

@@ -1,7 +1,7 @@
 import hashlib
 from functools import partial
 from slacker import Slacker
-from django.conf import settings
+from constance import config
 
 
 def hash_file(file, block_size=65536):
@@ -13,11 +13,11 @@ def hash_file(file, block_size=65536):
 
 
 def notify_slack(channel, message):
-    if not hasattr(settings, "SLACK_TOKEN"):
+    if not config.SLACK_TOKEN:
         return False
     try:
-        slack = Slacker(settings.SLACK_TOKEN)
-        slack.chat.post_message(channel, message)
+        slack = Slacker(config.SLACK_TOKEN)
+        slack.chat.post_message(channel, text=message)
         # TODO need to logging more
     except:
         return False

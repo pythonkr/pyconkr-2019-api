@@ -17,8 +17,8 @@ cryptography==2.4.2
 defusedxml==0.6.0
 diff-match-patch==20181111
 Django==2.2
-django-cors-headers==2.4.0
 django-constance==2.4.0
+django-cors-headers==2.4.0
 django-crontab==0.7.1
 django-filter==2.1.0
 django-graphql-extensions==0.0.6
@@ -46,7 +46,7 @@ invoke==1.2.0
 isort==4.3.4
 itypes==1.1.0
 jdcal==1.4
-Jinja2>=2.10.1
+Jinja2==2.10.1
 lazy-object-proxy==1.3.1
 MarkupSafe==1.1.0
 mccabe==0.6.1
@@ -87,7 +87,7 @@ tablib==0.13.0
 typed-ast==1.3.1
 unittest-xml-reporting==2.2.0
 uritemplate==3.0.0
-urllib3>=1.24.2
+urllib3==1.24.2
 wrapt==1.10.11
 xlrd==1.2.0
 xlwt==1.3.0

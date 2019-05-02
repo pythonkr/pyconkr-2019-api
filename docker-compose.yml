@@ -13,7 +13,6 @@ services:
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-pyconkr.staging_settings}
     volumes:
       - .:/web
-      - ${CONFIG:-./pyconkr-conf}:/etc/pyconkr-conf
       - ${MEDIA_VOLUME:-./media}:/media
       - ${STATIC_VOLUME:-./static}:/static
       - ${LOG_VOLUME:-./log}:/log
