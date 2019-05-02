@@ -46,6 +46,8 @@ INSTALLED_APPS = (
     'graphene_django',
     'sorl.thumbnail',
     'import_export',
+    'constance',
+    'constance.backends.database',
 ) + (
     # local apps
     'api',
@@ -185,6 +187,12 @@ CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
     ('* * * * *', 'pyconkr.cron.my_cron_job', '>> /web/cron.log')
 ]
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+            'THE_ANSWER': (42, 'Answer to the Ultimate Question of Life, '
+                'The Universe, and Everything'),
+}
 
 PERMITTED_SETTINGS_PATH = '/etc/pyconkr-conf/permitted_settings.ini'
 PERMITTED_SETTINGS = {}
