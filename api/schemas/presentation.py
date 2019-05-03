@@ -4,9 +4,11 @@ from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 
+from api.models import CFPReview
 from api.models.program import Place, Category, Difficulty
 from api.models.program import Presentation
 from api.models.schedule import Schedule
+from api.schemas.common import SeoulDateTime
 from api.schemas.user import UserNode
 
 
@@ -49,14 +51,35 @@ class PresentationProposalNode(DjangoObjectType):
     class Meta:
         model = Presentation
 
-    name = graphene.String()
     owner = graphene.Field(UserNode)
-    background_desc = graphene.String()
     language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
     category = graphene.Field(CategoryNode)
     difficulty = graphene.Field(DifficultyNode)
-    recordable = graphene.Boolean()
+
+
+class ProposalForReviewNode(DjangoObjectType):
+    class Meta:
+        model = Presentation
+        only_fields = ('name', 'name_ko', 'name_en', 'background_desc', 'detail_desc',
+                       'language', 'duration', 'category', 'difficulty')
+        description = """
+        리뷰를 위한 CFP Node입니다. 제안자를 제외하고 리뷰에 필요한 필드만 제공합니다.
+        """
+
+    language = graphene.Field(LanguageNode)
+    duration = graphene.Field(DurationNode)
+    category = graphene.Field(CategoryNode)
+    difficulty = graphene.Field(DifficultyNode)
+
+
+class ReviewNode(DjangoObjectType):
+    class Meta:
+        model = CFPReview
+
+    presentation = graphene.Field(ProposalForReviewNode)
+    submitted_at = graphene.Field(SeoulDateTime)
+    submitted = graphene.Boolean()
 
 
 class PresentationProposalInput(graphene.InputObjectType):
@@ -112,19 +135,35 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
         return CreateOrUpdatePresentationProposal(proposal=presentation)
 
 
+class AssignCFPReview(graphene.Mutation):
+    reviews = graphene.List(ReviewNode)
+
+    class Arguments:
+        category_ids = graphene.List(graphene.ID, required=True)
+        language_ids = graphene.List(graphene.ID, required=True)
+
+    @login_required
+    def mutate(self, info, category_ids, language_ids):
+        return []
+
+
 class Mutations(graphene.ObjectType):
     create_or_update_presentation_proposal = CreateOrUpdatePresentationProposal.Field()
+    assign_cfp_review = AssignCFPReview.Field()
 
 
 class Query(graphene.ObjectType):
     categories = graphene.List(CategoryNode)
     difficulties = graphene.List(DifficultyNode)
 
-    presentation_proposals = graphene.List(PresentationProposalNode)
     my_presentation_proposal = graphene.Field(PresentationProposalNode)
+    assigned_reviews = graphene.List(ReviewNode)
 
-    def resolve_presentation_proposals(self, info):
-        return Presentation.objects.filter(submitted=True)
+    def resolve_categories(self, info):
+        return Category.objects.filter(visible=True)
+
+    def resolve_difficulties(self, info):
+        return Difficulty.objects.all()
 
     @login_required
     def resolve_my_presentation_proposal(self, info):
@@ -134,8 +173,7 @@ class Query(graphene.ObjectType):
         except Presentation.DoesNotExist:
             return None
 
-    def resolve_categories(self, info):
-        return Category.objects.filter(visible=True)
-
-    def resolve_difficulties(self, info):
-        return Difficulty.objects.all()
+    @login_required
+    def resolve_assigned_proposal(self, info):
+        user = info.context.user
+        return CFPReview.objects.filter(owner=user)
