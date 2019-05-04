@@ -141,7 +141,7 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
         return CreateOrUpdatePresentationProposal(proposal=presentation)
 
 
-class AssignCFPReview(graphene.Mutation):
+class AssignCFPReviews(graphene.Mutation):
     reviews = graphene.List(ReviewNode)
 
     class Arguments:
@@ -156,7 +156,7 @@ class AssignCFPReview(graphene.Mutation):
         user = info.context.user
         exist_reviews = CFPReview.objects.filter(owner=user)
         if exist_reviews.count() > 0:
-            return AssignCFPReview(exist_reviews)
+            return AssignCFPReviews(exist_reviews)
         target_presentations = Presentation.objects.filter(submitted=True, category__in=category_ids).exclude(
             owner=user)
         if languages:
@@ -165,7 +165,7 @@ class AssignCFPReview(graphene.Mutation):
             raise GraphQLError(_('선택한 카테고리에 리뷰할 제안서가 없습니다. 다시 카테고리를 선택해주세요.'))
 
         reviews = assign_reviews(user, target_presentations)
-        return AssignCFPReview(reviews)
+        return AssignCFPReviews(reviews)
 
 
 def assign_reviews(user, target_presentations):
@@ -185,10 +185,26 @@ def assign_reviews(user, target_presentations):
             break
     return reviews
 
+class ReviewInput(graphene.InputObjectType):
+    id = graphene.ID()
+    comment = graphene.String()
+
+class SubmitCFPReviews(graphene.Mutation):
+    success = graphene.Boolean()
+
+    class Arguments:
+        reviews = graphene.List(ReviewInput, required=True)
+
+    @login_required
+    def mutate(self, info, reviews):
+        # user = info.context.user
+        return SubmitCFPReviews(success=True)
+
 
 class Mutations(graphene.ObjectType):
     create_or_update_presentation_proposal = CreateOrUpdatePresentationProposal.Field()
-    assign_cfp_review = AssignCFPReview.Field()
+    assign_cfp_reviews = AssignCFPReviews.Field()
+    submit_cfp_reviews = SubmitCFPReviews.Field()
 
 
 class Query(graphene.ObjectType):
@@ -197,6 +213,7 @@ class Query(graphene.ObjectType):
 
     my_presentation_proposal = graphene.Field(PresentationProposalNode)
     assigned_reviews = graphene.List(ReviewNode)
+    is_review_submitted = graphene.Boolean()
 
     def resolve_categories(self, info):
         return Category.objects.filter(visible=True)
@@ -213,6 +230,14 @@ class Query(graphene.ObjectType):
             return None
 
     @login_required
-    def resolve_assigned_proposal(self, info):
+    def resolve_assigned_reviews(self, info):
         user = info.context.user
         return CFPReview.objects.filter(owner=user)
+
+    @login_required
+    def resolve_is_review_submitted(self, info):
+        user = info.context.user
+        is_submitted = False
+        for review in CFPReview.objects.filter(owner=user):
+            is_submitted = is_submitted or review.submitted
+        return is_submitted

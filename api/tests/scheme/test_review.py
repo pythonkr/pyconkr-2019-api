@@ -5,7 +5,7 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 from api.models import CFPReview
 from api.models.program import Category, Presentation, Difficulty
 from api.tests.base import BaseTestCase
-from api.tests.scheme.review_queries import ASSIGN_CFP_REVIEW
+from api.tests.scheme.review_queries import ASSIGN_CFP_REVIEWS
 
 
 class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
@@ -22,7 +22,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
 
         # When
-        result = self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
+        result = self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
         self.assertIsNotNone(result.errors)
 
     def test_GIVEN_category_ids_one_WHEN_assign_review_THEN_throw_exception(self):
@@ -32,7 +32,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
 
         # When
-        result = self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
+        result = self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
         self.assertIsNotNone(result.errors)
 
     def test_GIVEN_제안서가_없으면_WHEN_assign_review_THEN_throw_exception(self):
@@ -42,7 +42,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
 
         # When
-        result = self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
+        result = self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
         self.assertIsNotNone(result.errors)
 
     def test_WHEN_assign_review_THEN_정의된_개수만큼_리뷰가_할당되고_반환됨(self):
@@ -57,8 +57,8 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
 
         # When
-        result = self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
-        response = result.data['assignCfpReview']
+        result = self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
+        response = result.data['assignCfpReviews']
         self.assertIsNotNone(response)
         self.assertIsNotNone(response['reviews'])
         self.assertEqual(len(response['reviews']), config.CFP_REVIEW_COUNT)
@@ -76,8 +76,8 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
 
         # When
-        result = self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
-        response = result.data['assignCfpReview']
+        result = self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
+        response = result.data['assignCfpReviews']
         self.assertIsNotNone(response)
         self.assertIsNotNone(response['reviews'])
         self.assertEqual(len(response['reviews']), config.CFP_REVIEW_COUNT)
@@ -96,10 +96,10 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
 
         # When
-        result = self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
+        result = self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
 
         # Then
-        response = result.data['assignCfpReview']
+        response = result.data['assignCfpReviews']
         self.assertIsNotNone(response)
         self.assertIsNotNone(response['reviews'])
         self.assertEqual(len(response['reviews']), presentation_cnt)
@@ -118,11 +118,11 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
 
         # When
-        self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
-        result = self.client.execute(ASSIGN_CFP_REVIEW, variables=variables)
+        self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
+        result = self.client.execute(ASSIGN_CFP_REVIEWS, variables=variables)
 
         # Then
-        response = result.data['assignCfpReview']
+        response = result.data['assignCfpReviews']
         self.assertIsNotNone(response)
         self.assertIsNotNone(response['reviews'])
         self.assertEqual(len(response['reviews']), config.CFP_REVIEW_COUNT)
