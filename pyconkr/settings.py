@@ -196,6 +196,8 @@ CONSTANCE_CONFIG = {
     'EMAIL_HOST_USER': ('', '이메일 서버 Username'),
     'EMAIL_HOST_PASSWORD': ('', '이메일 서버 Password'),
     'SLACK_TOKEN': ('', 'Notification용 Slack Token'),
+    'CFP_REVIEW_CATEGORY_MINIMUM': (2, 'CFP 리뷰 시에 최소로 선택할 수 있는 카테고리 개수', int),
+    'CFP_REVIEW_COUNT': (7, '유저당 CFP 리뷰를 할당할 개수', int),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -204,4 +206,5 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'SMTP': ('EMAIL_USE_TLS', 'EMAIL_HOST', 'EMAIL_PORT',
              'EMAIL_HOST_USER', 'EMAIL_HOST_PASSWORD'),
     'slack': ('SLACK_TOKEN',),
+    'CFP': ('CFP_REVIEW_CATEGORY_MINIMUM', 'CFP_REVIEW_COUNT')
 }

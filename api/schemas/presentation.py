@@ -1,4 +1,9 @@
+from itertools import groupby
+from operator import itemgetter
+from random import sample
+
 import graphene
+from constance import config
 from django.utils import timezone
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
@@ -109,6 +114,7 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
         schedule = Schedule.objects.last()
         is_update = Presentation.objects.filter(owner=user).exists()
         now = timezone.now()
+
         from django.utils.translation import ugettext_lazy as _
         if is_update and schedule.presentation_proposal_finish_at and \
                 schedule.presentation_proposal_finish_at < now:
@@ -140,11 +146,44 @@ class AssignCFPReview(graphene.Mutation):
 
     class Arguments:
         category_ids = graphene.List(graphene.ID, required=True)
-        language_ids = graphene.List(graphene.ID, required=True)
+        languages = graphene.List(LanguageNode)
 
     @login_required
-    def mutate(self, info, category_ids, language_ids):
-        return []
+    def mutate(self, info, category_ids, languages):
+        from django.utils.translation import ugettext_lazy as _
+        if len(category_ids) < 2:
+            raise GraphQLError(_('리뷰할 카테고리를 2개 이상 선택해주어야 합니다.'))
+        user = info.context.user
+        exist_reviews = CFPReview.objects.filter(owner=user)
+        if exist_reviews.count() > 0:
+            return AssignCFPReview(exist_reviews)
+        target_presentations = Presentation.objects.filter(submitted=True, category__in=category_ids).exclude(
+            owner=user)
+        if languages:
+            target_presentations = target_presentations.filter(language__in=languages)
+        if not target_presentations:
+            raise GraphQLError(_('선택한 카테고리에 리뷰할 제안서가 없습니다. 다시 카테고리를 선택해주세요.'))
+
+        reviews = assign_reviews(user, target_presentations)
+        return AssignCFPReview(reviews)
+
+
+def assign_reviews(user, target_presentations):
+    presentations_with_review_cnt = [(p, p.cfp_review_set.count()) for p in target_presentations]
+    presentations_with_review_cnt.sort(key=itemgetter(1))
+    groups = groupby(presentations_with_review_cnt, itemgetter(1))
+    presentations_group_by_review_cnt = [[item[0] for item in data] for (key, data) in groups]
+    reviews = []
+    for group in presentations_group_by_review_cnt:
+        num_of_review_to_assign = config.CFP_REVIEW_COUNT - len(reviews)
+        assigned_presentations = group \
+            if len(group) <= num_of_review_to_assign \
+            else sample(group, num_of_review_to_assign)
+        for p in assigned_presentations:
+            reviews.append(CFPReview.objects.create(owner=user, presentation=p))
+        if len(reviews) is config.CFP_REVIEW_COUNT:
+            break
+    return reviews
 
 
 class Mutations(graphene.ObjectType):
