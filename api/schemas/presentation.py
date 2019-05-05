@@ -145,10 +145,9 @@ class AssignCFPReviews(graphene.Mutation):
 
     class Arguments:
         category_ids = graphene.List(graphene.ID, required=True)
-        languages = graphene.List(LanguageNode)
 
     @login_required
-    def mutate(self, info, category_ids, languages):
+    def mutate(self, info, category_ids):
         if len(category_ids) < 2:
             raise GraphQLError(_('리뷰할 카테고리를 2개 이상 선택해주어야 합니다.'))
         user = info.context.user
@@ -157,8 +156,6 @@ class AssignCFPReviews(graphene.Mutation):
             return AssignCFPReviews(exist_reviews)
         target_presentations = Presentation.objects.filter(submitted=True, category__in=category_ids).exclude(
             owner=user)
-        if languages:
-            target_presentations = target_presentations.filter(language__in=languages)
         if not target_presentations:
             raise GraphQLError(_('선택한 카테고리에 리뷰할 제안서가 없습니다. 다시 카테고리를 선택해주세요.'))
 
