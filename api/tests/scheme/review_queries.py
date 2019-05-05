@@ -1,5 +1,5 @@
 ASSIGN_CFP_REVIEWS = '''
-mutation AssignCfpReviews($categoryIds: [ID]!, $languages: [LanguageNode]!) {
+mutation assignCfpReviews($categoryIds: [ID]!, $languages: [LanguageNode]!) {
     assignCfpReviews(categoryIds:$categoryIds, languages: $languages) {
         reviews{
           id
@@ -63,7 +63,7 @@ query getAssignedCfpReviews {
 '''
 
 SUBMIT_CFP_REVIEWS = '''
-mutation SubmitCfpReviews($reviews: [ReviewInput]!) {
+mutation submitCfpReviews($reviews: [ReviewInput]!) {
     submitCfpReviews(reviews:$reviews) {
         success
     }
