@@ -9,7 +9,7 @@ from api.models import CFPReview
 from api.models.program import Category, Presentation, Difficulty
 from api.models.schedule import Schedule
 from api.tests.base import BaseTestCase
-from api.tests.scheme.review_queries import ASSIGN_CFP_REVIEWS, SUBMIT_CFP_REVIEWS
+from api.tests.scheme.review_queries import ASSIGN_CFP_REVIEWS, SUBMIT_CFP_REVIEWS, ASSIGNED_CFP_REVIEWS
 
 
 class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
@@ -232,10 +232,41 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         # Then
         self.assertIsNotNone(result.errors)
 
-    def create_reviews(self, user, presentations):
+    def test_WHEN_assigned_reviews_THEN_정상적으로_반환(self):
+        # Given
+        presentations = self.create_presentations(config.CFP_REVIEW_COUNT, self.category, self.difficulty)
+        reviews = self.create_reviews(self.user, presentations)
+
+        # When
+        result = self.client.execute(ASSIGNED_CFP_REVIEWS)
+
+        # Then
+        self.assertFalse(result.data['isCfpReviewSubmitted'])
+        self.assertIsNotNone(result.data['assignedCfpReviews'])
+        self.assertEqual(len(reviews), len(result.data['assignedCfpReviews']))
+
+    def test_GIVEN_제출한_이후에는_WHEN_assigned_reviews_THEN_정상적으로_반환되고_is_submitted도_true(self):
+        # Given
+        presentations = self.create_presentations(config.CFP_REVIEW_COUNT, self.category, self.difficulty)
+        reviews = self.create_reviews(self.user, presentations, submitted=True)
+
+        # When
+        result = self.client.execute(ASSIGNED_CFP_REVIEWS)
+
+        # Then
+        self.assertTrue(result.data['isCfpReviewSubmitted'])
+        self.assertIsNotNone(result.data['assignedCfpReviews'])
+        self.assertEqual(len(reviews), len(result.data['assignedCfpReviews']))
+
+    def create_reviews(self, user, presentations, submitted=False):
         reviews = []
         for p in presentations:
-            reviews.append(CFPReview.objects.create(owner=user, presentation=p))
+            review = CFPReview(owner=user, presentation=p)
+            if submitted:
+                review.submitted_at = now()
+                review.comment = f'{p.name}_comment'
+            review.save()
+            reviews.append(review)
         return reviews
 
     def create_presentations(self, n, category, difficulty):

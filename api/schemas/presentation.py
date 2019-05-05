@@ -80,7 +80,7 @@ class ProposalForReviewNode(DjangoObjectType):
     difficulty = graphene.Field(DifficultyNode)
 
 
-class ReviewNode(DjangoObjectType):
+class CFPReviewNode(DjangoObjectType):
     class Meta:
         model = CFPReview
 
@@ -141,7 +141,7 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
 
 
 class AssignCFPReviews(graphene.Mutation):
-    reviews = graphene.List(ReviewNode)
+    reviews = graphene.List(CFPReviewNode)
 
     class Arguments:
         category_ids = graphene.List(graphene.ID, required=True)
@@ -232,8 +232,8 @@ class Query(graphene.ObjectType):
     difficulties = graphene.List(DifficultyNode)
 
     my_presentation_proposal = graphene.Field(PresentationProposalNode)
-    assigned_reviews = graphene.List(ReviewNode)
-    is_review_submitted = graphene.Boolean()
+    assigned_cfp_reviews = graphene.List(CFPReviewNode)
+    is_cfp_review_submitted = graphene.Boolean()
 
     def resolve_categories(self, info):
         return Category.objects.filter(visible=True)
@@ -250,12 +250,12 @@ class Query(graphene.ObjectType):
             return None
 
     @login_required
-    def resolve_assigned_reviews(self, info):
+    def resolve_assigned_cfp_reviews(self, info):
         user = info.context.user
         return CFPReview.objects.filter(owner=user)
 
     @login_required
-    def resolve_is_review_submitted(self, info):
+    def resolve_is_cfp_review_submitted(self, info):
         user = info.context.user
         is_submitted = False
         for review in CFPReview.objects.filter(owner=user):
