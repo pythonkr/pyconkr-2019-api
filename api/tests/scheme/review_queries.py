@@ -63,8 +63,8 @@ query getAssignedCfpReviews {
 '''
 
 SUBMIT_CFP_REVIEWS = '''
-mutation SubmitCfpReviews($reviews: [ReviewNode]!) {
-    submitCfpReview(reviews:$reviews) {
+mutation SubmitCfpReviews($reviews: [ReviewInput]!) {
+    submitCfpReviews(reviews:$reviews) {
         success
     }
 }

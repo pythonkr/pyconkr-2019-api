@@ -4,7 +4,9 @@ from random import sample
 
 import graphene
 from constance import config
-from django.utils import timezone
+from django.db import transaction
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
@@ -112,20 +114,17 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
     def mutate(self, info, data):
         user = info.context.user
         schedule = Schedule.objects.last()
-        is_update = Presentation.objects.filter(owner=user).exists()
-        now = timezone.now()
+        presentation, created = Presentation.objects.get_or_create(owner=user)
 
-        from django.utils.translation import ugettext_lazy as _
-        if is_update and schedule.presentation_proposal_finish_at and \
-                schedule.presentation_proposal_finish_at < now:
+        if created and schedule.presentation_proposal_finish_at and \
+                schedule.presentation_proposal_finish_at < now():
             raise GraphQLError(_('발표 제안 기간이 종료되었습니다.'))
         if not schedule.presentation_proposal_start_at or \
-                schedule.presentation_proposal_start_at > now:
+                schedule.presentation_proposal_start_at > now():
             raise GraphQLError(_('발표 모집이 아직 시작되지 않았습니다.'))
-        if schedule.presentation_review_start_at < now < schedule.presentation_review_finish_at:
+        if schedule.presentation_review_start_at < now() < schedule.presentation_review_finish_at:
             raise GraphQLError(_('오픈 리뷰 중에는 제안서를 수정할 수 없습니다.'))
 
-        presentation, _ = Presentation.objects.get_or_create(owner=user)
         if 'category_id' in data:
             presentation.category = Category.objects.get(
                 pk=data['category_id'])
@@ -150,7 +149,6 @@ class AssignCFPReviews(graphene.Mutation):
 
     @login_required
     def mutate(self, info, category_ids, languages):
-        from django.utils.translation import ugettext_lazy as _
         if len(category_ids) < 2:
             raise GraphQLError(_('리뷰할 카테고리를 2개 이상 선택해주어야 합니다.'))
         user = info.context.user
@@ -185,9 +183,11 @@ def assign_reviews(user, target_presentations):
             break
     return reviews
 
+
 class ReviewInput(graphene.InputObjectType):
     id = graphene.ID()
     comment = graphene.String()
+
 
 class SubmitCFPReviews(graphene.Mutation):
     success = graphene.Boolean()
@@ -195,9 +195,29 @@ class SubmitCFPReviews(graphene.Mutation):
     class Arguments:
         reviews = graphene.List(ReviewInput, required=True)
 
+    @transaction.atomic
     @login_required
     def mutate(self, info, reviews):
-        # user = info.context.user
+        user = info.context.user
+        schedule = Schedule.objects.last()
+        if schedule.presentation_review_finish_at and \
+                schedule.presentation_review_finish_at < now():
+            raise GraphQLError(_('오픈 리뷰 기간이 종료되었습니다.'))
+        if not schedule.presentation_review_start_at or \
+                schedule.presentation_review_start_at > now():
+            raise GraphQLError(_('오픈 리뷰가 아직 시작되지 않았습니다.'))
+
+        assigned_cnt = CFPReview.objects.filter(owner=user).count()
+        if config.CFP_REVIEW_COUNT != len(reviews) or len(reviews) != assigned_cnt:
+            raise GraphQLError(_('할당된 리뷰는 한번에 제출되어야 합니다.'))
+        for r in reviews:
+            review = CFPReview.objects.get(pk=r.id)
+            if review.owner != user:
+                raise GraphQLError(_('제출된 리뷰가 사용자에게 할당된 리뷰가 아닙니다.'))
+            review.comment = r.comment
+            review.submitted_at = now()
+            review.save()
+
         return SubmitCFPReviews(success=True)
 
 
