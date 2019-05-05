@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-04 17:09+0900\n"
+"POT-Creation-Date: 2019-05-05 16:41+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,15 +42,15 @@ msgstr ""
 msgid "체육시간"
 msgstr ""
 
-#: api/schemas/presentation.py:120
+#: api/schemas/presentation.py:121
 msgid "발표 제안 기간이 종료되었습니다."
 msgstr ""
 
-#: api/schemas/presentation.py:123
+#: api/schemas/presentation.py:124
 msgid "발표 모집이 아직 시작되지 않았습니다."
 msgstr ""
 
-#: api/schemas/presentation.py:125
+#: api/schemas/presentation.py:126
 msgid "오픈 리뷰 중에는 제안서를 수정할 수 없습니다."
 msgstr ""
 
@@ -61,6 +61,22 @@ msgstr ""
 #: api/schemas/presentation.py:163
 msgid ""
 "선택한 카테고리에 리뷰할 제안서가 없습니다. 다시 카테고리를 선택해주세요."
+msgstr ""
+
+#: api/schemas/presentation.py:205
+msgid "오픈 리뷰 기간이 종료되었습니다."
+msgstr ""
+
+#: api/schemas/presentation.py:208
+msgid "오픈 리뷰가 아직 시작되지 않았습니다."
+msgstr ""
+
+#: api/schemas/presentation.py:212
+msgid "할당된 리뷰는 한번에 제출되어야 합니다."
+msgstr ""
+
+#: api/schemas/presentation.py:216
+msgid "제출된 리뷰가 사용자에게 할당된 리뷰가 아닙니다."
 msgstr ""
 
 #: api/schemas/ticket.py:63
