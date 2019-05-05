@@ -30,8 +30,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     def test_GIVEN_category_ids_empty_WHEN_assign_review_THEN_throw_exception(self):
         variables = {
-            'categoryIds': [],
-            'languages': []
+            'categoryIds': []
         }
 
         # When
@@ -40,8 +39,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     def test_GIVEN_category_ids_one_WHEN_assign_review_THEN_throw_exception(self):
         variables = {
-            'categoryIds': ['1'],
-            'languages': []
+            'categoryIds': ['1']
         }
 
         # When
@@ -50,8 +48,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     def test_GIVEN_제안서가_없으면_WHEN_assign_review_THEN_throw_exception(self):
         variables = {
-            'categoryIds': ['1', '2'],
-            'languages': []
+            'categoryIds': ['1', '2']
         }
 
         # When
@@ -62,8 +59,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.create_presentations(config.CFP_REVIEW_COUNT + 2, self.category, self.difficulty)
 
         variables = {
-            'categoryIds': [self.category.id, self.category2.id],
-            'languages': []
+            'categoryIds': [self.category.id, self.category2.id]
         }
 
         # When
@@ -78,8 +74,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.create_presentations(int(config.CFP_REVIEW_COUNT / 2) + 1, self.category2, self.difficulty)
 
         variables = {
-            'categoryIds': [self.category.id, self.category2.id],
-            'languages': []
+            'categoryIds': [self.category.id, self.category2.id]
         }
 
         # When
@@ -95,8 +90,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.create_presentations(presentation_cnt, self.category, self.difficulty)
 
         variables = {
-            'categoryIds': [self.category.id, self.category2.id],
-            'languages': []
+            'categoryIds': [self.category.id, self.category2.id]
         }
 
         # When
@@ -114,8 +108,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.create_presentations(presentation_cnt, self.category, self.difficulty)
 
         variables = {
-            'categoryIds': [self.category.id, self.category2.id],
-            'languages': []
+            'categoryIds': [self.category.id, self.category2.id]
         }
 
         # When
