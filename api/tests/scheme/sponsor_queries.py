@@ -1,4 +1,3 @@
-
 SPONSOR_LEVELS = '''
 query getSponsorLevels {
     sponsorLevels {

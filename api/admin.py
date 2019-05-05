@@ -6,7 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 
-from api.models import TicketProduct, Ticket
+from api.models import TicketProduct, Ticket, CFPReview
 from api.models.agreement import Agreement
 from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
@@ -156,6 +156,17 @@ class PresentationAdmin(ImportExportModelAdmin):
 admin.site.register(Presentation, PresentationAdmin)
 
 
+class CFPReviewAdmin(admin.ModelAdmin):
+    list_display = ('owner_profile', 'presentation', 'submitted', 'submitted_at')
+
+    def owner_profile(self, obj):
+        if obj.owner:
+            profile, _ = Profile.objects.get_or_create(user=obj.owner)
+            return profile
+        return ''
+
+admin.site.register(CFPReview, CFPReviewAdmin)
+
 class PlaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 
@@ -259,5 +270,6 @@ class TicketAdmin(admin.ModelAdmin):
             profile, _ = Profile.objects.get_or_create(user=obj.owner)
             return profile
         return ''
+
 
 admin.site.register(Ticket, TicketAdmin)
