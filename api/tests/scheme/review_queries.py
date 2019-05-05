@@ -1,6 +1,6 @@
 ASSIGN_CFP_REVIEWS = '''
-mutation assignCfpReviews($categoryIds: [ID]!, $languages: [LanguageNode]!) {
-    assignCfpReviews(categoryIds:$categoryIds, languages: $languages) {
+mutation assignCfpReviews($categoryIds: [ID]!) {
+    assignCfpReviews(categoryIds:$categoryIds) {
         reviews{
           id
           presentation {
