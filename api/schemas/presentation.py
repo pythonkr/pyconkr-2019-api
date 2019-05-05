@@ -259,5 +259,6 @@ class Query(graphene.ObjectType):
     def resolve_is_cfp_review_submitted(self, info):
         user = info.context.user
         for review in CFPReview.objects.filter(owner=user):
-            if review.submitted: return True
+            if review.submitted:
+                return True
         return False
