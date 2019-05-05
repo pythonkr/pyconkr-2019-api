@@ -216,6 +216,7 @@ class SubmitCFPReviews(graphene.Mutation):
                 raise GraphQLError(_('제출된 리뷰가 사용자에게 할당된 리뷰가 아닙니다.'))
             review.comment = r.comment
             review.submitted_at = now()
+            review.submitted = True
             review.save()
 
         return SubmitCFPReviews(success=True)
@@ -257,7 +258,6 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_is_cfp_review_submitted(self, info):
         user = info.context.user
-        is_submitted = False
         for review in CFPReview.objects.filter(owner=user):
-            is_submitted = is_submitted or review.submitted
-        return is_submitted
+            if review.submitted: return True
+        return False

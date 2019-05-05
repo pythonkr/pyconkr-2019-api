@@ -264,6 +264,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
             review = CFPReview(owner=user, presentation=p)
             if submitted:
                 review.submitted_at = now()
+                review.submitted = True
                 review.comment = f'{p.name}_comment'
             review.save()
             reviews.append(review)

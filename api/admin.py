@@ -156,8 +156,30 @@ class PresentationAdmin(ImportExportModelAdmin):
 admin.site.register(Presentation, PresentationAdmin)
 
 
-class CFPReviewAdmin(admin.ModelAdmin):
-    list_display = ('owner_profile', 'presentation', 'submitted', 'submitted_at')
+class CFPReviewResource(resources.ModelResource):
+    reviewer = fields.Field(column_name='reviewer', attribute='owner__profile__name')
+    owner = fields.Field(column_name='owner', attribute='owner__profile__name')
+    owner_email = fields.Field(column_name='owner_email', attribute='owner__profile__email')
+    presentation = fields.Field(column_name='presentation', attribute='presentation__name')
+    presentation_owner = fields.Field(column_name='presentation_owner', attribute='presentation__owner__profile__name')
+    category = fields.Field(column_name='category', attribute='presentation__category__name')
+    difficulty = fields.Field(column_name='difficulty', attribute='presentation__difficulty__name')
+    duration = fields.Field(column_name='duration', attribute='presentation__duration')
+    detail_desc = fields.Field(column_name='detail_desc', attribute='presentation__detail_desc')
+    background_desc = fields.Field(column_name='background_desc', attribute='presentation__background_desc')
+
+    class Meta:
+        model = CFPReview
+
+
+class CFPReviewAdmin(ImportExportModelAdmin):
+    resource_class = CFPReviewResource
+    list_display = ('owner_profile', 'presentation', 'submitted', 'submitted_at', 'comment')
+    list_filter = (
+        ('owner', admin.RelatedOnlyFieldListFilter),
+        ('submitted', admin.BooleanFieldListFilter),
+        ('presentation', admin.RelatedOnlyFieldListFilter),
+    )
 
     def owner_profile(self, obj):
         if obj.owner:
@@ -165,7 +187,9 @@ class CFPReviewAdmin(admin.ModelAdmin):
             return profile
         return ''
 
+
 admin.site.register(CFPReview, CFPReviewAdmin)
+
 
 class PlaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
