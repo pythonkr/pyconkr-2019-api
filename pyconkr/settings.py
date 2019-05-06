@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+
 from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -39,16 +39,16 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_crontab',
-) + (
     # thirt-party apps
     'corsheaders',
     'graphene_django',
     'sorl.thumbnail',
-) + (
+    'import_export',
+    'constance',
+    'constance.backends.database',
     # local apps
     'api',
 )
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,17 +83,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pyconkr.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'TEST': {
+            'NAME': 'test_postgres',
+        },
+        'USER': 'postgres',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -124,7 +128,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -145,6 +148,11 @@ LANGUAGES = (
     ('en', _('English')),
 )
 LANGUAGE_CODE = 'ko'
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ko'
 MODELTRANSLATION_LANGUAGES = ('ko', 'en')
 
@@ -172,3 +180,31 @@ CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
     ('* * * * *', 'pyconkr.cron.my_cron_job', '>> /web/cron.log')
 ]
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    'IMP_DOM_USER_CODE': ('', '아임포트 국내용 유저 번호'),
+    'IMP_DOM_API_KEY': ('', '아임포트 국내용 API KEY'),
+    'IMP_DOM_API_SECRET': ('', '아임포트 국내용 API SECRET'),
+    'IMP_INTL_USER_CODE': ('', '아임포트 해외용 유저 번호'),
+    'IMP_INTL_API_KEY': ('', '아임포트 해외용 API KEY'),
+    'IMP_INTL_API_SECRET': ('', '아임포트 해외용 API SECRET'),
+    'EMAIL_USE_TLS': (True, '이메일 서버 TLS 사용 여부', bool),
+    'EMAIL_HOST': ('email-smtp.us-west-2.amazonaws.com', '이메일 서버 Hostname'),
+    'EMAIL_PORT': (587, '이메일 서버 Port', int),
+    'EMAIL_HOST_USER': ('', '이메일 서버 Username'),
+    'EMAIL_HOST_PASSWORD': ('', '이메일 서버 Password'),
+    'SLACK_TOKEN': ('', 'Notification용 Slack Token'),
+    'CFP_REVIEW_CATEGORY_MINIMUM': (2, 'CFP 리뷰 시에 최소로 선택할 수 있는 카테고리 개수', int),
+    'CFP_REVIEW_COUNT': (7, '유저당 CFP 리뷰를 할당할 개수', int),
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'iamport': ('IMP_DOM_USER_CODE', 'IMP_DOM_API_KEY', 'IMP_DOM_API_SECRET',
+                'IMP_INTL_USER_CODE', 'IMP_INTL_API_KEY', 'IMP_INTL_API_SECRET'),
+    'SMTP': ('EMAIL_USE_TLS', 'EMAIL_HOST', 'EMAIL_PORT',
+             'EMAIL_HOST_USER', 'EMAIL_HOST_PASSWORD'),
+    'slack': ('SLACK_TOKEN',),
+    'CFP': ('CFP_REVIEW_CATEGORY_MINIMUM', 'CFP_REVIEW_COUNT')
+}

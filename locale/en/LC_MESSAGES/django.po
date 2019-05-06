@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-05 16:41+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: api/models/ticket.py:20
+msgid "컨퍼런스"
+msgstr "Conference"
+
+#: api/models/ticket.py:21
+msgid "영코더"
+msgstr "YoungCoder"
+
+#: api/models/ticket.py:22
+msgid "아이돌봄"
+msgstr "BabyCare"
+
+#: api/models/ticket.py:23
+msgid "튜토리얼"
+msgstr "Tutorial"
+
+#: api/models/ticket.py:24
+msgid "스프린트"
+msgstr "Sprint"
+
+#: api/models/ticket.py:25
+msgid "체육시간"
+msgstr "HealthCare"
+
+#: api/schemas/presentation.py:121
+msgid "발표 제안 기간이 종료되었습니다."
+msgstr "Call for proposal period is over."
+
+#: api/schemas/presentation.py:124
+msgid "발표 모집이 아직 시작되지 않았습니다."
+msgstr "Call for proposal is opened yet."
+
+#: api/schemas/presentation.py:126
+msgid "오픈 리뷰 중에는 제안서를 수정할 수 없습니다."
+msgstr "Proposals can not be edited during an open review."
+
+#: api/schemas/presentation.py:153
+msgid "리뷰할 카테고리를 2개 이상 선택해주어야 합니다."
+msgstr "You must select at least 2 categories to review."
+
+#: api/schemas/presentation.py:163
+msgid ""
+"선택한 카테고리에 리뷰할 제안서가 없습니다. 다시 카테고리를 선택해주세요."
+msgstr ""
+"There are no proposals to review in the selected category. Please select a "
+"category again."
+
+#: api/schemas/presentation.py:205
+#, fuzzy
+#| msgid "발표 제안 기간이 종료되었습니다."
+msgid "오픈 리뷰 기간이 종료되었습니다."
+msgstr "Call for proposal period is over."
+
+#: api/schemas/presentation.py:208
+#, fuzzy
+#| msgid "얼리버드 티켓 판매가 아직 시작되지 않았습니다."
+msgid "오픈 리뷰가 아직 시작되지 않았습니다."
+msgstr "Earlybird ticket sales have not started yet."
+
+#: api/schemas/presentation.py:212
+msgid "할당된 리뷰는 한번에 제출되어야 합니다."
+msgstr "Assigned reviews must be submitted at once."
+
+#: api/schemas/presentation.py:216
+msgid "제출된 리뷰가 사용자에게 할당된 리뷰가 아닙니다."
+msgstr "The submitted reviews are not a user-assigned review."
+
+#: api/schemas/ticket.py:63
+#, fuzzy
+#| msgid "얼리버드 티켓이 모두 판매되었습니다."
+msgid "티켓이 모두 판매되었습니다."
+msgstr "Earlybird ticket is sold out."
+
+#: api/schemas/ticket.py:65
+#, fuzzy
+#| msgid "얼리버드 티켓 판매가 아직 시작되지 않았습니다."
+msgid "티켓 판매가 아직 시작되지 않았습니다."
+msgstr "Earlybird ticket sales have not started yet."
+
+#: api/schemas/ticket.py:67
+#, fuzzy
+#| msgid "얼리버드 티켓 판매가 종료되었습니다."
+msgid "티켓 판매가 종료되었습니다."
+msgstr "The earlybird ticket sales period is over."
+
+#: api/schemas/ticket.py:78
+#, fuzzy
+#| msgid "결재가 실패했습니다."
+msgid "결제가 실패했습니다."
+msgstr "Payment has failed."
+
+#: pyconkr/settings.py:147
+msgid "Korean"
+msgstr ""
+
+#: pyconkr/settings.py:148
+msgid "English"
+msgstr ""

@@ -1,8 +1,12 @@
 import hashlib
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+
 from sorl.thumbnail import ImageField as SorlImageField
+from .utils import notify_slack
 
 
 class SponsorLevel(models.Model):
@@ -34,6 +38,11 @@ class SponsorLevel(models.Model):
     def current_remaining_number(self):
         return self.limit - Sponsor.objects.filter(
             level=self, submitted=True, accepted=True, paid_at__isnull=False).count()
+
+    @property
+    def current_remaining_number_compare_with_accepted(self):
+        accepted_cnt = Sponsor.objects.filter(level=self, submitted=True, accepted=True).count()
+        return self.limit - accepted_cnt
 
     def __str__(self):
         return self.name
@@ -69,10 +78,6 @@ class Sponsor(models.Model):
                             help_text='후원사 설명입니다. 이 설명은 홈페이지에 게시됩니다.')
     manager_name = models.CharField(max_length=100, blank=True, default='',
                                     help_text='후원사 담당자의 이름입니다.')
-    manager_phone = models.CharField(max_length=100, blank=True, default='',
-                                     help_text='후원사 담당자의 연락처입니다.')
-    manager_secondary_phone = models.CharField(max_length=100, blank=True, default='',
-                                               help_text='후원사 담당자 외의 연락이 가능한 연락처입니다.')
     manager_email = models.CharField(max_length=100, blank=True, default='',
                                      help_text='후원사 담당자의 이메일 주소입니다.')
     business_registration_number = models.CharField(max_length=100, blank=True, default='',
@@ -81,15 +86,12 @@ class Sponsor(models.Model):
         upload_to=registration_file_upload_to, blank=True, default='',
         help_text='후원사 사업자 등록증 스캔본입니다.')
 
-    contract_process_required = models.BooleanField(default=False,
-                                                    help_text='후원을 위한 계약 절차가 필요한지 여부입니다')
     url = models.CharField(max_length=255, null=True, blank=True,
                            help_text='후원사 홈페이지 주소입니다. 파이콘 홈페이지에 공개됩니다.')
     logo_image = SorlImageField(upload_to=logo_image_upload_to, null=True, blank=True,
                                 help_text='홈페이지에 공개되는 후원사 이미지입니다.')
     logo_vector = SorlImageField(upload_to=logo_vector_upload_to, null=True, blank=True,
                                  help_text='홈페이지에 공개되는 후원사 로고 백터 파일입니다.')
-
     paid_at = models.DateTimeField(null=True, blank=True,
                                    help_text='후원금이 입금된 일시입니다. 아직 입금되지 않았을 경우 None이 들어갑니다.')
     submitted = models.BooleanField(default=False,
@@ -108,3 +110,19 @@ class Sponsor(models.Model):
 
     def __str__(self):
         return f'{self.name}/{self.level}'
+
+
+@receiver(post_save, sender=Sponsor)
+def send_slack_notification_sponsor_created(sender, instance, created, raw, using, update_fields,
+                                            **kwargs):
+    def check_attr(obj, name):
+        if hasattr(obj, name) and getattr(obj, name) not in [None, ""]:
+            return True
+        return False
+
+    # name and level should be created
+    if check_attr(instance, 'name') and check_attr(instance, 'level'):
+        to_channel = "#sponsor"
+        message = "%s sponsor requested with %s level" % (instance.name, instance.level)
+        print(message)
+        notify_slack(to_channel, message)

@@ -5,6 +5,7 @@ import api.schemas.user
 import api.schemas.presentation
 import api.schemas.schedule
 import api.schemas.sponsor
+import api.schemas.ticket
 
 
 class Mutations(api.schemas.schedule.Mutations,
@@ -12,6 +13,7 @@ class Mutations(api.schemas.schedule.Mutations,
                 api.schemas.user.Mutations,
                 api.schemas.presentation.Mutations,
                 api.schemas.sponsor.Mutations,
+                api.schemas.ticket.Mutations,
                 graphene.ObjectType):
     pass
 
@@ -21,6 +23,7 @@ class Query(api.schemas.schedule.Query,
             api.schemas.user.Query,
             api.schemas.presentation.Query,
             api.schemas.sponsor.Query,
+            api.schemas.ticket.Query,
             graphene.ObjectType):
     pass
 
