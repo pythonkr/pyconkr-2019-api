@@ -205,7 +205,7 @@ class SubmitCFPReviews(graphene.Mutation):
             raise GraphQLError(_('오픈 리뷰가 아직 시작되지 않았습니다.'))
 
         assigned_cnt = CFPReview.objects.filter(owner=user).count()
-        if config.CFP_REVIEW_COUNT != len(reviews) or len(reviews) != assigned_cnt:
+        if len(reviews) != assigned_cnt:
             raise GraphQLError(_('할당된 리뷰는 한번에 제출되어야 합니다.'))
         for r in reviews:
             review = CFPReview.objects.get(pk=r.id)
