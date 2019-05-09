@@ -16,10 +16,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='presentationproposal',
-            name='comment',
-        ),
-        migrations.RemoveField(
-            model_name='presentationproposal',
             name='contents_agreed_at',
         ),
         migrations.RemoveField(

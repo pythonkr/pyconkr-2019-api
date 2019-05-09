@@ -49,7 +49,6 @@ class Program(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
 class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
@@ -80,6 +79,7 @@ class Presentation(Program):
         max_length=255, blank=True, default='')
     presented_slide_url_before = models.CharField(
         max_length=255, blank=True, default='')
+    comment = models.TextField(blank=True, default='')
     submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
 

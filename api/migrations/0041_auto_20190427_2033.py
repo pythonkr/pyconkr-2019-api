@@ -40,4 +40,9 @@ class Migration(migrations.Migration):
             name='submitted',
             field=models.BooleanField(default=False),
         ),
+        migrations.AddField(
+            model_name='presentation',
+            name='comment',
+            field=models.TextField(blank=True, default=''),
+        ),
     ]

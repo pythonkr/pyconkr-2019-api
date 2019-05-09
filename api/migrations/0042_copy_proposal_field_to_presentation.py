@@ -11,6 +11,7 @@ def copy_proposal_field_to_presentation(apps, schema_editor):
         proposal.presentation.presented_slide_url_before = proposal.presented_slide_url_before
         proposal.presentation.accepted = proposal.accepted
         proposal.presentation.submitted = proposal.submitted
+        proposal.presentation.comment = proposal.comment
         proposal.presentation.save()
 
 class Migration(migrations.Migration):
