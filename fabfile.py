@@ -31,7 +31,14 @@ def deploy(c, project_name, sha1='', django_setting='pyconkr.staging_settings', 
         c.run(f'docker-compose -p {project_name} down | true')
         env_command = ' '.join(envs)
         compose_command = f'docker-compose -p {project_name} up -d --build --force-recreate'
-        c.run(f'{env_command} {compose_command}')
+        c.run(f'{compose_command}', env={
+            'PSQL_VOLUME':f'{target_dir}/postgresql/data',
+            'STATIC_VOLUME':f'{target_dir}/static',
+            'MEDIA_VOLUME':f'{target_dir}/media',
+            'PYCONKR_ADMIN_PASSWORD': f'{os.environ.get("PYCONKR_ADMIN_PASSWORD", "pyconkr")}',
+            'PORT':f'{port}',
+            'DJANGO_SETTINGS_MODULE':f'{django_setting}'
+        })
 
         print('finish')
 @task
