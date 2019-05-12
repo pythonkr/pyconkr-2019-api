@@ -160,6 +160,28 @@ query getMySponsor {
 SPONSORS = '''
 query getSponsors {
   sponsors {
+    id
+    name
+    nameKo
+    nameEn
+    level {
+      id
+      name
+    }
+    desc
+    descKo
+    descEn
+    url
+    logoImage
+    logoVector
+  }
+}
+'''
+
+SPONSOR = '''
+query getSponsor($id: ID!) {
+  sponsor(id: $id) {
+    id
     name
     nameKo
     nameEn

@@ -21,6 +21,7 @@ class ReviewTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.category = Category.objects.get(pk=1)
         self.category2 = Category.objects.get(pk=2)
         self.difficulty = Difficulty.objects.get(pk=1)
+        self.set_openreview_period()
 
     def set_openreview_period(self):
         schedule = Schedule.objects.last()

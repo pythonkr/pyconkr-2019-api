@@ -4,11 +4,13 @@ from django.contrib.auth import get_user_model
 from django.test import RequestFactory
 from django.utils.timezone import now
 from graphql_jwt.testcases import JSONWebTokenTestCase
+from graphql_relay import to_global_id
 
 from api.models.sponsor import Sponsor, SponsorLevel
+from api.schemas.sponsor import PublicSponsorNode
 from api.tests.base import BaseTestCase
 from api.tests.scheme.sponsor_queries \
-    import CREATE_OR_UPDATE_SPONSER, SUBMIT_SPONSOR, SPONSOR_LEVELS, MY_SPONSOR, SPONSORS
+    import CREATE_OR_UPDATE_SPONSER, SUBMIT_SPONSOR, SPONSOR_LEVELS, MY_SPONSOR, SPONSORS, SPONSOR
 
 
 class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
@@ -180,3 +182,20 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         sponsors = result.data['sponsors']
         self.assertEqual(sponsors[0]['name'], '빠른스폰서')
         self.assertEqual(sponsors[1]['name'], '느린스폰서')
+
+    def test_get_public_sponsor_조회_테스트(self):
+        sponsor_level = SponsorLevel.objects.get(name_ko='골드')
+        past_dt = now() - timedelta(days=1)
+        sponsor = Sponsor.objects.create(
+            creator=self.user, level=sponsor_level, name='스폰서',
+            accepted=True, submitted=True, paid_at=past_dt)
+        variables = {
+            'id': to_global_id(PublicSponsorNode._meta.name, sponsor.pk)
+        }
+
+        # When
+        result = self.client.execute(SPONSOR, variables=variables)
+
+        # Then
+        sponsor = result.data['sponsor']
+        self.assertEqual(sponsor['name'], '스폰서')

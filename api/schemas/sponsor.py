@@ -25,7 +25,7 @@ class SponsorNode(DjangoObjectType):
     class Meta:
         model = Sponsor
         description = """
-        Sponsors which spon python conference in Korea.
+        Sponsors which sponsor python conference in Korea.
         """
 
     creator = graphene.Field(UserNode)
@@ -39,11 +39,12 @@ class SponsorNode(DjangoObjectType):
 class PublicSponsorNode(DjangoObjectType):
     class Meta:
         model = Sponsor
-        only_fields = ('name', 'name_ko', 'name_en', 'level', 'desc', 'desc_ko', 'desc_en',
+        only_fields = ('id', 'name', 'name_ko', 'name_en', 'level', 'desc', 'desc_ko', 'desc_en',
                        'url', 'logo_image', 'logo_vector')
+        interfaces = (graphene.relay.Node,)
 
         description = """
-        Sponsors which spon python conference in Korea.
+        Sponsors which sponsor python conference in Korea.
         """
 
     level = graphene.Field(SponsorLevelNode)
@@ -180,6 +181,7 @@ class Query(graphene.ObjectType):
     sponsor_levels = graphene.List(SponsorLevelNode)
     my_sponsor = graphene.Field(SponsorNode)
     sponsors = graphene.List(PublicSponsorNode)
+    sponsor = graphene.relay.Node.Field(PublicSponsorNode)
 
     def resolve_sponsors(self, info):
         return Sponsor.objects. \
