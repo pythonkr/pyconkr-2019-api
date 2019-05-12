@@ -10,7 +10,7 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 from iamporter import Iamporter
 
-from api.models.ticket import TransactionMixin, TicketProduct, Ticket
+from ticket.models import TransactionMixin, TicketProduct, Ticket
 
 
 class TicketProductNode(DjangoObjectType):

@@ -1,6 +1,5 @@
 from modeltranslation.translator import register, TranslationOptions
 
-from api.models import TicketProduct
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.models.profile import Profile
@@ -49,9 +48,4 @@ class SponsorLevelTranslationOptions(TranslationOptions):
 
 @register(Sponsor)
 class SponsorTranslationOptions(TranslationOptions):
-    fields = ('name', 'desc',)
-
-
-@register(TicketProduct)
-class TicketProductTranslationOptions(TranslationOptions):
     fields = ('name', 'desc',)

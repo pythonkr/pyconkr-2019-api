@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'constance.backends.database',
     # local apps
     'api',
+    'ticket',
 )
 
 MIDDLEWARE = [
@@ -208,3 +209,4 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'slack': ('SLACK_TOKEN',),
     'CFP': ('CFP_REVIEW_CATEGORY_MINIMUM', 'CFP_REVIEW_COUNT')
 }
+

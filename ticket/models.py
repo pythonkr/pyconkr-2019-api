@@ -32,7 +32,7 @@ class TicketProduct(models.Model):
                                      help_text='행사가 종료되는 일시입니다.')
     total = models.IntegerField(default=0,
                                 help_text='판매할 티켓의 총 개수입니다.')
-    owner = models.ForeignKey(UserModel, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(UserModel, null=True, blank=True, on_delete=models.SET_NULL)
     price = models.IntegerField(default=0)
     is_editable_price = models.BooleanField(default=False,
                                             help_text='개인후원과 같이 가격을 상향조정할 수 있는지 여부를 나타냅니다.')
@@ -70,6 +70,26 @@ class TicketProduct(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class OptionDesc(models.Model):
+    TYPE_BOOL = 'B'
+    TYPE_NUMBER = 'N'
+    TYPE_STRING = 'S'
+
+    type = models.CharField(max_length=1,
+                            choices=(
+                                (TYPE_BOOL, 'BOOL'),
+                                (TYPE_NUMBER, 'NUMBER'),
+                                (TYPE_STRING, 'STRING')
+                            ), default=TYPE_STRING)
+    key = models.CharField(max_length=100, null=True, help_text='ticket에 저장되는 데이터의 KEY값입니다.')
+    name = models.CharField(max_length=255, null=True, help_text='ticket 판매시 노출되는 이름입니다')
+    desc = models.TextField(blank=True, default='', help_text='ticket 판매시 노출되는 설명입니다')
+    product = models.ForeignKey(TicketProduct, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class TransactionMixin(models.Model):
