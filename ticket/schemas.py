@@ -60,7 +60,7 @@ class TicketNode(DjangoObjectType):
 class PaymentInput(graphene.InputObjectType):
     is_domestic_card = graphene.Boolean(required=True)
     amount = graphene.Int(
-        description='결재할 금액을 의미합니다. 개인후원을 제외하고는 product의 가격과 동일한 값이 들어와야 합니다.'
+        description='결재할 금액을 의미합니다. 수정 가능한 상품인 경우(개인후원)에만 사용됩니다.'
     )
     card_number = graphene.String(required=True)
     expiry = graphene.String(required=True)
@@ -97,6 +97,8 @@ class BuyTicket(graphene.Mutation):
         except TicketProduct.DoesNotExist:
             raise GraphQLError(f'Ticket project is not exists.(product_id: {product_id})')
         BuyTicket.check_schedule(product)
+        if product.is_editable_price and product.price > payment.amount:
+            raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
 
         response = BuyTicket.create_payment(product, payment, payment_params)
 
