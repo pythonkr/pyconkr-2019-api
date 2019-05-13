@@ -84,7 +84,7 @@ class OptionDesc(models.Model):
                                 (TYPE_STRING, 'STRING')
                             ), default=TYPE_STRING)
     key = models.CharField(max_length=100, null=True, help_text='ticket에 저장되는 데이터의 KEY값입니다.')
-    name = models.CharField(max_length=255, null=True, help_text='ticket 판매시 노출되는 이름입니다')
+    name = models.CharField(max_length=255, blank=True, default='', help_text='ticket 판매시 노출되는 이름입니다')
     desc = models.TextField(blank=True, default='', help_text='ticket 판매시 노출되는 설명입니다')
     product = models.ForeignKey(TicketProduct, on_delete=models.CASCADE)
 
