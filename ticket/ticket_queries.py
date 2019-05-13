@@ -71,6 +71,8 @@ query getMyTickets {
     merchantUid
     receiptUrl
     paidAt
+    cancelReceiptUrl
+    cancelledAt
     status
     
     product{

@@ -59,13 +59,24 @@ class TicketNode(DjangoObjectType):
 
 class PaymentInput(graphene.InputObjectType):
     is_domestic_card = graphene.Boolean(required=True)
-    amount = graphene.Int()
+    amount = graphene.Int(
+        description='결재할 금액을 의미합니다. 개인후원을 제외하고는 product의 가격과 동일한 값이 들어와야 합니다.'
+    )
     card_number = graphene.String(required=True)
     expiry = graphene.String(required=True)
     birth = graphene.String(
-        description='한국 카드일 때 사용하며 생년월일의 형태를 가집니다.(e.g., 880101)')
+        description='한국 카드일 때 사용하며 생년월일의 형태를 가집니다.(e.g, 880101)')
     pwd_2digit = graphene.String(
-        description='한국 카드일 때 사용하며 비밀번호 앞 2자리입니다.(e.g., 11)')
+        description='한국 카드일 때 사용하며 비밀번호 앞 2자리입니다.(e.g, 11)')
+    buyer_email = graphene.String(
+        description='구매자 이메일 주소입니다. 필수 옵션은 아닙니다.(e.g, pycon@pycon.kr)'
+    )
+    buyer_name = graphene.String(
+        description='구매자 이름입니다. 필수 옵션은 아닙니다.(e.g, 홍길동)'
+    )
+    buyer_tel = graphene.String(
+        description='구매자 전화 번호입니다. 필수 옵션은 아닙니다.(e.g, 02-1234-1234)'
+    )
 
 
 class BuyTicket(graphene.Mutation):
@@ -139,7 +150,7 @@ class BuyTicket(graphene.Mutation):
             if getattr(payment, attr, None):
                 continue
             raise ValueError(f'Could not find "{attr}" in payment')
-        return {k: v for k, v in payment.items() if k in required_field}
+        return {k: v for k, v in payment.items() if v}
 
 
 class CancelTicket(graphene.Mutation):
