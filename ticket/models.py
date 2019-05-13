@@ -84,7 +84,7 @@ class OptionDesc(models.Model):
                                 (TYPE_STRING, 'STRING')
                             ), default=TYPE_STRING)
     key = models.CharField(max_length=100, null=True, help_text='ticket에 저장되는 데이터의 KEY값입니다.')
-    name = models.CharField(max_length=255, null=True, help_text='ticket 판매시 노출되는 이름입니다')
+    name = models.CharField(max_length=255, blank=True, default='', help_text='ticket 판매시 노출되는 이름입니다')
     desc = models.TextField(blank=True, default='', help_text='ticket 판매시 노출되는 설명입니다')
     product = models.ForeignKey(TicketProduct, on_delete=models.CASCADE)
 
@@ -103,6 +103,8 @@ class TransactionMixin(models.Model):
         default=0,
         help_text='아이엠포트를 통해 결재한 가격입니다.'
     )
+    merchant_uid = models.CharField(max_length=100, blank=True, default='',
+                                    help_text='파이콘 한국에서 발행하는 주문번호입니다. 영수증에 출력됩니다.')
     imp_uid = models.CharField(max_length=255, null=True, blank=True,
                                help_text='아이엠포트 uid입니다. 이 값은 환불 시에 사용됩니다.')
     pg_tid = models.CharField(max_length=127, null=True, blank=True,
