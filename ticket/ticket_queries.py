@@ -47,7 +47,6 @@ query getTicketProducts {
 }
 '''
 
-
 BUY_TICKET = '''
 mutation BuyTicket($productId: ID!, $payment: PaymentInput!, $options: JSONString) {
     buyTicket(productId:$productId, payment: $payment, options:$options) {
@@ -67,7 +66,7 @@ mutation BuyTicket($productId: ID!, $payment: PaymentInput!, $options: JSONStrin
 MY_TICKETS = '''
 query getMyTickets {
   myTickets {
-    isForeign
+    isDomesticCard
     amount
     merchantUid
     receiptUrl
@@ -120,5 +119,22 @@ query getMyTickets {
     }
     options
   }
+}
+'''
+
+CANCEL_TICKET = '''
+mutation cancelTicket($ticketId: ID!) {
+    cancelTicket(ticketId:$ticketId) {
+        ticket{
+          id
+          status
+          impUid
+          pgTid
+          receiptUrl
+          paidAt
+          cancelReceiptUrl
+          cancelledAt
+        }
+    }
 }
 '''

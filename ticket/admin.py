@@ -26,8 +26,8 @@ admin.site.register(OptionDesc)
 
 
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('owner_profile', 'product', 'is_foreign', 'merchant_uid', 'amount',
-                    'status', 'imp_uid', 'paid_at', 'options_str')
+    list_display = ('id', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
+                    'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at')
 
     def owner_profile(self, obj):
         if obj.owner:

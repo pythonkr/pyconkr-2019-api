@@ -93,6 +93,7 @@ class BuyTicket(graphene.Mutation):
             raise GraphQLError(_('결제가 실패했습니다.'))
 
         ticket = Ticket.objects.create(
+            is_domestic_card=payment.is_domestic_card,
             owner=info.context.user,
             product=product,
             amount=response['amount'],
@@ -124,12 +125,9 @@ class BuyTicket(graphene.Mutation):
             'amount': product.price,
             **payment_params
         }
+        iamport = create_iamport(payment.is_domestic_card)
         if payment.is_domestic_card:
-            iamport = Iamport(imp_key=config.IMP_DOM_API_KEY,
-                              imp_secret=config.IMP_DOM_API_SECRET)
             return iamport.pay_onetime(**payload)
-        iamport = Iamport(imp_key=config.IMP_INTL_API_KEY,
-                          imp_secret=config.IMP_INTL_API_SECRET)
         return iamport.pay_foreign(**payload)
 
     @classmethod
@@ -144,8 +142,43 @@ class BuyTicket(graphene.Mutation):
         return {k: v for k, v in payment.items() if k in required_field}
 
 
+class CancelTicket(graphene.Mutation):
+    ticket = graphene.Field(TicketNode)
+
+    class Arguments:
+        ticket_id = graphene.ID(required=True)
+
+    @login_required
+    def mutate(self, info, ticket_id):
+        ticket = Ticket.objects.get(pk=ticket_id)
+        if ticket.owner != info.context.user:
+            raise GraphQLError(_('다른 유저의 티켓을 환불할 수 없습니다.'))
+        if ticket.status != Ticket.STATUS_PAID:
+            raise GraphQLError(_('이미 환불된 티켓이거나 결재되지 않은 티켓입니다.'))
+        if not ticket.product.is_cancelable_date():
+            raise GraphQLError(_('환불 가능 기한이 지났습니다.'))
+        iamport = create_iamport(ticket.is_domestic_card)
+        response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
+        if Ticket.STATUS_CANCELLED != response['status']:
+            raise GraphQLError(_('환불이 실패했습니다'))
+        ticket.status = Ticket.STATUS_CANCELLED
+        ticket.cancelled_at = datetime.fromtimestamp(response['cancelled_at'])
+        ticket.cancel_receipt_url = response['cancel_receipt_urls'][0]
+        ticket.save()
+        return CancelTicket(ticket=ticket)
+
+
+def create_iamport(is_domestic_card):
+    if is_domestic_card:
+        return Iamport(imp_key=config.IMP_DOM_API_KEY,
+                       imp_secret=config.IMP_DOM_API_SECRET)
+    return Iamport(imp_key=config.IMP_INTL_API_KEY,
+                   imp_secret=config.IMP_INTL_API_SECRET)
+
+
 class Mutations(graphene.ObjectType):
     buy_ticket = BuyTicket.Field()
+    cancel_ticket = CancelTicket.Field()
 
 
 class Query(graphene.ObjectType):

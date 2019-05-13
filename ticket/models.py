@@ -68,6 +68,9 @@ class TicketProduct(models.Model):
     def is_closed(self):
         return self.ticket_close_at and self.ticket_close_at < timezone.now()
 
+    def is_cancelable_date(self):
+        return self.cancelable_date and self.cancelable_date > timezone.now()
+
     def __str__(self):
         return self.name
 
@@ -98,7 +101,7 @@ class TransactionMixin(models.Model):
     STATUS_DELETE = 'delete'
     STATUS_CANCELLED = 'cancelled'
 
-    is_foreign = models.BooleanField(default=False)
+    is_domestic_card = models.BooleanField(default=True)
     amount = models.IntegerField(
         default=0,
         help_text='아이엠포트를 통해 결재한 가격입니다.'
@@ -110,15 +113,18 @@ class TransactionMixin(models.Model):
     pg_tid = models.CharField(max_length=127, null=True, blank=True,
                               help_text='PG사 Transaction ID입니다.')
     receipt_url = models.CharField(max_length=255, null=True, blank=True,
-                                   help_text='영수증 URL입니다. 이 값은 카드 결제 내역을 보여줄 때에 사용됩니다.')
+                                   help_text='결재 영수증 URL입니다. 이 값은 카드 결제 내역을 보여줄 때에 사용됩니다.')
     paid_at = models.DateTimeField(null=True, blank=True)
+    cancel_receipt_url = models.CharField(max_length=255, blank=True, default='',
+                                          help_text='결재 취소 영수증 URL입니다. 이 값은 카드 결제 취소 내역을 보여줄 때에 사용됩니다.')
+    cancelled_at = models.DateTimeField(null=True, blank=True)
 
     status = models.CharField(max_length=10,
                               choices=(
-                                  (STATUS_READY, 'Ready'),
-                                  (STATUS_PAID, 'Paid'),
-                                  (STATUS_DELETE, 'Deleted'),
-                                  (STATUS_CANCELLED, 'Cancelled')
+                                  (STATUS_READY, 'ready'),
+                                  (STATUS_PAID, 'paid'),
+                                  (STATUS_DELETE, 'deleted'),
+                                  (STATUS_CANCELLED, 'cancelled')
                               ), default=STATUS_READY)
 
     class Meta:
