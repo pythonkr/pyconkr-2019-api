@@ -48,7 +48,7 @@ class BuyTicket(graphene.Mutation):
     def mutate(self, info, product_id, payment, options):
         if not config.IMP_DOM_API_KEY or not config.IMP_INTL_API_KEY:
             raise GraphQLError(_('아이엠포트 계정 정보가 설정되어 있지 않습니다.'))
-        self.check_payment_argument(payment)
+        payment_params = self.get_payment_params(payment)
         client = self.create_iamport_client(payment)
         try:
             product = TicketProduct.objects.get(pk=product_id)
@@ -58,17 +58,12 @@ class BuyTicket(graphene.Mutation):
         merchant_uid = f'merchant_{timezone.now().timestamp()}'
         amount = product.price
         name = product.name_ko
-        if payment.is_domestic_card:
-            params = {k: v for k, v in payment.items()
-                      if k in ['card_number', 'expiry', 'birth', 'pwd_2digit']}
-            response = client.create_payment(
-                merchant_uid=merchant_uid,
-                name=name,
-                amount=amount,
-                **params
-            )
-        else:
-            raise GraphQLError(_('해외 카드는 아직 구현되지 않았습니다.'))
+        response = client.create_payment(
+            merchant_uid=merchant_uid,
+            name=name,
+            amount=amount,
+            **payment_params
+        )
         if response['status'] != TransactionMixin.STATUS_PAID:
             raise GraphQLError(_('결제가 실패했습니다.'))
 
@@ -103,7 +98,7 @@ class BuyTicket(graphene.Mutation):
                                imp_secret=config.IMP_INTL_API_SECRET)
         return client
 
-    def check_payment_argument(self, payment):
+    def get_payment_params(self, payment):
         required_field = ['card_number', 'expiry']
         if payment.is_domestic_card:
             required_field = ['card_number', 'expiry', 'birth', 'pwd_2digit']
@@ -111,6 +106,7 @@ class BuyTicket(graphene.Mutation):
             if getattr(payment, attr, None):
                 pass
             raise ValueError(f'Could not find "{attr}" in payment')
+        return {k: v for k, v in payment.items() if k in required_field}
 
 
 class Mutations(graphene.ObjectType):
