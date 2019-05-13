@@ -4,7 +4,7 @@ from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct, OptionDesc
 
 
-class OptionDescAdmin(admin.TabularInline):
+class OptionDescAdmin(admin.StackedInline):
     model = OptionDesc
 
 
