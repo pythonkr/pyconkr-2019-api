@@ -139,7 +139,8 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             'paid_at': 1556189352,
             'receipt_url': 'receipt_url',
             'pg_tid': 'pg_tid',
-            'imp_uid': 'imp_uid'
+            'imp_uid': 'imp_uid',
+            'merchant_uid': 'pyconkr_1556189352'
         }
         iamporter_instance.pay_onetime.return_value = response
         iamporter_instance.pay_foreign.return_value = response
