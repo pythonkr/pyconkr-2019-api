@@ -48,13 +48,13 @@ class BuyTicket(graphene.Mutation):
     def mutate(self, info, product_id, payment, options):
         if not config.IMP_DOM_API_KEY or not config.IMP_INTL_API_KEY:
             raise GraphQLError(_('아이엠포트 계정 정보가 설정되어 있지 않습니다.'))
-        payment_params = self.get_payment_params(payment)
-        client = self.create_iamport_client(payment)
+        payment_params = BuyTicket.get_payment_params(payment)
+        client = BuyTicket.create_iamport_client(payment)
         try:
             product = TicketProduct.objects.get(pk=product_id)
         except TicketProduct.DoesNotExist:
             raise GraphQLError(f'Ticket project is not exists.(product_id: {product_id})')
-        self.check_schedule(product)
+        BuyTicket.check_schedule(product)
         merchant_uid = f'merchant_{timezone.now().timestamp()}'
         amount = product.price
         name = product.name_ko
@@ -81,7 +81,8 @@ class BuyTicket(graphene.Mutation):
 
         return BuyTicket(ticket=ticket)
 
-    def check_schedule(self, product):
+    @classmethod
+    def check_schedule(cls, product):
         if product.is_sold_out():
             raise GraphQLError(_('티켓이 모두 판매되었습니다.'))
         if product.is_not_open_yet():
@@ -89,7 +90,8 @@ class BuyTicket(graphene.Mutation):
         if product.is_closed():
             raise GraphQLError(_('티켓 판매가 종료되었습니다.'))
 
-    def create_iamport_client(self, payment):
+    @classmethod
+    def create_iamport_client(cls, payment):
         if payment.is_domestic_card:
             client = Iamporter(imp_key=config.IMP_DOM_API_KEY,
                                imp_secret=config.IMP_DOM_API_SECRET)
@@ -98,13 +100,14 @@ class BuyTicket(graphene.Mutation):
                                imp_secret=config.IMP_INTL_API_SECRET)
         return client
 
-    def get_payment_params(self, payment):
+    @classmethod
+    def get_payment_params(cls, payment):
         required_field = ['card_number', 'expiry']
         if payment.is_domestic_card:
             required_field = ['card_number', 'expiry', 'birth', 'pwd_2digit']
         for attr in required_field:
             if getattr(payment, attr, None):
-                pass
+                continue
             raise ValueError(f'Could not find "{attr}" in payment')
         return {k: v for k, v in payment.items() if k in required_field}
 
