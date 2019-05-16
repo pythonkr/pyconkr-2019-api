@@ -82,7 +82,7 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         sponsor = Sponsor.objects.get(creator=self.user)
         self.assertFalse(sponsor.submitted)
 
-    def test_sponsor_level_remaining_accepted만_되었을때는_변동이_없어야_한다(self):
+    def test_sponsor_level_remaining_accepted만_되었을때도_줄어들어야_한다(self):
         # Given
         sponsor_level = SponsorLevel.objects.get(name_ko='골드')
         Sponsor.objects.create(
@@ -97,7 +97,7 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertIsNotNone(response_levels)
         gold_level = [level for level in response_levels if level['nameKo'] == '골드'][0]
         self.assertIsNotNone(gold_level)
-        self.assertEqual(gold_level['limit'], gold_level['currentRemainingNumber'])
+        self.assertEqual(gold_level['limit'] - 1, gold_level['currentRemainingNumber'])
 
     def test_sponsor_level_remaining(self):
         # Given
