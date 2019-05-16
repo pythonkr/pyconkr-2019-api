@@ -88,7 +88,7 @@ class CreateOrUpdateSponsor(graphene.Mutation):
             sponsor.level = SponsorLevel.objects.get(
                 pk=data['level_id'])
             del data['level_id']
-        if created and sponsor.level.current_remaining_number is 0:
+        if created and sponsor.level.current_remaining_number == 0:
             raise GraphQLError(_('선택한 후원사 등급이 마감되었습니다. 다른 등급을 선택해주세요.'))
         for k, v in data.items():
             setattr(sponsor, k, v)
