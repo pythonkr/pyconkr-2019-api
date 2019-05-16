@@ -50,6 +50,29 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         response_sponsor = result.data['createOrUpdateSponsor']['sponsor']
         self.assertIsNotNone(response_sponsor['id'])
 
+    def test_create_or_update_sponsor_남은_구좌가_없으면_에러_발생(self):
+        level = SponsorLevel.objects.get(pk=1)
+        level.limit = 0
+        level.save()
+
+        variables = {
+            'data': {
+                'nameKo': '안 흥미로운 GraphQL',
+                'nameEn': 'Not Interesting GraphQL',
+                'descKo': 'GraphQL은 재미있다는 설명은함정!',
+                'descEn': 'The description that GraphQL is Trap!',
+                'managerName': '김스폰서',
+                'managerEmail': 'sponsor@sponsor.com',
+                'levelId': 1,
+                'businessRegistrationNumber': '30-3535-3535',
+                'url': 'my.slide.url'
+            }
+        }
+
+        # When
+        result = self.client.execute(CREATE_OR_UPDATE_SPONSER, variables=variables)
+        self.assertIsNotNone(result.errors)
+
     def test_submit_sponsor(self):
         Sponsor.objects.create(creator=self.user)
 
