@@ -50,6 +50,29 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         response_sponsor = result.data['createOrUpdateSponsor']['sponsor']
         self.assertIsNotNone(response_sponsor['id'])
 
+    def test_create_or_update_sponsor_남은_구좌가_없으면_에러_발생(self):
+        level = SponsorLevel.objects.get(pk=1)
+        level.limit = 0
+        level.save()
+
+        variables = {
+            'data': {
+                'nameKo': '안 흥미로운 GraphQL',
+                'nameEn': 'Not Interesting GraphQL',
+                'descKo': 'GraphQL은 재미있다는 설명은함정!',
+                'descEn': 'The description that GraphQL is Trap!',
+                'managerName': '김스폰서',
+                'managerEmail': 'sponsor@sponsor.com',
+                'levelId': 1,
+                'businessRegistrationNumber': '30-3535-3535',
+                'url': 'my.slide.url'
+            }
+        }
+
+        # When
+        result = self.client.execute(CREATE_OR_UPDATE_SPONSER, variables=variables)
+        self.assertIsNotNone(result.errors)
+
     def test_submit_sponsor(self):
         Sponsor.objects.create(creator=self.user)
 
@@ -82,7 +105,7 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         sponsor = Sponsor.objects.get(creator=self.user)
         self.assertFalse(sponsor.submitted)
 
-    def test_sponsor_level_remaining_accepted만_되었을때는_변동이_없어야_한다(self):
+    def test_sponsor_level_remaining_accepted만_되었을때도_줄어들어야_한다(self):
         # Given
         sponsor_level = SponsorLevel.objects.get(name_ko='골드')
         Sponsor.objects.create(
@@ -97,7 +120,7 @@ class SponsorTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertIsNotNone(response_levels)
         gold_level = [level for level in response_levels if level['nameKo'] == '골드'][0]
         self.assertIsNotNone(gold_level)
-        self.assertEqual(gold_level['limit'], gold_level['currentRemainingNumber'])
+        self.assertEqual(gold_level['limit'] - 1, gold_level['currentRemainingNumber'])
 
     def test_sponsor_level_remaining(self):
         # Given

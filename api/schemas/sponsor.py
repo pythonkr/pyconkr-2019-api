@@ -1,7 +1,9 @@
 import graphene
+from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from graphql_extensions.auth.decorators import login_required
+from graphql_extensions.exceptions import GraphQLError
 
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.schemas.common import SeoulDateTime, ImageUrl, FileUrl
@@ -81,11 +83,13 @@ class CreateOrUpdateSponsor(graphene.Mutation):
 
     @login_required
     def mutate(self, info, data):
-        sponsor, _ = Sponsor.objects.get_or_create(creator=info.context.user)
+        sponsor, created = Sponsor.objects.get_or_create(creator=info.context.user)
         if 'level_id' in data:
             sponsor.level = SponsorLevel.objects.get(
                 pk=data['level_id'])
             del data['level_id']
+        if created and sponsor.level.current_remaining_number == 0:
+            raise GraphQLError(_('선택한 후원사 등급이 마감되었습니다. 다른 등급을 선택해주세요.'))
         for k, v in data.items():
             setattr(sponsor, k, v)
 

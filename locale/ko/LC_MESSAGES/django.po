@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 21:33+0900\n"
+"POT-Creation-Date: 2019-05-16 15:42+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,6 +53,10 @@ msgstr ""
 
 #: api/schemas/presentation.py:213
 msgid "제출된 리뷰가 사용자에게 할당된 리뷰가 아닙니다."
+msgstr ""
+
+#: api/schemas/sponsor.py:92
+msgid "선택한 후원사 등급이 마감되었습니다. 다른 등급을 선택해주세요."
 msgstr ""
 
 #: pyconkr/settings.py:149
