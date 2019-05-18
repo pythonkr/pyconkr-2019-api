@@ -1,18 +1,13 @@
 from django.contrib import admin
 
 from api.models.profile import Profile
-from ticket.models import Ticket, TicketProduct, OptionDesc
-
-
-class OptionDescAdmin(admin.StackedInline):
-    model = OptionDesc
+from ticket.models import Ticket, TicketProduct
 
 
 class TicketProductAdmin(admin.ModelAdmin):
     list_display = ('type', 'name', 'desc', 'total', 'owner_profile', 'price',
                     'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
-                    'ticket_open_at', 'ticket_close_at')
-    inlines = [OptionDescAdmin]
+                    'ticket_open_at', 'ticket_close_at', 'warning')
 
     def owner_profile(self, obj):
         if obj.owner:
@@ -22,7 +17,6 @@ class TicketProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(TicketProduct, TicketProductAdmin)
-admin.site.register(OptionDesc)
 
 
 class TicketAdmin(admin.ModelAdmin):

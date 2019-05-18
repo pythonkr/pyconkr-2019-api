@@ -26,6 +26,7 @@ class TicketProduct(models.Model):
                             ), default=TYPE_CONFERENCE)
     name = models.CharField(max_length=255, null=True)
     desc = models.TextField(blank=True, default='')
+    warning = models.TextField(blank=True, default='')
     start_at = models.DateTimeField(null=True, blank=True,
                                     help_text='행사가 시작되는 일시입니다.')
     finish_at = models.DateTimeField(null=True, blank=True,
@@ -47,7 +48,11 @@ class TicketProduct(models.Model):
                                           help_text='티켓 판매 시작 일시입니다.')
     ticket_close_at = models.DateTimeField(null=True, blank=True,
                                            help_text='티켓 판매 종료 일시입니다.')
-
+    ticket_for = models.ManyToManyField(UserModel,
+                                        related_name='privileged_ticket_product',
+                                        help_text='티켓 판매되는 대상 유저들을 의미합니다. '
+                                                  '만약 비어있을 경우 모든 유저에게 판매가 되며, '
+                                                  '하나라도 유저가 지정되어 있으면 그 유저 외에는 볼 수 없습니다.')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -73,26 +78,6 @@ class TicketProduct(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class OptionDesc(models.Model):
-    TYPE_BOOL = 'B'
-    TYPE_NUMBER = 'N'
-    TYPE_STRING = 'S'
-
-    type = models.CharField(max_length=1,
-                            choices=(
-                                (TYPE_BOOL, 'BOOL'),
-                                (TYPE_NUMBER, 'NUMBER'),
-                                (TYPE_STRING, 'STRING')
-                            ), default=TYPE_STRING)
-    key = models.CharField(max_length=100, null=True, help_text='ticket에 저장되는 데이터의 KEY값입니다.')
-    name = models.CharField(max_length=255, blank=True, default='', help_text='ticket 판매시 노출되는 이름입니다')
-    desc = models.TextField(blank=True, default='', help_text='ticket 판매시 노출되는 설명입니다')
-    product = models.ForeignKey(TicketProduct, on_delete=models.CASCADE)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class TransactionMixin(models.Model):
