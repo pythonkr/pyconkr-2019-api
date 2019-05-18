@@ -9,17 +9,9 @@ query getTicketProducts {
     desc
     descKo
     descEn
-    optiondescSet{
-      id
-      type
-      key
-      name
-      nameKo
-      nameEn
-      desc
-      descKo
-      descEn
-    }
+    warning
+    warningKo
+    warningEn
     startAt
     finishAt
     total
@@ -84,17 +76,6 @@ query getMyTickets {
       desc
       descKo
       descEn
-      optiondescSet{
-        id
-        type
-        key
-        name
-        nameKo
-        nameEn
-        desc
-        descKo
-        descEn
-      }
       startAt
       finishAt
       total

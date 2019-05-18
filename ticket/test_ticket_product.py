@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 from api.tests.base import BaseTestCase
-from ticket.models import TicketProduct, Ticket, TransactionMixin, OptionDesc
+from ticket.models import TicketProduct, Ticket, TransactionMixin
 from ticket.ticket_queries import TICKET_PRODUCTS
 
 TIMEZONE = get_current_timezone()
@@ -68,14 +68,21 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = result.data
         self.assertEqual(0, data['conferenceProducts'][0]['purchaseCount'])
 
-    def test_get_ticket_products_with_optiondesc_set(self):
+    def test_get_ticket_products_with_ticket_for(self):
         product = self.create_ticket_product(
             name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE)
-        OptionDesc.objects.create(
-            type=OptionDesc.TYPE_BOOL, product=product, key='t_shirt_size',
-            name='티셔츠 사이즈', desc='티셔츠사이즈입니다.')
+        product.ticket_for.add(self.user)
         result = self.client.execute(TICKET_PRODUCTS)
         data = result.data
-        self.assertIsNotNone(data['conferenceProducts'])
-        self.assertEqual('티셔츠 사이즈',
-                         data['conferenceProducts'][0]['optiondescSet'][0]['name'])
+        self.assertEqual(1, len(data['conferenceProducts']))
+
+    def test_get_ticket_products_with_ticket_for_호출하는_사용자가_ticket_for에_없을_때(self):
+        product = self.create_ticket_product(
+            name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE)
+        user = get_user_model().objects.create(
+            username='other_user',
+            email='other@pycon.kr')
+        product.ticket_for.add(user)
+        result = self.client.execute(TICKET_PRODUCTS)
+        data = result.data
+        self.assertEqual(0, len(data['conferenceProducts']))

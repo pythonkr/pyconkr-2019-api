@@ -9,7 +9,7 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 from iamport import Iamport
 
-from ticket.models import TransactionMixin, TicketProduct, Ticket, OptionDesc
+from ticket.models import TransactionMixin, TicketProduct, Ticket
 
 
 class TicketTypeNode(graphene.Enum):
@@ -19,19 +19,6 @@ class TicketTypeNode(graphene.Enum):
     TUTORIAL = TicketProduct.TYPE_TUTORIAL
     SPRINT = TicketProduct.TYPE_SPRINT
     HEALTH_CARE = TicketProduct.TYPE_HEALTH_CARE
-
-
-class OptionDescTypeNode(graphene.Enum):
-    BOOL = OptionDesc.TYPE_BOOL
-    NUMBER = OptionDesc.TYPE_NUMBER
-    STRING = OptionDesc.TYPE_STRING
-
-
-class OptionDescNode(DjangoObjectType):
-    class Meta:
-        model = OptionDesc
-
-    type = OptionDescTypeNode()
 
 
 class TicketProductNode(DjangoObjectType):
@@ -96,6 +83,10 @@ class BuyTicket(graphene.Mutation):
             product = TicketProduct.objects.get(pk=product_id)
         except TicketProduct.DoesNotExist:
             raise GraphQLError(f'Ticket project is not exists.(product_id: {product_id})')
+        if product.ticket_for.exists() and info.context.user not in product.ticket_for.all():
+            raise GraphQLError(f'사용자에게 판매하는 티켓이 아닙니다.')
+        if BuyTicket.has_same_unique_ticket_type(product, info.context.user):
+            raise GraphQLError(f'선택한 티켓은 여러 장 구매할 수 없습니다.')
         BuyTicket.check_schedule(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
@@ -120,6 +111,12 @@ class BuyTicket(graphene.Mutation):
         )
 
         return BuyTicket(ticket=ticket)
+
+    @classmethod
+    def has_same_unique_ticket_type(cls, product, user):
+        if not product.is_unique_in_type:
+            return False
+        return Ticket.objects.filter(owner=user, product__type=product.type, status=Ticket.STATUS_PAID).exists()
 
     @classmethod
     def check_schedule(cls, product):
@@ -194,6 +191,11 @@ class Mutations(graphene.ObjectType):
     cancel_ticket = CancelTicket.Field()
 
 
+def get_ticket_product(product_type, user):
+    from django.db.models import Q
+    return TicketProduct.objects.filter(type=product_type).filter(Q(ticket_for=user) | Q(ticket_for__isnull=True))
+
+
 class Query(graphene.ObjectType):
     ticket_product = graphene.relay.Node.Field(TicketProductNode)
     conference_products = graphene.List(TicketProductNode)
@@ -206,22 +208,22 @@ class Query(graphene.ObjectType):
     my_tickets = graphene.List(TicketNode)
 
     def resolve_conference_products(self, info):
-        return TicketProduct.objects.filter(type=TicketProduct.TYPE_CONFERENCE)
+        return get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)
 
     def resolve_young_coder_products(self, info):
-        return TicketProduct.objects.filter(type=TicketProduct.TYPE_YOUNG_CODER)
+        return get_ticket_product(TicketProduct.TYPE_YOUNG_CODER, info.context.user)
 
     def resolve_baby_care_products(self, info):
-        return TicketProduct.objects.filter(type=TicketProduct.TYPE_BABY_CARE)
+        return get_ticket_product(TicketProduct.TYPE_BABY_CARE, info.context.user)
 
     def resolve_tutorial_products(self, info):
-        return TicketProduct.objects.filter(type=TicketProduct.TYPE_TUTORIAL)
+        return get_ticket_product(TicketProduct.TYPE_TUTORIAL, info.context.user)
 
     def resolve_sprint_products(self, info):
-        return TicketProduct.objects.filter(type=TicketProduct.TYPE_SPRINT)
+        return get_ticket_product(TicketProduct.TYPE_SPRINT, info.context.user)
 
     def resolve_health_care_products(self, info):
-        return TicketProduct.objects.filter(type=TicketProduct.TYPE_HEALTH_CARE)
+        return get_ticket_product(TicketProduct.TYPE_HEALTH_CARE, info.context.user)
 
     @login_required
     def resolve_my_tickets(self, info):

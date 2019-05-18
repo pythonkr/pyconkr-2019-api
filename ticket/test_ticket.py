@@ -21,12 +21,28 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             username='develop_github_123',
             email='me@pycon.kr')
         self.client.authenticate(self.user)
-        self.product = self.create_ticket_product()
+        self.earlybird_product = self.create_conference_product(name='얼리버드 티켓')
+        self.regular_product = self.create_conference_product(name='일반 티켓')
+        self.youngcoder_product_1 = self.create_youngcoder_product(name='영코더1')
+        self.youngcoder_product_2 = self.create_youngcoder_product(name='영코더2')
 
-    def create_ticket_product(self):
+    def create_conference_product(self, name='얼리버드 티켓'):
         product = TicketProduct(
-            name='얼리버드 티켓', total=3,
+            type=TicketProduct.TYPE_CONFERENCE,
+            name=name, total=3,
             owner=self.user, price='1000')
+        product.ticket_open_at = now() - timedelta(days=2)
+        product.ticket_close_at = now() + timedelta(days=2)
+        product.cancelable_date = now() + timedelta(days=1)
+        product.save()
+        return product
+
+    def create_youngcoder_product(self, name='영코더'):
+        product = TicketProduct(
+            type=TicketProduct.TYPE_YOUNG_CODER,
+            name=name, total=3,
+            owner=self.user, price='1000')
+        product.is_unique_in_type = False
         product.ticket_open_at = now() - timedelta(days=2)
         product.ticket_close_at = now() + timedelta(days=2)
         product.cancelable_date = now() + timedelta(days=1)
@@ -40,7 +56,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
         variables = {
-            "productId": str(self.product.id),
+            "productId": str(self.earlybird_product.id),
             "payment": {
                 "isDomesticCard": True,
                 "cardNumber": "0000-0000-0000-0000",
@@ -66,7 +82,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
         variables = {
-            'productId': str(self.product.id),
+            'productId': str(self.earlybird_product.id),
             'payment': {
                 'isDomesticCard': True,
                 'cardNumber': '0000-0000-0000-0000',
@@ -91,7 +107,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
         variables = {
-            "productId": str(self.product.id),
+            "productId": str(self.earlybird_product.id),
             "payment": {
                 "isDomesticCard": False,
                 "cardNumber": "0000-0000-0000-0000",
@@ -115,7 +131,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
         variables = {
-            "productId": str(self.product.id),
+            "productId": str(self.earlybird_product.id),
             "payment": {
                 "isDomesticCard": False,
                 "expiry": "2022-12",
@@ -168,7 +184,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
         variables = {
-            "productId": str(self.product.id),
+            "productId": str(self.earlybird_product.id),
             "payment": {
                 "isDomesticCard": True,
                 "cardNumber": "0000-0000-0000-0000",
@@ -187,7 +203,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
         variables = {
-            "productId": str(self.product.id),
+            "productId": str(self.earlybird_product.id),
             "payment": {
                 "isDomesticCard": True,
                 "cardNumber": "0000-0000-0000-0000",
@@ -199,8 +215,101 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(BUY_TICKET, variables)
         self.assertIsNotNone(result.errors)
 
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_판매_대상이면_성공(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        self.earlybird_product.ticket_for.add(self.user)
+        variables = {
+            "productId": str(self.earlybird_product.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+
+        result = self.client.execute(BUY_TICKET, variables)
+        data = result.data
+        self.assertIsNotNone(data['buyTicket'])
+        self.assertIsNotNone(data['buyTicket']['ticket'])
+        self.assertEqual(data['buyTicket']['ticket']['pgTid'], 'pg_tid')
+        self.assertIsNotNone(data['buyTicket']['ticket']['receiptUrl'])
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_판매_대상이_아니면_에러(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        another_user = get_user_model().objects.create(
+            username='another',
+            email='another@pycon.kr')
+        self.earlybird_product.ticket_for.add(another_user)
+        variables = {
+            "productId": str(self.earlybird_product.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+
+        result = self.client.execute(BUY_TICKET, variables)
+        self.assertIsNotNone(result.errors)
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_컨퍼런스_티켓을_2장_구매하면_에러(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        Ticket.objects.create(
+            product=self.earlybird_product, owner=self.user, status=TransactionMixin.STATUS_PAID,
+            imp_uid='imp_testtest')
+        variables = {
+            "productId": str(self.regular_product.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        self.assertIsNotNone(result.errors)
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_영코더_티켓을_2장_구매가_됨(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        Ticket.objects.create(
+            product=self.youngcoder_product_1, owner=self.user, status=TransactionMixin.STATUS_PAID,
+            imp_uid='imp_testtest')
+        variables = {
+            "productId": str(self.youngcoder_product_2.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        data = result.data
+        self.assertIsNotNone(data['buyTicket'])
+        self.assertIsNotNone(data['buyTicket']['ticket'])
+        self.assertEqual(data['buyTicket']['ticket']['pgTid'], 'pg_tid')
+        self.assertIsNotNone(data['buyTicket']['ticket']['receiptUrl'])
+
     def test_WHEN_티켓을_구매했으면_get_my_tickets_THEN_이력_출력(self):
-        product = self.create_ticket_product()
+        product = self.create_conference_product()
         Ticket.objects.create(
             product=product, owner=self.user, status=TransactionMixin.STATUS_PAID)
 
@@ -214,7 +323,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
     def test_cancel_ticket(self, mock_iamport, mock_config):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
-        product = self.create_ticket_product()
+        product = self.create_conference_product()
         ticket = Ticket.objects.create(
             product=product, owner=self.user, status=TransactionMixin.STATUS_PAID,
             imp_uid='imp_testtest')
@@ -232,7 +341,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
     @mock.patch('ticket.schemas.Iamport', autospec=True)
     def test_cancel_ticket_취소_가능_기한이_지났음(self, mock_iamport, mock_config):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
-        product = self.create_ticket_product()
+        product = self.create_conference_product()
         product.cancelable_date = now() - timedelta(days=1)
         product.save()
 
@@ -249,7 +358,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
     @mock.patch('ticket.schemas.Iamport', autospec=True)
     def test_cancel_ticket_다른_유저의_티켓(self, mock_iamport, mock_config):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
-        product = self.create_ticket_product()
+        product = self.create_conference_product()
         another_user = get_user_model().objects.create(
             username='another',
             email='another@pycon.kr')
@@ -268,7 +377,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
     def test_cancel_ticket_두번호출_시_에러(self, mock_iamport, mock_config):
         self.mock_config_and_iamporter(mock_config, mock_iamport)
 
-        product = self.create_ticket_product()
+        product = self.create_conference_product()
         ticket = Ticket.objects.create(
             product=product, owner=self.user, status=TransactionMixin.STATUS_PAID,
             imp_uid='imp_testtest')
