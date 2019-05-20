@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_crontab',
+    'django_filters',
     # thirt-party apps
     'corsheaders',
     'graphene_django',
@@ -48,6 +49,7 @@ INSTALLED_APPS = (
     'constance.backends.database',
     # local apps
     'api',
+    'ticket',
 )
 
 MIDDLEWARE = [

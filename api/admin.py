@@ -6,7 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 
-from api.models import TicketProduct, Ticket, CFPReview
+from api.models import CFPReview
 from api.models.agreement import Agreement
 from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
@@ -214,8 +214,7 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 class SponsorLevelAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'visible', 'price', 'limit', 'current_remaining_number',
-                    'current_remaining_number_compare_with_accepted',
-                    'ticket_count', 'presentation_count', 'booth_info',
+                    'accepted_count', 'ticket_count', 'presentation_count', 'booth_info',
                     'program_guide', 'can_provide_goods', 'logo_locations', 'can_recruit')
 
 
@@ -268,32 +267,3 @@ class NoticeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Notice, NoticeAdmin)
-
-
-class TicketProductAdmin(admin.ModelAdmin):
-    list_display = ('type', 'name', 'desc', 'total', 'owner_profile', 'price',
-                    'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
-                    'ticket_open_at', 'ticket_close_at')
-
-    def owner_profile(self, obj):
-        if obj.owner:
-            profile, _ = Profile.objects.get_or_create(user=obj.owner)
-            return profile
-        return ''
-
-
-admin.site.register(TicketProduct, TicketProductAdmin)
-
-
-class TicketAdmin(admin.ModelAdmin):
-    list_display = ('owner_profile', 'product', 'is_foreign', 'amount', 'status',
-                    'imp_uid', 'paid_at', 'options')
-
-    def owner_profile(self, obj):
-        if obj.owner:
-            profile, _ = Profile.objects.get_or_create(user=obj.owner)
-            return profile
-        return ''
-
-
-admin.site.register(Ticket, TicketAdmin)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-05 16:41+0900\n"
+"POT-Creation-Date: 2019-05-16 15:42+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,30 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: api/models/ticket.py:20
-msgid "컨퍼런스"
-msgstr "Conference"
-
-#: api/models/ticket.py:21
-msgid "영코더"
-msgstr "YoungCoder"
-
-#: api/models/ticket.py:22
-msgid "아이돌봄"
-msgstr "BabyCare"
-
-#: api/models/ticket.py:23
-msgid "튜토리얼"
-msgstr "Tutorial"
-
-#: api/models/ticket.py:24
-msgid "스프린트"
-msgstr "Sprint"
-
-#: api/models/ticket.py:25
-msgid "체육시간"
-msgstr "HealthCare"
 
 #: api/schemas/presentation.py:121
 msgid "발표 제안 기간이 종료되었습니다."
@@ -54,65 +30,122 @@ msgstr "Call for proposal is opened yet."
 msgid "오픈 리뷰 중에는 제안서를 수정할 수 없습니다."
 msgstr "Proposals can not be edited during an open review."
 
-#: api/schemas/presentation.py:153
+#: api/schemas/presentation.py:152
 msgid "리뷰할 카테고리를 2개 이상 선택해주어야 합니다."
 msgstr "You must select at least 2 categories to review."
 
-#: api/schemas/presentation.py:163
+#: api/schemas/presentation.py:160
 msgid ""
 "선택한 카테고리에 리뷰할 제안서가 없습니다. 다시 카테고리를 선택해주세요."
 msgstr ""
 "There are no proposals to review in the selected category. Please select a "
 "category again."
 
-#: api/schemas/presentation.py:205
+#: api/schemas/presentation.py:202
 #, fuzzy
 #| msgid "발표 제안 기간이 종료되었습니다."
 msgid "오픈 리뷰 기간이 종료되었습니다."
 msgstr "Call for proposal period is over."
 
-#: api/schemas/presentation.py:208
+#: api/schemas/presentation.py:205
 #, fuzzy
 #| msgid "얼리버드 티켓 판매가 아직 시작되지 않았습니다."
 msgid "오픈 리뷰가 아직 시작되지 않았습니다."
 msgstr "Earlybird ticket sales have not started yet."
 
-#: api/schemas/presentation.py:212
+#: api/schemas/presentation.py:209
 msgid "할당된 리뷰는 한번에 제출되어야 합니다."
 msgstr "Assigned reviews must be submitted at once."
 
-#: api/schemas/presentation.py:216
+#: api/schemas/presentation.py:213
 msgid "제출된 리뷰가 사용자에게 할당된 리뷰가 아닙니다."
 msgstr "The submitted reviews are not a user-assigned review."
 
-#: api/schemas/ticket.py:63
-#, fuzzy
-#| msgid "얼리버드 티켓이 모두 판매되었습니다."
-msgid "티켓이 모두 판매되었습니다."
-msgstr "Earlybird ticket is sold out."
+#: api/schemas/sponsor.py:92
+msgid "선택한 후원사 등급이 마감되었습니다. 다른 등급을 선택해주세요."
+msgstr "The selected sponsor level is closed. Please choose another level."
 
-#: api/schemas/ticket.py:65
-#, fuzzy
-#| msgid "얼리버드 티켓 판매가 아직 시작되지 않았습니다."
-msgid "티켓 판매가 아직 시작되지 않았습니다."
-msgstr "Earlybird ticket sales have not started yet."
+#: pyconkr/settings.py:149
+msgid "Korean"
+msgstr ""
 
-#: api/schemas/ticket.py:67
-#, fuzzy
-#| msgid "얼리버드 티켓 판매가 종료되었습니다."
-msgid "티켓 판매가 종료되었습니다."
-msgstr "The earlybird ticket sales period is over."
+#: pyconkr/settings.py:150
+msgid "English"
+msgstr ""
 
-#: api/schemas/ticket.py:78
+#: ticket/models.py:20
+msgid "컨퍼런스"
+msgstr "Conference"
+
+#: ticket/models.py:21
+msgid "영코더"
+msgstr "YoungCoder"
+
+#: ticket/models.py:22
+msgid "아이돌봄"
+msgstr "BabyCare"
+
+#: ticket/models.py:23
+msgid "튜토리얼"
+msgstr "Tutorial"
+
+#: ticket/models.py:24
+msgid "스프린트"
+msgstr "Sprint"
+
+#: ticket/models.py:25
+msgid "체육시간"
+msgstr "HealthCare"
+
+#: ticket/schemas.py:93
+msgid "아이엠포트 계정 정보가 설정되어 있지 않습니다."
+msgstr ""
+"iamport account information is not set. please contact support@pycon.kr"
+
+#: ticket/schemas.py:101
+#, python-brace-format
+msgid ""
+"이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다."
+msgstr ""
+"This product must be purchased at a price higher than the ticket "
+"price(￦{payment.amount})."
+
+#: ticket/schemas.py:106
 #, fuzzy
 #| msgid "결재가 실패했습니다."
 msgid "결제가 실패했습니다."
 msgstr "Payment has failed."
 
-#: pyconkr/settings.py:147
-msgid "Korean"
-msgstr ""
+#: ticket/schemas.py:127
+#, fuzzy
+#| msgid "얼리버드 티켓이 모두 판매되었습니다."
+msgid "티켓이 모두 판매되었습니다."
+msgstr "Earlybird ticket is sold out."
 
-#: pyconkr/settings.py:148
-msgid "English"
-msgstr ""
+#: ticket/schemas.py:129
+#, fuzzy
+#| msgid "얼리버드 티켓 판매가 아직 시작되지 않았습니다."
+msgid "티켓 판매가 아직 시작되지 않았습니다."
+msgstr "Earlybird ticket sales have not started yet."
+
+#: ticket/schemas.py:131
+#, fuzzy
+#| msgid "얼리버드 티켓 판매가 종료되었습니다."
+msgid "티켓 판매가 종료되었습니다."
+msgstr "The earlybird ticket sales period is over."
+
+#: ticket/schemas.py:168
+msgid "다른 유저의 티켓을 환불할 수 없습니다."
+msgstr "You can not refund other users' tickets."
+
+#: ticket/schemas.py:170
+msgid "이미 환불된 티켓이거나 결재되지 않은 티켓입니다."
+msgstr "Tickets that have already been refunded or have not been purchased."
+
+#: ticket/schemas.py:172
+msgid "환불 가능 기한이 지났습니다."
+msgstr "The refundable period has ended."
+
+#: ticket/schemas.py:176
+msgid "환불이 실패했습니다"
+msgstr "Refund is failed"

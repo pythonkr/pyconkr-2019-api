@@ -1,7 +1,9 @@
 import graphene
+from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from graphql_extensions.auth.decorators import login_required
+from graphql_extensions.exceptions import GraphQLError
 
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.schemas.common import SeoulDateTime, ImageUrl, FileUrl
@@ -16,16 +18,24 @@ class SponsorLevelNode(DjangoObjectType):
         """
 
     current_remaining_number = graphene.Int()
+    paid_count = graphene.Int()
+    accepted_count = graphene.Int()
 
     def resolve_current_remaining_number(self, info):
         return self.current_remaining_number
+
+    def resolve_paid_count(self, info):
+        return self.paid_count
+
+    def resolve_accepted_count(self, info):
+        return self.accepted_count
 
 
 class SponsorNode(DjangoObjectType):
     class Meta:
         model = Sponsor
         description = """
-        Sponsors which spon python conference in Korea.
+        Sponsors which sponsor python conference in Korea.
         """
 
     creator = graphene.Field(UserNode)
@@ -39,11 +49,12 @@ class SponsorNode(DjangoObjectType):
 class PublicSponsorNode(DjangoObjectType):
     class Meta:
         model = Sponsor
-        only_fields = ('name', 'name_ko', 'name_en', 'level', 'desc', 'desc_ko', 'desc_en',
+        only_fields = ('id', 'name', 'name_ko', 'name_en', 'level', 'desc', 'desc_ko', 'desc_en',
                        'url', 'logo_image', 'logo_vector')
+        interfaces = (graphene.relay.Node,)
 
         description = """
-        Sponsors which spon python conference in Korea.
+        Sponsors which sponsor python conference in Korea.
         """
 
     level = graphene.Field(SponsorLevelNode)
@@ -72,11 +83,13 @@ class CreateOrUpdateSponsor(graphene.Mutation):
 
     @login_required
     def mutate(self, info, data):
-        sponsor, _ = Sponsor.objects.get_or_create(creator=info.context.user)
+        sponsor, created = Sponsor.objects.get_or_create(creator=info.context.user)
         if 'level_id' in data:
             sponsor.level = SponsorLevel.objects.get(
                 pk=data['level_id'])
             del data['level_id']
+        if created and sponsor.level.current_remaining_number == 0:
+            raise GraphQLError(_('선택한 후원사 등급이 마감되었습니다. 다른 등급을 선택해주세요.'))
         for k, v in data.items():
             setattr(sponsor, k, v)
 
@@ -180,6 +193,7 @@ class Query(graphene.ObjectType):
     sponsor_levels = graphene.List(SponsorLevelNode)
     my_sponsor = graphene.Field(SponsorNode)
     sponsors = graphene.List(PublicSponsorNode)
+    sponsor = graphene.relay.Node.Field(PublicSponsorNode)
 
     def resolve_sponsors(self, info):
         return Sponsor.objects. \

@@ -25,9 +25,7 @@ EMAIL='pyconkr@pycon.kr'
 PASSWORD='${PYCONKR_ADMIN_PASSWORD}'
 
 try:
-    user = UserModel.objects.get(username=USERNAME)
-    user.set_password(PASSWORD)
-    user.save()
+    UserModel.objects.get(username=USERNAME)
 except UserModel.DoesNotExist:
     User.objects.create_superuser(USERNAME, EMAIL, PASSWORD)
 "

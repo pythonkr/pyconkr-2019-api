@@ -26,13 +26,14 @@ class TicketProduct(models.Model):
                             ), default=TYPE_CONFERENCE)
     name = models.CharField(max_length=255, null=True)
     desc = models.TextField(blank=True, default='')
+    warning = models.TextField(blank=True, default='')
     start_at = models.DateTimeField(null=True, blank=True,
                                     help_text='행사가 시작되는 일시입니다.')
     finish_at = models.DateTimeField(null=True, blank=True,
                                      help_text='행사가 종료되는 일시입니다.')
     total = models.IntegerField(default=0,
                                 help_text='판매할 티켓의 총 개수입니다.')
-    owner = models.ForeignKey(UserModel, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(UserModel, null=True, blank=True, on_delete=models.SET_NULL)
     price = models.IntegerField(default=0)
     is_editable_price = models.BooleanField(default=False,
                                             help_text='개인후원과 같이 가격을 상향조정할 수 있는지 여부를 나타냅니다.')
@@ -47,7 +48,11 @@ class TicketProduct(models.Model):
                                           help_text='티켓 판매 시작 일시입니다.')
     ticket_close_at = models.DateTimeField(null=True, blank=True,
                                            help_text='티켓 판매 종료 일시입니다.')
-
+    ticket_for = models.ManyToManyField(UserModel,
+                                        related_name='privileged_ticket_product',
+                                        help_text='티켓 판매되는 대상 유저들을 의미합니다. '
+                                                  '만약 비어있을 경우 모든 유저에게 판매가 되며, '
+                                                  '하나라도 유저가 지정되어 있으면 그 유저 외에는 볼 수 없습니다.')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -68,6 +73,9 @@ class TicketProduct(models.Model):
     def is_closed(self):
         return self.ticket_close_at and self.ticket_close_at < timezone.now()
 
+    def is_cancelable_date(self):
+        return self.cancelable_date and self.cancelable_date > timezone.now()
+
     def __str__(self):
         return self.name
 
@@ -78,25 +86,30 @@ class TransactionMixin(models.Model):
     STATUS_DELETE = 'delete'
     STATUS_CANCELLED = 'cancelled'
 
-    is_foreign = models.BooleanField(default=False)
+    is_domestic_card = models.BooleanField(default=True)
     amount = models.IntegerField(
         default=0,
         help_text='아이엠포트를 통해 결재한 가격입니다.'
     )
+    merchant_uid = models.CharField(max_length=100, blank=True, default='',
+                                    help_text='파이콘 한국에서 발행하는 주문번호입니다. 영수증에 출력됩니다.')
     imp_uid = models.CharField(max_length=255, null=True, blank=True,
                                help_text='아이엠포트 uid입니다. 이 값은 환불 시에 사용됩니다.')
     pg_tid = models.CharField(max_length=127, null=True, blank=True,
                               help_text='PG사 Transaction ID입니다.')
     receipt_url = models.CharField(max_length=255, null=True, blank=True,
-                                   help_text='영수증 URL입니다. 이 값은 카드 결제 내역을 보여줄 때에 사용됩니다.')
+                                   help_text='결재 영수증 URL입니다. 이 값은 카드 결제 내역을 보여줄 때에 사용됩니다.')
     paid_at = models.DateTimeField(null=True, blank=True)
+    cancel_receipt_url = models.CharField(max_length=255, blank=True, default='',
+                                          help_text='결재 취소 영수증 URL입니다. 이 값은 카드 결제 취소 내역을 보여줄 때에 사용됩니다.')
+    cancelled_at = models.DateTimeField(null=True, blank=True)
 
     status = models.CharField(max_length=10,
                               choices=(
-                                  (STATUS_READY, 'Ready'),
-                                  (STATUS_PAID, 'Paid'),
-                                  (STATUS_DELETE, 'Deleted'),
-                                  (STATUS_CANCELLED, 'Cancelled')
+                                  (STATUS_READY, 'ready'),
+                                  (STATUS_PAID, 'paid'),
+                                  (STATUS_DELETE, 'deleted'),
+                                  (STATUS_CANCELLED, 'cancelled')
                               ), default=STATUS_READY)
 
     class Meta:
