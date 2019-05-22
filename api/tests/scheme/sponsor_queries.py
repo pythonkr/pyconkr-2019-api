@@ -17,6 +17,8 @@ query getSponsorLevels {
         logoLocations
         canRecruit
         currentRemainingNumber
+        paidCount
+        acceptedCount
     }
 }
 '''

@@ -19,7 +19,7 @@ class SponsorLevelNode(DjangoObjectType):
 
     current_remaining_number = graphene.Int()
     paid_count = graphene.Int()
-    acceped_count = graphene.Int()
+    accepted_count = graphene.Int()
 
     def resolve_current_remaining_number(self, info):
         return self.current_remaining_number
@@ -27,8 +27,8 @@ class SponsorLevelNode(DjangoObjectType):
     def resolve_paid_count(self, info):
         return self.paid_count
 
-    def resolve_acceped_count(self, info):
-        return self.acceped_count
+    def resolve_accepted_count(self, info):
+        return self.accepted_count
 
 
 class SponsorNode(DjangoObjectType):
