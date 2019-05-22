@@ -32,6 +32,8 @@ class TicketAdmin(admin.ModelAdmin):
     def options_str(self, obj):
         if not obj.options:
             return ''
+        if isinstance(obj.options, str):
+            return obj.options
         return '\n'.join([f'{k}: {v}' for k, v in obj.options.items()])
 
 

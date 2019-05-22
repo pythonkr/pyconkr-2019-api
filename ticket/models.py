@@ -49,6 +49,7 @@ class TicketProduct(models.Model):
     ticket_close_at = models.DateTimeField(null=True, blank=True,
                                            help_text='티켓 판매 종료 일시입니다.')
     ticket_for = models.ManyToManyField(UserModel,
+                                        blank=True,
                                         related_name='privileged_ticket_product',
                                         help_text='티켓 판매되는 대상 유저들을 의미합니다. '
                                                   '만약 비어있을 경우 모든 유저에게 판매가 되며, '
