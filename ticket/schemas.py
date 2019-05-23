@@ -25,7 +25,6 @@ class TicketProductNode(DjangoObjectType):
     class Meta:
         model = TicketProduct
         exclude_fields = ['ticket_set']
-        interfaces = (graphene.relay.Node,)
 
     type = TicketTypeNode()
     purchase_count = graphene.Int(description='로그인 했을 때에는 이 값에 구매한 티켓 개수가 들어갑니다.')
@@ -49,8 +48,10 @@ class PaymentInput(graphene.InputObjectType):
     amount = graphene.Int(
         description='결재할 금액을 의미합니다. 수정 가능한 상품인 경우(개인후원)에만 사용됩니다.'
     )
-    card_number = graphene.String(required=True)
-    expiry = graphene.String(required=True)
+    card_number = graphene.String(required=True,
+                                  description='결재에 사용할 카드 번호입니다. (e.g, xxxx-xxxx-xxxx-xxxx)')
+    expiry = graphene.String(required=True,
+                             description='결재에 사용하는 카드의 만료 기간입니다. (e.g, YYYY-MM)')
     birth = graphene.String(
         description='한국 카드일 때 사용하며 생년월일의 형태를 가집니다.(e.g, 880101)')
     pwd_2digit = graphene.String(
@@ -197,7 +198,7 @@ def get_ticket_product(product_type, user):
 
 
 class Query(graphene.ObjectType):
-    ticket_product = graphene.relay.Node.Field(TicketProductNode)
+    ticket_product = graphene.Field(TicketProductNode)
     conference_products = graphene.List(TicketProductNode)
     young_coder_products = graphene.List(TicketProductNode)
     baby_care_products = graphene.List(TicketProductNode)
