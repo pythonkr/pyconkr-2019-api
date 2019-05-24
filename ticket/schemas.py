@@ -8,6 +8,7 @@ from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 from iamport import Iamport
+from urllib3.exceptions import ResponseError
 
 from ticket.models import TransactionMixin, TicketProduct, Ticket
 
@@ -91,8 +92,10 @@ class BuyTicket(graphene.Mutation):
         BuyTicket.check_schedule(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
-
-        response = BuyTicket.create_payment(product, payment, payment_params)
+        try:
+            response = BuyTicket.create_payment(product, payment, payment_params)
+        except ResponseError as e:
+            raise GraphQLError(e.message)
 
         if response['status'] != TransactionMixin.STATUS_PAID:
             raise GraphQLError(_('결제가 실패했습니다.'))
@@ -136,10 +139,14 @@ class BuyTicket(graphene.Mutation):
             'amount': product.price,
             **payment_params
         }
-        iamport = create_iamport(payment.is_domestic_card)
-        if payment.is_domestic_card:
-            return iamport.pay_onetime(**payload)
-        return iamport.pay_foreign(**payload)
+
+        try:
+            iamport = create_iamport(payment.is_domestic_card)
+            if payment.is_domestic_card:
+                return iamport.pay_onetime(**payload)
+            return iamport.pay_foreign(**payload)
+        except ResponseError as e:
+            raise GraphQLError(e.message)
 
     @classmethod
     def get_payment_params(cls, payment):
