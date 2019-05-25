@@ -39,9 +39,21 @@ class TicketProductNode(DjangoObjectType):
 class TicketNode(DjangoObjectType):
     class Meta:
         model = Ticket
+        interfaces = (graphene.relay.Node,)
         description = """
         Ticket
         """
+
+    @classmethod
+    def get_node(cls, info, id):
+        try:
+            ticket = cls._meta.model.objects.get(id=id)
+        except cls._meta.model.DoesNotExist:
+            return None
+
+        if info.context.user == ticket.owner:
+            return ticket
+        return None
 
 
 class PaymentInput(graphene.InputObjectType):
@@ -214,6 +226,7 @@ class Query(graphene.ObjectType):
     health_care_products = graphene.List(TicketProductNode)
 
     my_tickets = graphene.List(TicketNode)
+    my_ticket = graphene.relay.Node.Field(TicketNode)
 
     def resolve_conference_products(self, info):
         return get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)
