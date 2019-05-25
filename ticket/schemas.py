@@ -238,7 +238,3 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_my_tickets(self, info):
         return Ticket.objects.filter(owner=info.context.user)
-
-    # @login_required
-    # def resolve_my_ticket(self, info, ticket_id):
-    #     return TicketProduct.objects.get(pk=ticket_id, owner=info.context.user)
