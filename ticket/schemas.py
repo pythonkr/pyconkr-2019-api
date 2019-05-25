@@ -39,6 +39,7 @@ class TicketProductNode(DjangoObjectType):
 class TicketNode(DjangoObjectType):
     class Meta:
         model = Ticket
+        interfaces = (graphene.relay.Node,)
         description = """
         Ticket
         """
@@ -214,6 +215,7 @@ class Query(graphene.ObjectType):
     health_care_products = graphene.List(TicketProductNode)
 
     my_tickets = graphene.List(TicketNode)
+    my_ticket = graphene.relay.Node.Field(TicketNode)
 
     def resolve_conference_products(self, info):
         return get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)
@@ -236,3 +238,7 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_my_tickets(self, info):
         return Ticket.objects.filter(owner=info.context.user)
+
+    # @login_required
+    # def resolve_my_ticket(self, info, ticket_id):
+    #     return TicketProduct.objects.get(pk=ticket_id, owner=info.context.user)

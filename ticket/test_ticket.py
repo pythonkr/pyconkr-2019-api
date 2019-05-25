@@ -5,10 +5,12 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import get_current_timezone
 from django.utils.timezone import now
 from graphql_jwt.testcases import JSONWebTokenTestCase
+from graphql_relay import to_global_id
 
 from api.tests.base import BaseTestCase
 from ticket.models import TicketProduct, Ticket, TransactionMixin
-from ticket.ticket_queries import BUY_TICKET, MY_TICKETS, CANCEL_TICKET
+from ticket.schemas import TicketNode
+from ticket.ticket_queries import BUY_TICKET, MY_TICKETS, MY_TICKET, CANCEL_TICKET
 
 TIMEZONE = get_current_timezone()
 
@@ -317,6 +319,17 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = result.data
         self.assertIsNotNone(data['myTickets'])
         self.assertEqual(1, len(data['myTickets']))
+
+    def test_WHEN_티켓을_구매했으면_get_my_ticket_THEN_이력_출력(self):
+        product = self.create_conference_product()
+        ticket = Ticket.objects.create(
+            product=product, owner=self.user, status=TransactionMixin.STATUS_PAID)
+
+        variables = {'id': to_global_id(TicketNode._meta.name, ticket.pk)}
+        result = self.client.execute(MY_TICKET, variables=variables)
+        data = result.data
+        self.assertIsNotNone(data['myTicket'])
+        self.assertEqual(1, len(data))
 
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)
