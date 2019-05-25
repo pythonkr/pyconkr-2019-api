@@ -331,6 +331,19 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertIsNotNone(data['myTicket'])
         self.assertEqual(1, len(data))
 
+    def test_WHEN_다른_유저의_티켓이력_출력_실패(self):
+        product = self.create_youngcoder_product()
+        other_user = get_user_model().objects.create(
+            username='test_user_name',
+            email='test@pycon.kr')
+        ticket = Ticket.objects.create(
+            product=product, owner=other_user, status=TransactionMixin.STATUS_PAID)
+
+        variables = {'id': to_global_id(TicketNode._meta.name, ticket.pk)}
+        result = self.client.execute(MY_TICKET, variables=variables)
+        data = result.data
+        self.assertIsNone(data['myTicket'])
+
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)
     def test_cancel_ticket(self, mock_iamport, mock_config):

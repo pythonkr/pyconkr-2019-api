@@ -44,6 +44,17 @@ class TicketNode(DjangoObjectType):
         Ticket
         """
 
+    @classmethod
+    def get_node(cls, info, id):
+        try:
+            ticket = cls._meta.model.objects.get(id=id)
+        except cls._meta.model.DoesNotExist:
+            return None
+
+        if info.context.user == ticket.owner:
+            return ticket
+        return None
+
 
 class PaymentInput(graphene.InputObjectType):
     is_domestic_card = graphene.Boolean(required=True)
