@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-16 15:42+0900\n"
+"POT-Creation-Date: 2019-05-27 16:45+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,6 +65,10 @@ msgstr "The submitted reviews are not a user-assigned review."
 msgid "선택한 후원사 등급이 마감되었습니다. 다른 등급을 선택해주세요."
 msgstr "The selected sponsor level is closed. Please choose another level."
 
+#: api/schemas/user.py:162
+msgid "개인후원 제품이 없습니다. 관리자에게 문의해주세요."
+msgstr "There are no patron products. please contact administrator."
+
 #: pyconkr/settings.py:149
 msgid "Korean"
 msgstr ""
@@ -102,7 +106,7 @@ msgid "아이엠포트 계정 정보가 설정되어 있지 않습니다."
 msgstr ""
 "iamport account information is not set. please contact support@pycon.kr"
 
-#: ticket/schemas.py:101
+#: ticket/schemas.py:106
 #, python-brace-format
 msgid ""
 "이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다."
@@ -110,42 +114,49 @@ msgstr ""
 "This product must be purchased at a price higher than the ticket "
 "price(￦{payment.amount})."
 
-#: ticket/schemas.py:106
+#: ticket/schemas.py:112
+#, fuzzy, python-brace-format
+#| msgid "아이엠포트 계정 정보가 설정되어 있지 않습니다."
+msgid "아이엠포트 결재가 실패하였습니다.({e.code})"
+msgstr ""
+"iamport account information is not set. please contact support@pycon.kr"
+
+#: ticket/schemas.py:115
 #, fuzzy
 #| msgid "결재가 실패했습니다."
 msgid "결제가 실패했습니다."
 msgstr "Payment has failed."
 
-#: ticket/schemas.py:127
+#: ticket/schemas.py:142
 #, fuzzy
 #| msgid "얼리버드 티켓이 모두 판매되었습니다."
 msgid "티켓이 모두 판매되었습니다."
 msgstr "Earlybird ticket is sold out."
 
-#: ticket/schemas.py:129
+#: ticket/schemas.py:144
 #, fuzzy
 #| msgid "얼리버드 티켓 판매가 아직 시작되지 않았습니다."
 msgid "티켓 판매가 아직 시작되지 않았습니다."
 msgstr "Earlybird ticket sales have not started yet."
 
-#: ticket/schemas.py:131
+#: ticket/schemas.py:146
 #, fuzzy
 #| msgid "얼리버드 티켓 판매가 종료되었습니다."
 msgid "티켓 판매가 종료되었습니다."
 msgstr "The earlybird ticket sales period is over."
 
-#: ticket/schemas.py:168
+#: ticket/schemas.py:192
 msgid "다른 유저의 티켓을 환불할 수 없습니다."
 msgstr "You can not refund other users' tickets."
 
-#: ticket/schemas.py:170
+#: ticket/schemas.py:194
 msgid "이미 환불된 티켓이거나 결재되지 않은 티켓입니다."
 msgstr "Tickets that have already been refunded or have not been purchased."
 
-#: ticket/schemas.py:172
+#: ticket/schemas.py:196
 msgid "환불 가능 기한이 지났습니다."
 msgstr "The refundable period has ended."
 
-#: ticket/schemas.py:176
+#: ticket/schemas.py:203 ticket/schemas.py:206
 msgid "환불이 실패했습니다"
 msgstr "Refund is failed"
