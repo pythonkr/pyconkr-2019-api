@@ -1,15 +1,18 @@
+from datetime import timedelta
 from json import loads, dumps
 from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.utils.timezone import get_current_timezone
+from django.utils.timezone import now
 from graphql_extensions.exceptions import PermissionDenied
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 from api.tests.base import BaseTestCase
 from api.tests.common import generate_mock_response
 from api.tests.oauth_app_response import GITHUB_USER_RESPONSE
-from api.tests.scheme.user_queries import ME, UPDATE_PROFILE, UPDATE_AGREEMENT
+from api.tests.scheme.user_queries import ME, UPDATE_PROFILE, UPDATE_AGREEMENT, PATRONS
+from ticket.models import TicketProduct, Ticket
 
 TIMEZONE = get_current_timezone()
 UserModel = get_user_model()
@@ -148,3 +151,61 @@ class UserTestCase(BaseTestCase, JSONWebTokenTestCase):
         # Given
         user = UserModel.objects.create(username='develop_github_123')
         self.assertFalse(user.agreement.is_agreed_all())
+
+    def test_patrons_without_patron_product_THEN_error(self):
+        result = self.client.execute(PATRONS)
+        self.assertIsNotNone(result.errors)
+
+    def test_patrons(self):
+        user1 = get_user_model().objects.create(
+            username='user1',
+            email='me@pycon.kr')
+        user1.profile.name = 'user1'
+        user1.save()
+        user2 = get_user_model().objects.create(
+            username='user2',
+            email='me@pycon.kr')
+        user2.profile.name = 'user2'
+        user2.save()
+        user3 = get_user_model().objects.create(
+            username='user3',
+            email='me@pycon.kr')
+        user3.profile.name = 'user3'
+        user3.save()
+        user4 = get_user_model().objects.create(
+            username='user4',
+            email='me@pycon.kr')
+        user4.profile.name = 'user4'
+        user4.save()
+        user5 = get_user_model().objects.create(
+            username='user5',
+            email='me@pycon.kr')
+        user5.profile.name = 'user5'
+        user5.save()
+        user6 = get_user_model().objects.create(
+            username='user6',
+            email='me@pycon.kr')
+        user6.profile.name = 'user6'
+        user6.save()
+
+        product = TicketProduct.objects.create(name='Patron', type=TicketProduct.TYPE_CONFERENCE,
+                                               is_editable_price=True, active=True)
+        Ticket.objects.create(owner=user1, product=product, status=Ticket.STATUS_PAID, amount=3000, paid_at=now())
+        Ticket.objects.create(owner=user2, product=product, status=Ticket.STATUS_PAID, amount=2000, paid_at=now())
+        Ticket.objects.create(
+            owner=user3, product=product, status=Ticket.STATUS_PAID, amount=4000, paid_at=now() - timedelta(days=2))
+        Ticket.objects.create(
+            owner=user4, product=product, status=Ticket.STATUS_PAID, amount=4000, paid_at=now() - timedelta(days=3))
+        Ticket.objects.create(
+            owner=user5, product=product, status=Ticket.STATUS_PAID, amount=4000, paid_at=now())
+        Ticket.objects.create(
+            owner=user6, product=product, status=Ticket.STATUS_CANCELLED, amount=4000, paid_at=now())
+        result = self.client.execute(PATRONS)
+        self.assertIsNone(result.errors)
+        self.assertIsNotNone(result.data['patrons'])
+        self.assertEqual(5, len(result.data['patrons']))
+        self.assertEqual('user4', result.data['patrons'][0]['name'])
+        self.assertEqual('user3', result.data['patrons'][1]['name'])
+        self.assertEqual('user5', result.data['patrons'][2]['name'])
+        self.assertEqual('user1', result.data['patrons'][3]['name'])
+        self.assertEqual('user2', result.data['patrons'][4]['name'])

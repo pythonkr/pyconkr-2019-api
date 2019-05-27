@@ -77,3 +77,20 @@ mutation UpdateAgreement($isPrivacyPolicy: Boolean, $isTermsOfService: Boolean) 
     }
 }
 '''
+
+PATRONS = '''
+query getPatrons {
+    patrons {
+        id
+        name
+        nameKo
+        nameEn
+        bio
+        bioKo
+        bioEn
+        organization
+        image
+        avatarUrl
+    }
+}
+'''
