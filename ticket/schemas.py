@@ -8,7 +8,6 @@ from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 from iamport import Iamport
-from urllib3.exceptions import ResponseError
 
 from ticket.models import TransactionMixin, TicketProduct, Ticket
 
@@ -92,7 +91,8 @@ class BuyTicket(graphene.Mutation):
     def mutate(self, info, product_id, payment, options):
         if not config.IMP_DOM_API_KEY or not config.IMP_INTL_API_KEY:
             raise GraphQLError(_('아이엠포트 계정 정보가 설정되어 있지 않습니다.'))
-        payment_params = BuyTicket.get_payment_params(payment)
+        user = info.context.user
+        payment_params = BuyTicket.get_payment_params(user, payment)
         try:
             product = TicketProduct.objects.get(pk=product_id)
         except TicketProduct.DoesNotExist:
@@ -106,8 +106,10 @@ class BuyTicket(graphene.Mutation):
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
         try:
             response = BuyTicket.create_payment(product, payment, payment_params)
-        except ResponseError as e:
+        except Iamport.ResponseError as e:
             raise GraphQLError(e.message)
+        except Iamport.HttpError as e:
+            raise GraphQLError(_(f'아이엠포트 결재가 실패하였습니다.({e.code})'))
 
         if response['status'] != TransactionMixin.STATUS_PAID:
             raise GraphQLError(_('결제가 실패했습니다.'))
@@ -152,16 +154,14 @@ class BuyTicket(graphene.Mutation):
             **payment_params
         }
 
-        try:
-            iamport = create_iamport(payment.is_domestic_card)
-            if payment.is_domestic_card:
-                return iamport.pay_onetime(**payload)
-            return iamport.pay_foreign(**payload)
-        except ResponseError as e:
-            raise GraphQLError(e.message)
+        iamport = create_iamport(payment.is_domestic_card)
+        if payment.is_domestic_card:
+            return iamport.pay_onetime(**payload)
+        return iamport.pay_foreign(**payload)
+
 
     @classmethod
-    def get_payment_params(cls, payment):
+    def get_payment_params(cls, user, payment):
         required_field = ['card_number', 'expiry']
         if payment.is_domestic_card:
             required_field = ['card_number', 'expiry', 'birth', 'pwd_2digit']
@@ -169,7 +169,14 @@ class BuyTicket(graphene.Mutation):
             if getattr(payment, attr, None):
                 continue
             raise ValueError(f'Could not find "{attr}" in payment')
-        return {k: v for k, v in payment.items() if v}
+        params = {k: v for k, v in payment.items() if v}
+        if not params.get('buyer_email'):
+            params['buyer_email'] = user.profile.email
+        if not params.get('buyer_tel'):
+            params['buyer_tel'] = user.profile.phone
+        if not params.get('buyer_name'):
+            params['buyer_name'] = user.profile.name
+        return params
 
 
 class CancelTicket(graphene.Mutation):
@@ -187,8 +194,14 @@ class CancelTicket(graphene.Mutation):
             raise GraphQLError(_('이미 환불된 티켓이거나 결재되지 않은 티켓입니다.'))
         if not ticket.product.is_cancelable_date():
             raise GraphQLError(_('환불 가능 기한이 지났습니다.'))
-        iamport = create_iamport(ticket.is_domestic_card)
-        response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
+        try:
+            iamport = create_iamport(ticket.is_domestic_card)
+            response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
+        except Iamport.ResponseError as e:
+            raise GraphQLError(e.message)
+        except Iamport.HttpError as e:
+            raise GraphQLError(_('환불이 실패했습니다'))
+
         if Ticket.STATUS_CANCELLED != response['status']:
             raise GraphQLError(_('환불이 실패했습니다'))
         ticket.status = Ticket.STATUS_CANCELLED

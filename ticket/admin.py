@@ -23,6 +23,12 @@ class TicketAdmin(admin.ModelAdmin):
     list_display = ('id', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
                     'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at')
 
+    list_filter = (
+        ('product', admin.RelatedOnlyFieldListFilter),
+        ('is_domestic_card', admin.BooleanFieldListFilter),
+        'status',
+    )
+
     def owner_profile(self, obj):
         if obj.owner:
             profile, _ = Profile.objects.get_or_create(user=obj.owner)
