@@ -25,7 +25,6 @@ class TicketProductNode(DjangoObjectType):
     class Meta:
         model = TicketProduct
         exclude_fields = ['ticket_set']
-        interfaces = (graphene.relay.Node,)
 
     type = TicketTypeNode()
     purchase_count = graphene.Int(description='로그인 했을 때에는 이 값에 구매한 티켓 개수가 들어갑니다.')
@@ -39,9 +38,21 @@ class TicketProductNode(DjangoObjectType):
 class TicketNode(DjangoObjectType):
     class Meta:
         model = Ticket
+        interfaces = (graphene.relay.Node,)
         description = """
         Ticket
         """
+
+    @classmethod
+    def get_node(cls, info, id):
+        try:
+            ticket = cls._meta.model.objects.get(id=id)
+        except cls._meta.model.DoesNotExist:
+            return None
+
+        if info.context.user == ticket.owner:
+            return ticket
+        return None
 
 
 class PaymentInput(graphene.InputObjectType):
@@ -49,8 +60,10 @@ class PaymentInput(graphene.InputObjectType):
     amount = graphene.Int(
         description='결재할 금액을 의미합니다. 수정 가능한 상품인 경우(개인후원)에만 사용됩니다.'
     )
-    card_number = graphene.String(required=True)
-    expiry = graphene.String(required=True)
+    card_number = graphene.String(required=True,
+                                  description='결재에 사용할 카드 번호입니다. (e.g, xxxx-xxxx-xxxx-xxxx)')
+    expiry = graphene.String(required=True,
+                             description='결재에 사용하는 카드의 만료 기간입니다. (e.g, YYYY-MM)')
     birth = graphene.String(
         description='한국 카드일 때 사용하며 생년월일의 형태를 가집니다.(e.g, 880101)')
     pwd_2digit = graphene.String(
@@ -78,7 +91,8 @@ class BuyTicket(graphene.Mutation):
     def mutate(self, info, product_id, payment, options):
         if not config.IMP_DOM_API_KEY or not config.IMP_INTL_API_KEY:
             raise GraphQLError(_('아이엠포트 계정 정보가 설정되어 있지 않습니다.'))
-        payment_params = BuyTicket.get_payment_params(payment)
+        user = info.context.user
+        payment_params = BuyTicket.get_payment_params(user, payment)
         try:
             product = TicketProduct.objects.get(pk=product_id)
         except TicketProduct.DoesNotExist:
@@ -90,8 +104,12 @@ class BuyTicket(graphene.Mutation):
         BuyTicket.check_schedule(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
-
-        response = BuyTicket.create_payment(product, payment, payment_params)
+        try:
+            response = BuyTicket.create_payment(product, payment, payment_params)
+        except Iamport.ResponseError as e:
+            raise GraphQLError(e.message)
+        except Iamport.HttpError as e:
+            raise GraphQLError(_(f'아이엠포트 결재가 실패하였습니다.({e.code})'))
 
         if response['status'] != TransactionMixin.STATUS_PAID:
             raise GraphQLError(_('결제가 실패했습니다.'))
@@ -135,13 +153,15 @@ class BuyTicket(graphene.Mutation):
             'amount': product.price,
             **payment_params
         }
+
         iamport = create_iamport(payment.is_domestic_card)
         if payment.is_domestic_card:
             return iamport.pay_onetime(**payload)
         return iamport.pay_foreign(**payload)
 
+
     @classmethod
-    def get_payment_params(cls, payment):
+    def get_payment_params(cls, user, payment):
         required_field = ['card_number', 'expiry']
         if payment.is_domestic_card:
             required_field = ['card_number', 'expiry', 'birth', 'pwd_2digit']
@@ -149,7 +169,14 @@ class BuyTicket(graphene.Mutation):
             if getattr(payment, attr, None):
                 continue
             raise ValueError(f'Could not find "{attr}" in payment')
-        return {k: v for k, v in payment.items() if v}
+        params = {k: v for k, v in payment.items() if v}
+        if not params.get('buyer_email'):
+            params['buyer_email'] = user.profile.email
+        if not params.get('buyer_tel'):
+            params['buyer_tel'] = user.profile.phone
+        if not params.get('buyer_name'):
+            params['buyer_name'] = user.profile.name
+        return params
 
 
 class CancelTicket(graphene.Mutation):
@@ -167,8 +194,14 @@ class CancelTicket(graphene.Mutation):
             raise GraphQLError(_('이미 환불된 티켓이거나 결재되지 않은 티켓입니다.'))
         if not ticket.product.is_cancelable_date():
             raise GraphQLError(_('환불 가능 기한이 지났습니다.'))
-        iamport = create_iamport(ticket.is_domestic_card)
-        response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
+        try:
+            iamport = create_iamport(ticket.is_domestic_card)
+            response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
+        except Iamport.ResponseError as e:
+            raise GraphQLError(e.message)
+        except Iamport.HttpError as e:
+            raise GraphQLError(_('환불이 실패했습니다'))
+
         if Ticket.STATUS_CANCELLED != response['status']:
             raise GraphQLError(_('환불이 실패했습니다'))
         ticket.status = Ticket.STATUS_CANCELLED
@@ -197,7 +230,7 @@ def get_ticket_product(product_type, user):
 
 
 class Query(graphene.ObjectType):
-    ticket_product = graphene.relay.Node.Field(TicketProductNode)
+    ticket_product = graphene.Field(TicketProductNode)
     conference_products = graphene.List(TicketProductNode)
     young_coder_products = graphene.List(TicketProductNode)
     baby_care_products = graphene.List(TicketProductNode)
@@ -206,6 +239,7 @@ class Query(graphene.ObjectType):
     health_care_products = graphene.List(TicketProductNode)
 
     my_tickets = graphene.List(TicketNode)
+    my_ticket = graphene.relay.Node.Field(TicketNode)
 
     def resolve_conference_products(self, info):
         return get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)

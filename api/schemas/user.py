@@ -3,14 +3,17 @@ import os
 import graphene
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from graphql_extensions.auth.decorators import login_required
+from graphql_extensions.exceptions import GraphQLError
 from graphql_extensions.types import Email
 
 from api.models.agreement import Agreement
 from api.models.profile import Profile
 from api.schemas.common import SeoulDateTime, ImageUrl
+from ticket.models import TicketProduct, Ticket
 
 UserModel = get_user_model()
 
@@ -25,6 +28,7 @@ class OauthTypeNode(graphene.Enum):
 class AgreementNode(DjangoObjectType):
     class Meta:
         model = Agreement
+
     terms_of_service_agreed_at = graphene.Field(SeoulDateTime)
     privacy_policy_agreed_at = graphene.Field(SeoulDateTime)
     created_at = graphene.Field(SeoulDateTime)
@@ -34,9 +38,19 @@ class AgreementNode(DjangoObjectType):
 class ProfileNode(DjangoObjectType):
     class Meta:
         model = Profile
-        description = "User Profile"
+        description = 'User Profile'
 
     oauth_type = graphene.Field(OauthTypeNode)
+    image = graphene.Field(ImageUrl)
+
+
+class PatronNode(DjangoObjectType):
+    class Meta:
+        model = Profile
+        only_fields = ('id', 'name', 'name_ko', 'name_en', 'bio', 'bio_ko', 'bio_en',
+                       'organization', 'image', 'avatar_url')
+        description = 'Patron profiles'
+
     image = graphene.Field(ImageUrl)
 
 
@@ -131,7 +145,18 @@ class Mutations(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     me = graphene.Field(UserNode)
+    patrons = graphene.List(PatronNode)
 
     @login_required
     def resolve_me(self, info, **kwargs):
         return info.context.user
+
+    def resolve_patrons(self, info, **kwargs):
+        try:
+            patron_product = TicketProduct.objects.get(type=TicketProduct.TYPE_CONFERENCE, is_editable_price=True,
+                                                       active=True)
+            tickets = Ticket.objects.filter(
+                product=patron_product, status=Ticket.STATUS_PAID).order_by('-amount', 'paid_at')
+            return [ticket.owner.profile for ticket in tickets]
+        except TicketProduct.DoesNotExist:
+            raise GraphQLError(_('개인후원 제품이 없습니다. 관리자에게 문의해주세요.'))

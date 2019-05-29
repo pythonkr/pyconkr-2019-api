@@ -105,6 +105,56 @@ query getMyTickets {
 }
 '''
 
+MY_TICKET = '''
+query getMyTicket($id: ID!) {
+  myTicket(id: $id) {
+    isDomesticCard
+    amount
+    merchantUid
+    receiptUrl
+    paidAt
+    cancelReceiptUrl
+    cancelledAt
+    status
+    
+    product{
+      id
+      type
+      name
+      nameKo
+      nameEn
+      desc
+      descKo
+      descEn
+      startAt
+      finishAt
+      total
+      owner {
+        profile {
+          name
+          nameKo
+          nameEn
+          email
+          image
+          avatarUrl
+        }
+      }
+      price
+      isEditablePrice
+      isUniqueInType
+      active
+      cancelableDate
+      ticketOpenAt
+      ticketCloseAt
+      createdAt
+      updatedAt
+      purchaseCount
+    }
+    options
+  }
+}
+'''
+
 CANCEL_TICKET = '''
 mutation cancelTicket($ticketId: ID!) {
     cancelTicket(ticketId:$ticketId) {

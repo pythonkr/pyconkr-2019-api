@@ -74,6 +74,8 @@ disable=
         no-member,
         bare-except,
         fixme,
+        too-many-public-methods,
+        redefined-builtin,
         # default
         print-statement,
         parameter-unpacking,
