@@ -80,16 +80,16 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(TICKET_PRODUCTS)
         data = result.data
         self.assertTrue(data['conferenceProducts'][0]['isSoldOut'])
-        self.assertEquals(0, data['conferenceProducts'][0]['remainingCount'])
+        self.assertEqual(0, data['conferenceProducts'][0]['remainingCount'])
 
     def test_WHEN_팔리기전에는_get_ticket_products_THEN_total과_remaining_count_가_같음(self):
-        product = self.create_ticket_product(
+        self.create_ticket_product(
             name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE, total=3)
 
         result = self.client.execute(TICKET_PRODUCTS)
         data = result.data
         self.assertFalse(data['conferenceProducts'][0]['isSoldOut'])
-        self.assertEquals(3, data['conferenceProducts'][0]['remainingCount'])
+        self.assertEqual(3, data['conferenceProducts'][0]['remainingCount'])
 
     def test_get_ticket_products_with_ticket_for(self):
         product = self.create_ticket_product(

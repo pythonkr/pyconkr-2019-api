@@ -37,7 +37,7 @@ class TicketProductNode(DjangoObjectType):
         return 0
 
     def resolve_is_sold_out(self, info):
-        return self.is_sold_out()
+        return self.is_sold_out
 
     def resolve_remaining_count(self, info):
         return self.remaining_count
@@ -146,7 +146,7 @@ class BuyTicket(graphene.Mutation):
 
     @classmethod
     def check_product(cls, product):
-        if product.is_sold_out():
+        if product.is_sold_out:
             raise GraphQLError(_('티켓이 모두 판매되었습니다.'))
         if product.is_not_open_yet():
             raise GraphQLError(_('티켓 판매가 아직 시작되지 않았습니다.'))
