@@ -1,7 +1,13 @@
+import datetime
+
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
+from graphql_extensions.exceptions import GraphQLError
+from iamport import Iamport
 
 from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct
+from ticket.schemas import create_iamport
 
 
 class TicketProductAdmin(admin.ModelAdmin):
@@ -29,6 +35,7 @@ class TicketAdmin(admin.ModelAdmin):
         ('is_domestic_card', admin.BooleanFieldListFilter),
         'status',
     )
+    actions = ['refund']
 
     def owner_profile(self, obj):
         if obj.owner:
@@ -42,6 +49,22 @@ class TicketAdmin(admin.ModelAdmin):
         if isinstance(obj.options, str):
             return obj.options
         return '\n'.join([f'{k}: {v}' for k, v in obj.options.items()])
+
+    def refund(self, request, queryset):
+        for ticket in queryset:
+            if ticket.status != Ticket.STATUS_PAID:
+                raise GraphQLError(_('이미 환불된 티켓이거나 결재되지 않은 티켓입니다.'))
+            try:
+                iamport = create_iamport(ticket.is_domestic_card)
+                response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
+            except Iamport.ResponseError as e:
+                raise GraphQLError(e.message)
+            except Iamport.HttpError as e:
+                raise GraphQLError(_('환불이 실패했습니다'))
+            ticket.status = Ticket.STATUS_CANCELLED
+            ticket.cancelled_at = datetime.fromtimestamp(response['cancelled_at'])
+            ticket.cancel_receipt_url = response['cancel_receipt_urls'][0]
+            ticket.save()
 
 
 admin.site.register(Ticket, TicketAdmin)
