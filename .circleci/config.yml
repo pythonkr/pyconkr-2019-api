@@ -85,12 +85,12 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - docker
+#      - docker
       - deploy-dev:
           context: DEVELOP
           requires:
             - build
-            - docker
+#            - docker
           filters:
             branches:
               only: develop
@@ -98,7 +98,7 @@ workflows:
           context: PROD
           requires:
             - build
-            - docker
+#            - docker
           filters:
             branches:
               only: master
