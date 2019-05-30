@@ -15,6 +15,8 @@ query getTicketProducts {
     startAt
     finishAt
     total
+    remainingCount
+    isSoldOut
     owner {
       profile {
         name

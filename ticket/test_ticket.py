@@ -287,6 +287,54 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_매진일_경우_에러1(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        self.regular_product.total = 0
+        self.regular_product.save()
+
+        variables = {
+            "productId": str(self.regular_product.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        self.assertIsNotNone(result.errors)
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_매진일_경우_에러2(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        self.regular_product.total = 1
+        self.regular_product.save()
+        other_user = get_user_model().objects.create(
+            username='test_user_name',
+            email='test@pycon.kr')
+        Ticket.objects.create(
+            product=self.regular_product, owner=other_user, status=TransactionMixin.STATUS_PAID,
+            imp_uid='imp_testtest')
+
+        variables = {
+            "productId": str(self.regular_product.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        self.assertIsNotNone(result.errors)
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
     def test_buy_early_bird_ticket_영코더_티켓을_2장_구매가_됨(self, mock_iamport, mock_config):
         # Given
         self.mock_config_and_iamporter(mock_config, mock_iamport)

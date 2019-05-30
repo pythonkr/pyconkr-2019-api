@@ -28,11 +28,19 @@ class TicketProductNode(DjangoObjectType):
 
     type = TicketTypeNode()
     purchase_count = graphene.Int(description='로그인 했을 때에는 이 값에 구매한 티켓 개수가 들어갑니다.')
+    is_sold_out = graphene.Boolean(description='True면 매진, False면 판매중 입니다.')
+    remaining_count = graphene.Int(description='해당 제품에 남아있는 티켓 개수입니다.')
 
     def resolve_purchase_count(self, info):
         if info.context.user.is_authenticated:
             return self.ticket_set.filter(owner=info.context.user).count()
         return 0
+
+    def resolve_is_sold_out(self, info):
+        return self.is_sold_out()
+
+    def resolve_remaining_count(self, info):
+        return self.remaining_count
 
 
 class TicketNode(DjangoObjectType):
@@ -101,7 +109,7 @@ class BuyTicket(graphene.Mutation):
             raise GraphQLError(f'사용자에게 판매하는 티켓이 아닙니다.')
         if BuyTicket.has_same_unique_ticket_type(product, info.context.user):
             raise GraphQLError(f'선택한 티켓은 여러 장 구매할 수 없습니다.')
-        BuyTicket.check_schedule(product)
+        BuyTicket.check_product(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
         try:
@@ -137,7 +145,7 @@ class BuyTicket(graphene.Mutation):
         return Ticket.objects.filter(owner=user, product__type=product.type, status=Ticket.STATUS_PAID).exists()
 
     @classmethod
-    def check_schedule(cls, product):
+    def check_product(cls, product):
         if product.is_sold_out():
             raise GraphQLError(_('티켓이 모두 판매되었습니다.'))
         if product.is_not_open_yet():
@@ -158,7 +166,6 @@ class BuyTicket(graphene.Mutation):
         if payment.is_domestic_card:
             return iamport.pay_onetime(**payload)
         return iamport.pay_foreign(**payload)
-
 
     @classmethod
     def get_payment_params(cls, user, payment):
