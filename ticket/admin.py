@@ -20,9 +20,10 @@ admin.site.register(TicketProduct, TicketProductAdmin)
 
 
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
+    list_display = ('id', 'owner', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
                     'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at')
-
+    search_fields = ['owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
+                     'merchant_uid', 'imp_uid']
     list_filter = (
         ('product', admin.RelatedOnlyFieldListFilter),
         ('is_domestic_card', admin.BooleanFieldListFilter),
