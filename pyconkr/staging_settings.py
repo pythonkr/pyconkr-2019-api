@@ -9,7 +9,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'pythonkoreadb.c3lemconopmq.ap-northeast-2.rds.amazonaws.com',
         'NAME': 'pycondev',
-        'USER': 'postgres',
+        'USER': 'pycondev',
         'PASSWORD': 'pycondevAAZZZ**',
         'PORT': 25432,
     }
