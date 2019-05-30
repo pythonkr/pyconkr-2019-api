@@ -7,10 +7,11 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'HOST': 'pythonkoreadb.c3lemconopmq.ap-northeast-2.rds.amazonaws.com',
+        'NAME': 'pycondev',
         'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'PASSWORD': 'pycondevAAZZZ**',
+        'PORT': 25432,
     }
 }
 
