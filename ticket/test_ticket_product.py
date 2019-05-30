@@ -68,6 +68,29 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
         data = result.data
         self.assertEqual(0, data['conferenceProducts'][0]['purchaseCount'])
 
+    def test_WHEN_매진이면_get_ticket_products_THEN_매진이라고_반환(self):
+        product = self.create_ticket_product(
+            name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE, total=1)
+        user = get_user_model().objects.create(
+            username='other_user',
+            email='other@pycon.kr')
+        Ticket.objects.create(
+            product=product, owner=user, status=TransactionMixin.STATUS_PAID)
+
+        result = self.client.execute(TICKET_PRODUCTS)
+        data = result.data
+        self.assertTrue(data['conferenceProducts'][0]['isSoldOut'])
+        self.assertEqual(0, data['conferenceProducts'][0]['remainingCount'])
+
+    def test_WHEN_팔리기전에는_get_ticket_products_THEN_total과_remaining_count_가_같음(self):
+        self.create_ticket_product(
+            name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE, total=3)
+
+        result = self.client.execute(TICKET_PRODUCTS)
+        data = result.data
+        self.assertFalse(data['conferenceProducts'][0]['isSoldOut'])
+        self.assertEqual(3, data['conferenceProducts'][0]['remainingCount'])
+
     def test_get_ticket_products_with_ticket_for(self):
         product = self.create_ticket_product(
             name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE)

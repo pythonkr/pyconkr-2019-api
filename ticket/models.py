@@ -65,6 +65,7 @@ class TicketProduct(models.Model):
     def remaining_count(self):
         return self.total - self.ticket_set.filter(status=TransactionMixin.STATUS_PAID).count()
 
+    @property
     def is_sold_out(self):
         return self.remaining_count <= 0
 
