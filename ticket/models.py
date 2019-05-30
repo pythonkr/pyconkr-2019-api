@@ -14,7 +14,8 @@ class TicketProduct(models.Model):
     TYPE_TUTORIAL = 'T'
     TYPE_SPRINT = 'S'
     TYPE_HEALTH_CARE = 'H'
-
+    active = models.BooleanField(default=True,
+                                 help_text='활성 상태인지를 나타냅니다. False일 경우 노출되지 않습니다.')
     type = models.CharField(max_length=1,
                             choices=(
                                 (TYPE_CONFERENCE, _('컨퍼런스')),

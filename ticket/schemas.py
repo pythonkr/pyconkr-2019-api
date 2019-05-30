@@ -233,7 +233,8 @@ class Mutations(graphene.ObjectType):
 
 def get_ticket_product(product_type, user):
     from django.db.models import Q
-    return TicketProduct.objects.filter(type=product_type).filter(Q(ticket_for=user) | Q(ticket_for__isnull=True))
+    return TicketProduct.objects.filter(type=product_type, active=True) \
+        .filter(Q(ticket_for=user) | Q(ticket_for__isnull=True))
 
 
 class Query(graphene.ObjectType):
