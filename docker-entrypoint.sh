@@ -39,4 +39,4 @@ service cron start
 
 echo
 echo "==== Starting server ====="
-gunicorn pyconkr.wsgi:application --bind=0.0.0.0:8000
+gunicorn pyconkr.wsgi:application --bind=0.0.0.0:8000 -w 8 --max-requests 1000 --max-requests-jitter 5
