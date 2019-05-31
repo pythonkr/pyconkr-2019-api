@@ -1,9 +1,9 @@
 #!/bin/bash
 export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-pyconkr.staging_settings}
 
-echo "Wait for starting database"
-while !</dev/tcp/db/5432; do sleep 1; done; 
-sleep 10
+# echo "Wait for starting database"
+# while !</dev/tcp/db/5432; do sleep 1; done;
+# sleep 10
 
 echo "Collect static files"
 python manage.py collectstatic --noinput
