@@ -287,6 +287,27 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_컨퍼런스_티켓_구매_중에_요청이_또_들어오면_에러(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        Ticket.objects.create(
+            product=self.earlybird_product, owner=self.user, status=TransactionMixin.STATUS_READY,
+            imp_uid='imp_testtest')
+        variables = {
+            "productId": str(self.earlybird_product.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        self.assertIsNotNone(result.errors)
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
     def test_buy_early_bird_ticket_매진일_경우_에러1(self, mock_iamport, mock_config):
         # Given
         self.mock_config_and_iamporter(mock_config, mock_iamport)

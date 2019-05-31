@@ -11,7 +11,7 @@ from ticket.schemas import create_iamport
 
 
 class TicketProductAdmin(admin.ModelAdmin):
-    list_display = ('type', 'name', 'desc', 'total', 'owner_profile', 'price',
+    list_display = ('active', 'type', 'name', 'desc', 'total', 'owner_profile', 'price',
                     'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
                     'ticket_open_at', 'ticket_close_at', 'warning')
 

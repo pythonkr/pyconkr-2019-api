@@ -1,16 +1,26 @@
 # pylint: disable=unused-wildcard-import,wildcard-import
 from pyconkr.settings import *
 
+
 DEBUG = False
 ALLOWED_HOSTS = ['*']
+
+db_env_keys = ['PYCONKR_POSTGRES_HOST', 'PYCONKR_POSTGRES_NAME', 'PYCONKR_POSTGRES_PORT',
+               'PYCONKR_POSTGRES_PASSWORD', 'PYCONKR_POSTGRES_USER']
+
+for key in db_env_keys:
+    if not os.getenv(key):
+        print(f'You should set {key} into ~/.profile')
+        exit(1)
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': os.getenv('PYCONKR_POSTGRES_NAME'),
+        'HOST': os.getenv('PYCONKR_POSTGRES_HOST'),
+        'PORT': os.getenv('PYCONKR_POSTGRES_PORT'),
+        'USER': os.getenv('PYCONKR_POSTGRES_USER'),
+        'PASSWORD': os.getenv('PYCONKR_POSTGRES_USER'),
     }
 }
 
@@ -40,7 +50,7 @@ LOGGING = {
     },
     'loggers': {
         '': {
-            'handlers': ['console',],
+            'handlers': ['console', ],
             'level': 'DEBUG',
             'propagate': True,
         },
