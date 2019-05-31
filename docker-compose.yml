@@ -1,10 +1,5 @@
 version: "3"
 services:
-  db:
-    image: postgres
-    restart: always
-    volumes:
-      - ${PSQL_VOLUME:-./postgresql/data}:/var/lib/postgresql/data
   api:
     build: .
     restart: always
@@ -23,6 +18,3 @@ services:
       - ${LOG_VOLUME:-./log}:/log
     ports:
       - ${PORT:-8000}:8000
-    depends_on:
-      - db
-  
