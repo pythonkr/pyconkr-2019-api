@@ -112,31 +112,37 @@ class BuyTicket(graphene.Mutation):
         BuyTicket.check_product(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
-        try:
-            response = BuyTicket.create_payment(product, payment, payment_params)
-        except Iamport.ResponseError as e:
-            raise GraphQLError(e.message)
-        except Iamport.HttpError as e:
-            raise GraphQLError(_(f'아이엠포트 결재가 실패하였습니다.({e.code})'))
-
-        if response['status'] != TransactionMixin.STATUS_PAID:
-            raise GraphQLError(_('결제가 실패했습니다.'))
-
+        if Ticket.objects.filter(owner=user, product=product, status=Ticket.STATUS_READY).exists():
+            raise GraphQLError(_('결재가 진행 중입니다. 잠시 후 다시 시도해주세요. 문제가 지속 발생할 경우 support@pycon.kr로 연락주세요.'))
         ticket = Ticket.objects.create(
             is_domestic_card=payment.is_domestic_card,
-            owner=info.context.user,
+            owner=user,
             product=product,
-            amount=response['amount'],
-            merchant_uid=response['merchant_uid'],
-            imp_uid=response['imp_uid'],
-            pg_tid=response['pg_tid'],
-            receipt_url=response['receipt_url'],
-            paid_at=datetime.fromtimestamp(response['paid_at']),
-            status=response['status'],
+            status=Ticket.STATUS_READY,
             options=options
         )
+        try:
+            try:
+                response = BuyTicket.create_payment(product, payment, payment_params)
+            except Iamport.ResponseError as e:
+                raise GraphQLError(e.message)
+            except Iamport.HttpError as e:
+                raise GraphQLError(_(f'아이엠포트 결재가 실패하였습니다.({e.code})'))
 
-        return BuyTicket(ticket=ticket)
+            ticket.amount = response['amount']
+            ticket.merchant_uid = response['merchant_uid']
+            ticket.imp_uid = response['imp_uid']
+            ticket.pg_tid = response['pg_tid']
+            ticket.receipt_url = response['receipt_url']
+            ticket.paid_at = datetime.fromtimestamp(response['paid_at'])
+            ticket.status = response['status']
+            ticket.save()
+
+            return BuyTicket(ticket=ticket)
+        except GraphQLError as e:
+            ticket.status = Ticket.STATUS_DELETE
+            ticket.save()
+            raise e
 
     @classmethod
     def has_same_unique_ticket_type(cls, product, user):
