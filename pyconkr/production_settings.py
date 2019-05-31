@@ -6,7 +6,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 db_env_keys = ['PYCONKR_POSTGRES_HOST', 'PYCONKR_POSTGRES_NAME', 'PYCONKR_POSTGRES_PORT',
-               'PYCONKR_POSTGRES_PASSWORD', 'PYCONKR_POSTGRES_USER']
+               'PYCONKR_POSTGRES_USER', 'PYCONKR_POSTGRES_PASSWORD']
 
 for key in db_env_keys:
     if not os.getenv(key):
@@ -20,7 +20,7 @@ DATABASES = {
         'HOST': os.getenv('PYCONKR_POSTGRES_HOST'),
         'PORT': os.getenv('PYCONKR_POSTGRES_PORT'),
         'USER': os.getenv('PYCONKR_POSTGRES_USER'),
-        'PASSWORD': os.getenv('PYCONKR_POSTGRES_USER'),
+        'PASSWORD': os.getenv('PYCONKR_POSTGRES_PASSWORD'),
     }
 }
 
