@@ -21,7 +21,6 @@ def deploy(c, project_name, sha1='', django_setting='pyconkr.staging_settings', 
         c.run('git fetch --all -p')
         c.run(f'git reset --hard {sha1}')
         envs = [
-            f'PSQL_VOLUME={target_dir}/postgresql/data',
             f'STATIC_VOLUME={target_dir}/static',
             f'MEDIA_VOLUME={target_dir}/media',
             f'PORT={port}',

@@ -1,16 +1,16 @@
 version: "3"
 services:
-  db:
-    image: postgres
-    restart: always
-    volumes:
-      - ${PSQL_VOLUME:-./postgresql/data}:/var/lib/postgresql/data
   api:
     build: .
     restart: always
     environment:
       - PYCONKR_ADMIN_PASSWORD=${PYCONKR_ADMIN_PASSWORD:-pyconkr}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-pyconkr.settings}
+      - PYCONKR_POSTGRES_NAME=${PYCONKR_POSTGRES_NAME}
+      - PYCONKR_POSTGRES_HOST=${PYCONKR_POSTGRES_HOST}
+      - PYCONKR_POSTGRES_PORT=${PYCONKR_POSTGRES_PORT}
+      - PYCONKR_POSTGRES_USER=${PYCONKR_POSTGRES_USER}
+      - PYCONKR_POSTGRES_PASSWORD=${PYCONKR_POSTGRES_PASSWORD}
     volumes:
       - .:/web
       - ${MEDIA_VOLUME:-./media}:/media
@@ -18,6 +18,3 @@ services:
       - ${LOG_VOLUME:-./log}:/log
     ports:
       - ${PORT:-8000}:8000
-    depends_on:
-      - db
-  

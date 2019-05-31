@@ -36,10 +36,12 @@ jobs:
           path: test-reports
 
   docker:
-    machine: 
-      docker_layer_caching: true
+    docker:
+      - image: circleci/python:3.6.3
+      - image: circleci/postgres:9.6.9-alpine
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Start container and verify it's working
           command: |
@@ -85,12 +87,10 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - docker
       - deploy-dev:
           context: DEVELOP
           requires:
             - build
-            - docker
           filters:
             branches:
               only: develop
@@ -98,7 +98,6 @@ workflows:
           context: PROD
           requires:
             - build
-            - docker
           filters:
             branches:
               only: master
