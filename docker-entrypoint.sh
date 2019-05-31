@@ -28,7 +28,7 @@ try:
     UserModel.objects.get(username=USERNAME)
 except UserModel.DoesNotExist:
     User.objects.create_superuser(USERNAME, EMAIL, PASSWORD)
-
+"
 echo "${CREATE_ADMIN_SOURCE}"  | python manage.py shell
 
 echo "==== Starting cron ====="
