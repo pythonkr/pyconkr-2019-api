@@ -9,7 +9,7 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 from iamport import Iamport
 
-from ticket.models import TransactionMixin, TicketProduct, Ticket
+from ticket.models import TicketProduct, Ticket
 
 
 class TicketTypeNode(graphene.Enum):

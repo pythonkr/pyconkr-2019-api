@@ -1,6 +1,6 @@
 # pylint: disable=unused-wildcard-import,wildcard-import
 from pyconkr.settings import *
-import os
+
 
 DEBUG = False
 ALLOWED_HOSTS = ['*']
