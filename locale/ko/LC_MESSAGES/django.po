@@ -107,7 +107,7 @@ msgstr ""
 
 #: ticket/schemas.py:112
 #, python-brace-format
-msgid "아이엠포트 결재가 실패하였습니다.({e.code})"
+msgid "아이엠포트 결제가 실패하였습니다.({e.code})"
 msgstr ""
 
 #: ticket/schemas.py:115
@@ -131,7 +131,7 @@ msgid "다른 유저의 티켓을 환불할 수 없습니다."
 msgstr ""
 
 #: ticket/schemas.py:194
-msgid "이미 환불된 티켓이거나 결재되지 않은 티켓입니다."
+msgid "이미 환불된 티켓이거나 결제되지 않은 티켓입니다."
 msgstr ""
 
 #: ticket/schemas.py:196
