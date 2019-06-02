@@ -27,7 +27,7 @@ for key in aws_env_keys:
         print(f'You should set {key} into ~/.profile')
         exit(1)
 
-AWS_DEFAULT_ACL = None
+AWS_DEFAULT_ACL = 'public-read'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = os.getenv('DEV_AWS_ACCESS_KEY_ID')
