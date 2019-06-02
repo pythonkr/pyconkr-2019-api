@@ -26,7 +26,7 @@ def deploy(c, project_name, sha1='', django_setting='pyconkr.staging_settings', 
             f'PORT={port}',
             f'DJANGO_SETTINGS_MODULE={django_setting}'
         ]
-        c.run(f'docker-compose -p {project_name} down | true')
+        c.run(f'bash -l -c "docker-compose -p {project_name} down | true"')
         env_command = ' '.join(envs)
         compose_command = f'docker-compose -p {project_name} up -d --build --force-recreate'
         c.run(f'bash -l -c "{env_command} {compose_command}"')
