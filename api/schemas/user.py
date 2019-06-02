@@ -149,7 +149,9 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_me(self, info, **kwargs):
-        return info.context.user
+        user = info.context.user
+        Profile.objects.get_or_create(user=user)
+        return user
 
     def resolve_patrons(self, info, **kwargs):
         try:
