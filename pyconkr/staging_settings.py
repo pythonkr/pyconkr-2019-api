@@ -15,7 +15,7 @@ DATABASES = {
     }
 }
 
-aws_env_keys = ['DEV_AWS_ACCESS_KEY_ID', 'DEV_AWS_SECRET_ACCESS_KEY', 'DEV_AWS_STORAGE_BUCKET_NAME']
+aws_env_keys = ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_STORAGE_BUCKET_NAME']
 
 for key in aws_env_keys:
     if not os.getenv(key):

@@ -65,7 +65,7 @@ jobs:
             sudo pip install fabric
             fab -H ${DEPLOY_USER}@${DEPLOY_HOST} -p -e deploy-dev --sha1 $CIRCLE_SHA1
             sleep 40
-            curl -fL ${URL_ROOT}/api/ping
+#            curl -fL ${URL_ROOT}/api/ping
       
   deploy-prod:
     docker:

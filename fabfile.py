@@ -4,12 +4,10 @@ import os
 from fabric import task
 
 @task
-def deploy(c, project_name, sha1='', django_setting='pyconkr.staging_settings', port='8000'):
-    target_dir = f'~/{project_name}'
+def deploy(c, sha1='', django_setting='pyconkr.staging_settings', port='8000'):
+    target_dir = f'~/'
     api_dir = f'{target_dir}/pyconkr-api'
     git_url = 'https://github.com/pythonkr/pyconkr-api.git'
-
-    c.run(f'mkdir -p {target_dir}')
 
     # 이전에 deploy dir을 clone한 적이 없다면 clone
     result = c.run(f'test -e {api_dir}', warn=True)
@@ -21,20 +19,18 @@ def deploy(c, project_name, sha1='', django_setting='pyconkr.staging_settings', 
         c.run('git fetch --all -p')
         c.run(f'git reset --hard {sha1}')
         envs = [
-            f'STATIC_VOLUME={target_dir}/static',
-            f'MEDIA_VOLUME={target_dir}/media',
             f'PORT={port}',
             f'DJANGO_SETTINGS_MODULE={django_setting}'
         ]
-        c.run(f'bash -l -c "docker-compose -p {project_name} down | true"')
+        c.run(f'bash -l -c "docker-compose down | true"')
         env_command = ' '.join(envs)
-        compose_command = f'docker-compose -p {project_name} up -d --build --force-recreate'
+        compose_command = f'docker-compose up -d --build --force-recreate'
         c.run(f'bash -l -c "{env_command} {compose_command}"')
         print('finish')
 @task
 def deploy_dev(c, sha1=''):
-    deploy(c, project_name='dev.pycon.kr', sha1=sha1, django_setting='pyconkr.staging_settings', port='8001')
+    deploy(c, sha1=sha1, django_setting='pyconkr.staging_settings', port='8000')
 
 @task
 def deploy_master(c, sha1=''):
-    deploy(c, project_name='www.pycon.kr', sha1=sha1, django_setting='pyconkr.production_settings', port='8000')
+    deploy(c, sha1=sha1, django_setting='pyconkr.production_settings', port='8000')
