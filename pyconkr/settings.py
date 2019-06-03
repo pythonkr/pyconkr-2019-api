@@ -178,6 +178,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'http://localhost:8000/media/'
 
+# Django email
+EMAIL_BACKEND = 'pyconkr.backends.SMTIEmailBackend'
+
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
     ('* * * * *', 'pyconkr.cron.my_cron_job', '>> /web/cron.log')
@@ -192,12 +195,17 @@ CONSTANCE_CONFIG = {
     'IMP_INTL_USER_CODE': ('', '아임포트 해외용 유저 번호'),
     'IMP_INTL_API_KEY': ('', '아임포트 해외용 API KEY'),
     'IMP_INTL_API_SECRET': ('', '아임포트 해외용 API SECRET'),
+
     'EMAIL_USE_TLS': (True, '이메일 서버 TLS 사용 여부', bool),
-    'EMAIL_HOST': ('email-smtp.us-west-2.amazonaws.com', '이메일 서버 Hostname'),
+    'EMAIL_USE_SSL': (False, '이메일 서버 SSL 사용 여부', bool),
+    'EMAIL_HOST': ('email-smtp.us-est-2.amazonaws.com', '이메일 서버 Hostname'),
     'EMAIL_PORT': (587, '이메일 서버 Port', int),
     'EMAIL_HOST_USER': ('', '이메일 서버 Username'),
     'EMAIL_HOST_PASSWORD': ('', '이메일 서버 Password'),
+    'EMAIL_TIMEOUT': (10, '이메일 서버 connection timeout', int),
+
     'SLACK_TOKEN': ('', 'Notification용 Slack Token'),
+
     'CFP_REVIEW_CATEGORY_MINIMUM': (2, 'CFP 리뷰 시에 최소로 선택할 수 있는 카테고리 개수', int),
     'CFP_REVIEW_COUNT': (7, '유저당 CFP 리뷰를 할당할 개수', int),
 }
@@ -205,7 +213,7 @@ CONSTANCE_CONFIG = {
 CONSTANCE_CONFIG_FIELDSETS = {
     'iamport': ('IMP_DOM_USER_CODE', 'IMP_DOM_API_KEY', 'IMP_DOM_API_SECRET',
                 'IMP_INTL_USER_CODE', 'IMP_INTL_API_KEY', 'IMP_INTL_API_SECRET'),
-    'SMTP': ('EMAIL_USE_TLS', 'EMAIL_HOST', 'EMAIL_PORT',
+    'SMTP': ('EMAIL_USE_TLS', 'EMAIL_HOST', 'EMAIL_PORT', 'EMAIL_USE_SSL', 'EMAIL_TIMEOUT',
              'EMAIL_HOST_USER', 'EMAIL_HOST_PASSWORD'),
     'slack': ('SLACK_TOKEN',),
     'CFP': ('CFP_REVIEW_CATEGORY_MINIMUM', 'CFP_REVIEW_COUNT')
