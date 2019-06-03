@@ -66,12 +66,12 @@ class TicketNode(DjangoObjectType):
 class PaymentInput(graphene.InputObjectType):
     is_domestic_card = graphene.Boolean(required=True)
     amount = graphene.Int(
-        description='결재할 금액을 의미합니다. 수정 가능한 상품인 경우(개인후원)에만 사용됩니다.'
+        description='결제할 금액을 의미합니다. 수정 가능한 상품인 경우(개인후원)에만 사용됩니다.'
     )
     card_number = graphene.String(required=True,
-                                  description='결재에 사용할 카드 번호입니다. (e.g, xxxx-xxxx-xxxx-xxxx)')
+                                  description='결제에 사용할 카드 번호입니다. (e.g, xxxx-xxxx-xxxx-xxxx)')
     expiry = graphene.String(required=True,
-                             description='결재에 사용하는 카드의 만료 기간입니다. (e.g, YYYY-MM)')
+                             description='결제에 사용하는 카드의 만료 기간입니다. (e.g, YYYY-MM)')
     birth = graphene.String(
         description='한국 카드일 때 사용하며 생년월일의 형태를 가집니다.(e.g, 880101)')
     pwd_2digit = graphene.String(
@@ -113,7 +113,7 @@ class BuyTicket(graphene.Mutation):
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
         if Ticket.objects.filter(owner=user, product=product, status=Ticket.STATUS_READY).exists():
-            raise GraphQLError(_('결재가 진행 중입니다. 잠시 후 다시 시도해주세요. 문제가 지속 발생할 경우 support@pycon.kr로 연락주세요.'))
+            raise GraphQLError(_('결제가 진행 중입니다. 잠시 후 다시 시도해주세요. 문제가 지속 발생할 경우 support@pycon.kr로 연락주세요.'))
         ticket = Ticket.objects.create(
             is_domestic_card=payment.is_domestic_card,
             owner=user,
@@ -127,7 +127,7 @@ class BuyTicket(graphene.Mutation):
             except Iamport.ResponseError as e:
                 raise GraphQLError(e.message)
             except Iamport.HttpError as e:
-                raise GraphQLError(_(f'아이엠포트 결재가 실패하였습니다.({e.code})'))
+                raise GraphQLError(_(f'아이엠포트 결제가 실패하였습니다.({e.code})'))
 
             ticket.amount = response['amount']
             ticket.merchant_uid = response['merchant_uid']
@@ -204,7 +204,7 @@ class CancelTicket(graphene.Mutation):
         if ticket.owner != info.context.user:
             raise GraphQLError(_('다른 유저의 티켓을 환불할 수 없습니다.'))
         if ticket.status != Ticket.STATUS_PAID:
-            raise GraphQLError(_('이미 환불된 티켓이거나 결재되지 않은 티켓입니다.'))
+            raise GraphQLError(_('이미 환불된 티켓이거나 결제되지 않은 티켓입니다.'))
         if not ticket.product.is_cancelable_date():
             raise GraphQLError(_('환불 가능 기한이 지났습니다.'))
         try:

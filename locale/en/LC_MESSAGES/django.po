@@ -117,13 +117,13 @@ msgstr ""
 #: ticket/schemas.py:112
 #, fuzzy, python-brace-format
 #| msgid "아이엠포트 계정 정보가 설정되어 있지 않습니다."
-msgid "아이엠포트 결재가 실패하였습니다.({e.code})"
+msgid "아이엠포트 결제가 실패하였습니다.({e.code})"
 msgstr ""
 "iamport account information is not set. please contact support@pycon.kr"
 
 #: ticket/schemas.py:115
 #, fuzzy
-#| msgid "결재가 실패했습니다."
+#| msgid "결제가 실패했습니다."
 msgid "결제가 실패했습니다."
 msgstr "Payment has failed."
 
@@ -150,7 +150,7 @@ msgid "다른 유저의 티켓을 환불할 수 없습니다."
 msgstr "You can not refund other users' tickets."
 
 #: ticket/schemas.py:194
-msgid "이미 환불된 티켓이거나 결재되지 않은 티켓입니다."
+msgid "이미 환불된 티켓이거나 결제되지 않은 티켓입니다."
 msgstr "Tickets that have already been refunded or have not been purchased."
 
 #: ticket/schemas.py:196
