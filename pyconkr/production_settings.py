@@ -71,3 +71,10 @@ LOGGING = {
         },
     },
 }
+
+# Sentry
+sentry_sdk.init(
+    dsn="https://6fe01f813872470f98867604b39cd9e8@sentry.io/1473357",
+    environment='production',
+    integrations=[DjangoIntegration()]
+)

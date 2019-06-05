@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+import sentry_sdk
 from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from sentry_sdk.integrations.django import DjangoIntegration
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -218,3 +221,10 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'slack': ('SLACK_TOKEN',),
     'CFP': ('CFP_REVIEW_CATEGORY_MINIMUM', 'CFP_REVIEW_COUNT')
 }
+
+# Sentry
+sentry_sdk.init(
+    dsn="https://6fe01f813872470f98867604b39cd9e8@sentry.io/1473357",
+    environment='local',
+    integrations=[DjangoIntegration()]
+)
