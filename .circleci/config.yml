@@ -93,7 +93,7 @@ workflows:
     jobs:
       - build
       - aws-ecr/build_and_push_image:
-          context: deploy
+          context: AWS_DEPLOY
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           region: ${AWS_DEFAULT_REGION}
