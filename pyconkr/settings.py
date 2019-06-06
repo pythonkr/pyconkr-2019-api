@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
+# pylint: disable=unused-import
 import os
 
 from django.utils.translation import ugettext_lazy as _
@@ -222,10 +222,3 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'slack': ('SLACK_TOKEN',),
     'CFP': ('CFP_REVIEW_CATEGORY_MINIMUM', 'CFP_REVIEW_COUNT')
 }
-
-# Sentry
-sentry_sdk.init(
-    dsn="https://6fe01f813872470f98867604b39cd9e8@sentry.io/1473357",
-    environment='local',
-    integrations=[DjangoIntegration()]
-)
