@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@0.0.2
+  aws-ecs: circleci/aws-ecs@0.0.8
 jobs:
   build:
     docker:
@@ -34,23 +37,25 @@ jobs:
 
       - store_test_results:
           path: test-reports
-
-  docker:
-    docker:
-      - image: circleci/python:3.6.3
-      - image: circleci/postgres:9.6.9-alpine
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Start container and verify it's working
-          command: |
-            set -x
-            docker-compose build --no-cache
-            docker-compose up -d
-            sleep 40
-            docker-compose logs
-            curl -fL http://localhost:8000/api/ping
+#  deploy-ecr-ecs:
+#    docker:
+#      - image: circleci/python:3.6.3
+#    steps:
+#      - checkout
+#      - setup_remote_docker
+#      - run:
+#          name: Setup common environment variables
+#          command: |
+#            echo 'export ECR_REPOSITORY_NAME="pyconkr-2019/backend' >> $BASH_ENV
+#            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/pyconkr-2019/backend:${CIRCLE_SHA1}"' >> $BASH_ENV
+#      - run:
+#          name: Build image
+#          command: |
+#            docker build -t $FULL_IMAGE_NAME .
+#      - aws-cli/install
+#          - aws-cli/configure:
+#          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
+#          aws-region: "$AWS_DEFAULT_REGION"
 
   deploy-dev:
     docker:
@@ -87,6 +92,24 @@ workflows:
   build-deploy:
     jobs:
       - build
+      - aws-ecr/build_and_push_image:
+          context: deploy
+          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          region: ${AWS_DEFAULT_REGION}
+          tag: "${CIRCLE_SHA1}"
+#          requires:
+#            - build
+          filters:
+            branches:
+              only: feature/ecr-ecs
+      - deploy-ecr-ecs:
+          context: deploy
+          requires:
+            - build
+          filters:
+            branches:
+              only: feature/ecr-ecs
       - deploy-dev:
           context: DEVELOP
           requires:
