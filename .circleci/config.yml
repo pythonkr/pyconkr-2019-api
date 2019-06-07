@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@0.0.2
   aws-ecs: circleci/aws-ecs@0.0.8
+  aws-cli: circleci/aws-cli@0.1.1
 jobs:
   build:
     docker:
@@ -37,25 +38,27 @@ jobs:
 
       - store_test_results:
           path: test-reports
-#  deploy-ecr-ecs:
-#    docker:
-#      - image: circleci/python:3.6.3
-#    steps:
-#      - checkout
-#      - setup_remote_docker
-#      - run:
-#          name: Setup common environment variables
-#          command: |
-#            echo 'export ECR_REPOSITORY_NAME="pyconkr-2019/backend' >> $BASH_ENV
-#            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/pyconkr-2019/backend:${CIRCLE_SHA1}"' >> $BASH_ENV
-#      - run:
-#          name: Build image
-#          command: |
-#            docker build -t $FULL_IMAGE_NAME .
-#      - aws-cli/install
-#          - aws-cli/configure:
-#          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
-#          aws-region: "$AWS_DEFAULT_REGION"
+  push-ecr:
+    docker:
+      - image: circleci/python:3.6.3
+    steps:
+      - checkout
+      - setup_remote_docker
+      - aws-cli/install
+      - aws-cli/configure:
+          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
+          aws-region: "$AWS_DEFAULT_REGION"
+      - run:
+          name: Setup common environment variables
+          command: |
+            echo 'export ECR_REPOSITORY_NAME="pyconkr-2019/backend' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/pyconkr-2019/backend:${CIRCLE_SHA1}"' >> $BASH_ENV
+      - run:
+          name: Build image
+          command: |
+            docker build -t $FULL_IMAGE_NAME .
+
+
 
   deploy-dev:
     docker:
@@ -109,8 +112,8 @@ workflows:
           requires:
             - aws-ecr/build_and_push_image
           aws-region: ${AWS_DEFAULT_REGION}
-          family: "pyconkr-2019-api-cluster"
-          cluster-name: "default"
+          family: "pyconkr-2019-api-task"
+          cluster-name: "pyconkr-2019"
           container-image-name-updates: "container=pyconkr-2019-api-dev,tag=${CIRCLE_SHA1}"
       - deploy-dev:
           context: DEVELOP
