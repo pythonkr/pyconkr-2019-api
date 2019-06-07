@@ -101,21 +101,26 @@ workflows:
           repo: "pyconkr-2019/backend"
           region: ${AWS_DEFAULT_REGION}
           tag: "${CIRCLE_SHA1}"
-#          tag: "develop"
-#          requires:
-#            - build
           filters:
             branches:
-              only: feature/ecr-ecs
+              only:
+                - feature/ecr-ecs
+                - develop
+                - master
       - aws-ecs/deploy-service-update:
           context: AWS_DEPLOY
           requires:
             - aws-ecr/build_and_push_image
           aws-region: ${AWS_DEFAULT_REGION}
-          family: "pyconkr-2019-api-task"
-          cluster-name: "pyconkr-2019"
-          service-name: "pyconkr-2019-api"
+          family: "pyconkr-2019-api-dev-task"
+          cluster-name: "pyconkr-dev"
+          service-name: "pyconkr-2019-api-dev"
           container-image-name-updates: "container=pyconkr-2019-api,tag=${CIRCLE_SHA1}"
+          filters:
+            branches:
+              only:
+                - feature/ecr-ecs
+                - develop
       - deploy-dev:
           context: DEVELOP
           requires:
