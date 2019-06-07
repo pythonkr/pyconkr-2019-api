@@ -109,7 +109,7 @@ workflows:
           requires:
             - aws-ecr/build_and_push_image
           aws-region: ${AWS_DEFAULT_REGION}
-          family: "api"
+          family: "pyconkr-2019-api-cluster"
           cluster-name: "default"
           container-image-name-updates: "container=pyconkr-2019-api-dev,tag=${CIRCLE_SHA1}"
       - deploy-dev:
