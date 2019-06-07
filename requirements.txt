@@ -84,6 +84,7 @@ requests-oauthlib==1.2.0
 rope==0.11.0
 Rx==1.6.1
 s3transfer==0.2.0
+sentry-sdk==0.8.1
 simplejson==3.16.0
 singledispatch==3.4.0.3
 six==1.11.0
