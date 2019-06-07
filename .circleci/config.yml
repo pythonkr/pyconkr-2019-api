@@ -97,8 +97,8 @@ workflows:
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "pyconkr-2019/backend"
           region: ${AWS_DEFAULT_REGION}
-#          tag: "${CIRCLE_SHA1}"
-          tag: "develop"
+          tag: "${CIRCLE_SHA1}"
+#          tag: "develop"
 #          requires:
 #            - build
           filters:
