@@ -114,6 +114,7 @@ workflows:
           aws-region: ${AWS_DEFAULT_REGION}
           family: "pyconkr-2019-api-task"
           cluster-name: "pyconkr-2019"
+          service-name: "pyconkr-2019-api"
           container-image-name-updates: "container=pyconkr-2019-api,tag=${CIRCLE_SHA1}"
       - deploy-dev:
           context: DEVELOP
