@@ -38,27 +38,6 @@ jobs:
 
       - store_test_results:
           path: test-reports
-  push-ecr:
-    docker:
-      - image: circleci/python:3.6.3
-    steps:
-      - checkout
-      - setup_remote_docker
-      - aws-cli/install
-      - aws-cli/configure:
-          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
-          aws-region: "$AWS_DEFAULT_REGION"
-      - run:
-          name: Setup common environment variables
-          command: |
-            echo 'export ECR_REPOSITORY_NAME="pyconkr-2019/backend' >> $BASH_ENV
-            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/pyconkr-2019/backend:${CIRCLE_SHA1}"' >> $BASH_ENV
-      - run:
-          name: Build image
-          command: |
-            docker build -t $FULL_IMAGE_NAME .
-
-
 
   deploy-dev:
     docker:
@@ -121,13 +100,13 @@ workflows:
               only:
                 - feature/ecr-ecs
                 - develop
-      - deploy-dev:
-          context: DEVELOP
-          requires:
-            - build
-          filters:
-            branches:
-              only: develop
+#      - deploy-dev:
+#          context: DEVELOP
+#          requires:
+#            - build
+#          filters:
+#            branches:
+#              only: develop
       - deploy-prod:
           context: PROD
           requires:
