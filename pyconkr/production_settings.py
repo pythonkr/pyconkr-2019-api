@@ -4,22 +4,22 @@ from pyconkr.settings import *
 DEBUG = False
 ALLOWED_HOSTS = ['*']
 
-db_env_keys = ['PYCONKR_POSTGRES_HOST', 'PYCONKR_POSTGRES_NAME', 'PYCONKR_POSTGRES_PORT',
-               'PYCONKR_POSTGRES_USER', 'PYCONKR_POSTGRES_PASSWORD']
+db_env_keys = ['POSTGRES_HOST', 'POSTGRES_NAME', 'POSTGRES_PORT',
+               'POSTGRES_USER', 'POSTGRES_PASSWORD']
 
 for key in db_env_keys:
     if not os.getenv(key):
-        print(f'You should set {key} into ~/.profile')
+        print(f'You should set {key}')
         exit(1)
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('PYCONKR_POSTGRES_NAME'),
-        'HOST': os.getenv('PYCONKR_POSTGRES_HOST'),
-        'PORT': os.getenv('PYCONKR_POSTGRES_PORT'),
-        'USER': os.getenv('PYCONKR_POSTGRES_USER'),
-        'PASSWORD': os.getenv('PYCONKR_POSTGRES_PASSWORD'),
+        'NAME': os.getenv('POSTGRES_NAME'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
     }
 }
 
@@ -27,7 +27,7 @@ aws_env_keys = ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_STORAGE_BUCKE
 
 for key in aws_env_keys:
     if not os.getenv(key):
-        print(f'You should set {key} into ~/.profile')
+        print(f'You should set {key}')
         exit(1)
 
 AWS_DEFAULT_ACL = 'public-read'
@@ -49,11 +49,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/log/error.log',
-        },
         'console': {
             'class': 'logging.StreamHandler',
         }
@@ -65,7 +60,7 @@ LOGGING = {
             'propagate': True,
         },
         'django': {
-            'handlers': ['file', 'console', ],
+            'handlers': ['console', ],
             'level': 'DEBUG',
             'propagate': False,
         },
