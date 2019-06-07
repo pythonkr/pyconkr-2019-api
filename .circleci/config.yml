@@ -104,13 +104,14 @@ workflows:
           filters:
             branches:
               only: feature/ecr-ecs
-#      - deploy-ecr-ecs:
-#          context: deploy
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only: feature/ecr-ecs
+      - aws-ecs/deploy-service-update:
+          context: AWS_DEPLOY
+          requires:
+            - aws-ecr/build_and_push_image
+          aws-region: ${AWS_DEFAULT_REGION}
+          family: "api"
+          cluster-name: "default"
+          container-image-name-updates: "container=pyconkr-2019-api-dev,tag=${CIRCLE_SHA1}"
       - deploy-dev:
           context: DEVELOP
           requires:
