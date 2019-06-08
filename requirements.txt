@@ -38,11 +38,13 @@ docutils==0.14
 et-xmlfile==1.0.1
 fabric==2.4.0
 facebook-sdk==3.1.0
+gevent==1.4.0
 graphene==2.1.3
 graphene-django==2.2.0
 graphene-file-upload==1.2.2
 graphql-core==2.1
 graphql-relay==0.4.5
+greenlet==0.4.15
 gunicorn==19.9.0
 iamport-rest-client==0.7.0
 idna==2.7
@@ -84,6 +86,7 @@ requests-oauthlib==1.2.0
 rope==0.11.0
 Rx==1.6.1
 s3transfer==0.2.0
+sentry-sdk==0.8.1
 simplejson==3.16.0
 singledispatch==3.4.0.3
 six==1.11.0

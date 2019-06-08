@@ -1,5 +1,5 @@
 #!/bin/bash
-export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-pyconkr.staging_settings}
+export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-pyconkr.settings}
 
 # echo "Wait for starting database"
 # while !</dev/tcp/db/5432; do sleep 1; done;
@@ -37,6 +37,22 @@ python manage.py crontab add
 python manage.py crontab show
 service cron start
 
+mkdir -p /web/logs
+touch /web/logs/gunicorn.log
+touch /web/logs/access.log
+tail -n 0 -f /web/logs/*.log &
+
 echo
 echo "==== Starting server ====="
-gunicorn pyconkr.wsgi:application --bind=0.0.0.0:8000 -w 8 --max-requests 1000 --max-requests-jitter 5
+gunicorn pyconkr.wsgi:application \
+    --bind=0.0.0.0:8000 \
+    --workers 9 \
+    --threads 256 \
+    --worker-connections=2000 \
+    --max-requests 1000 \
+    --max-requests-jitter 5 \
+    -k gevent \
+    --log-level=info \
+    --log-file=/web/logs/gunicorn.log \
+    --access-logfile=/web/logs/access.log
+
