@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@0.0.2
   aws-ecs: circleci/aws-ecs@0.0.8
-  aws-cli: circleci/aws-cli@0.1.1
 jobs:
   build:
     docker:
@@ -39,20 +38,20 @@ jobs:
       - store_test_results:
           path: test-reports
 
-  deploy-dev:
-    docker:
-      - image: circleci/python:3.6.3
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "53:f6:f2:c2:3d:82:3d:b6:3c:51:13:af:e6:6f:57:35"
-      - run:
-          command: |
-            sudo pip install fabric
-            fab -H ${DEPLOY_USER}@${DEPLOY_HOST} -p -e deploy-dev --sha1 $CIRCLE_SHA1
-            sleep 40
-#            curl -fL ${URL_ROOT}/api/ping
+#  deploy-dev:
+#    docker:
+#      - image: circleci/python:3.6.3
+#    steps:
+#      - checkout
+#      - add_ssh_keys:
+#          fingerprints:
+#            - "53:f6:f2:c2:3d:82:3d:b6:3c:51:13:af:e6:6f:57:35"
+#      - run:
+#          command: |
+#            sudo pip install fabric
+#            fab -H ${DEPLOY_USER}@${DEPLOY_HOST} -p -e deploy-dev --sha1 $CIRCLE_SHA1
+#            sleep 40
+##            curl -fL ${URL_ROOT}/api/ping
       
   deploy-prod:
     docker:
@@ -83,7 +82,6 @@ workflows:
           filters:
             branches:
               only:
-                - feature/ecr-ecs
                 - develop
                 - master
       - aws-ecs/deploy-service-update:
@@ -98,19 +96,24 @@ workflows:
           filters:
             branches:
               only:
-                - feature/ecr-ecs
                 - develop
-#      - deploy-dev:
-#          context: DEVELOP
+      - aws-ecs/deploy-service-update:
+          context: AWS_DEPLOY
+          requires:
+            - aws-ecr/build_and_push_image
+          aws-region: ${AWS_DEFAULT_REGION}
+          family: "pyconkr-2019-api-task"
+          cluster-name: "pyconkr-2019"
+          service-name: "pyconkr-2019-api"
+          container-image-name-updates: "container=pyconkr-2019-api,tag=${CIRCLE_SHA1}"
+          filters:
+            branches:
+              only:
+                - master
+#      - deploy-prod:
+#          context: PROD
 #          requires:
 #            - build
 #          filters:
 #            branches:
-#              only: develop
-      - deploy-prod:
-          context: PROD
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
+#              only: master
