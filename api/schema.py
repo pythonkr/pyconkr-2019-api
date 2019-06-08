@@ -6,6 +6,15 @@ import api.schemas.presentation
 import api.schemas.schedule
 import api.schemas.sponsor
 import ticket.schemas
+import time
+
+
+class SleepPingQuery(graphene.ObjectType):
+    sleep_ping = graphene.Boolean()
+
+    def resolve_sleep_ping(self, info):
+        time.sleep(2)
+        return True
 
 
 class Mutations(api.schemas.schedule.Mutations,
@@ -24,6 +33,7 @@ class Query(api.schemas.schedule.Query,
             api.schemas.presentation.Query,
             api.schemas.sponsor.Query,
             ticket.schemas.Query,
+            SleepPingQuery,
             graphene.ObjectType):
     pass
 
