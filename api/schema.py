@@ -1,12 +1,13 @@
+import time
+
 import graphene
 
 import api.schemas.auth
-import api.schemas.user
 import api.schemas.presentation
 import api.schemas.schedule
 import api.schemas.sponsor
+import api.schemas.user
 import ticket.schemas
-import time
 
 
 class SleepPingQuery(graphene.ObjectType):
