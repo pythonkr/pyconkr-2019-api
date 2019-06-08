@@ -52,5 +52,5 @@ gunicorn pyconkr.wsgi:application \
     -k gevent \
     --log-level=info \
     --log-file=/srv/logs/gunicorn.log \
-    --access-logfile=/srv/logs/access.log &
+    --access-logfile=/srv/logs/access.log
 
