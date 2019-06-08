@@ -63,6 +63,7 @@ workflows:
           cluster-name: "pyconkr-dev"
           service-name: "pyconkr-2019-api-dev"
           container-image-name-updates: "container=pyconkr-2019-api,tag=${CIRCLE_SHA1}"
+          verify-revision-is-deployed: true
           filters:
             branches:
               only:
@@ -76,6 +77,7 @@ workflows:
           cluster-name: "pyconkr-2019"
           service-name: "pyconkr-2019-api"
           container-image-name-updates: "container=pyconkr-2019-api,tag=${CIRCLE_SHA1}"
+          verify-revision-is-deployed: true
           filters:
             branches:
               only:
