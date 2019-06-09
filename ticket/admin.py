@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from django.contrib import admin
 from django.contrib import messages
@@ -54,7 +54,8 @@ class TicketAdmin(admin.ModelAdmin):
     def refund(self, request, queryset):
         for ticket in queryset:
             if ticket.status != Ticket.STATUS_PAID:
-                raise GraphQLError(_('이미 환불된 티켓이거나 결제되지 않은 티켓입니다.'))
+                self.message_user(request, message=_('이미 환불된 티켓이거나 결제되지 않은 티켓입니다.'), level=messages.ERROR)
+                return
             try:
                 iamport = create_iamport(ticket.is_domestic_card)
                 response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
@@ -68,6 +69,7 @@ class TicketAdmin(admin.ModelAdmin):
             ticket.cancelled_at = datetime.fromtimestamp(response['cancelled_at'])
             ticket.cancel_receipt_url = response['cancel_receipt_urls'][0]
             ticket.save()
+        self.message_user(request, message='환불이 성공했습니다.')
 
 
 admin.site.register(Ticket, TicketAdmin)
