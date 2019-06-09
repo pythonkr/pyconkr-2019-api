@@ -15,6 +15,7 @@ class SleepPingQuery(graphene.ObjectType):
 
     def resolve_sleep_ping(self, info):
         time.sleep(2)
+
         return True
 
 

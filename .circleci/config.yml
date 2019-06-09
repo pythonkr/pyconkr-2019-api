@@ -57,12 +57,14 @@ workflows:
       - aws-ecs/deploy-service-update:
           context: AWS_DEPLOY
           requires:
+            - build
             - aws-ecr/build_and_push_image
           aws-region: ${AWS_DEFAULT_REGION}
           family: "pyconkr-2019-api-dev-task"
           cluster-name: "pyconkr-dev"
           service-name: "pyconkr-2019-api-dev"
           container-image-name-updates: "container=pyconkr-2019-api,tag=${CIRCLE_SHA1}"
+          verify-revision-is-deployed: true
           filters:
             branches:
               only:
@@ -70,12 +72,14 @@ workflows:
       - aws-ecs/deploy-service-update:
           context: AWS_DEPLOY
           requires:
+            - build
             - aws-ecr/build_and_push_image
           aws-region: ${AWS_DEFAULT_REGION}
           family: "pyconkr-2019-api-task"
           cluster-name: "pyconkr-2019"
           service-name: "pyconkr-2019-api"
           container-image-name-updates: "container=pyconkr-2019-api,tag=${CIRCLE_SHA1}"
+          verify-revision-is-deployed: true
           filters:
             branches:
               only:
