@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from graphql_extensions.exceptions import GraphQLError
 from iamport import Iamport
 
+from django.contrib import messages
+
 from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct
 from ticket.schemas import create_iamport
@@ -58,9 +60,11 @@ class TicketAdmin(admin.ModelAdmin):
                 iamport = create_iamport(ticket.is_domestic_card)
                 response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
             except Iamport.ResponseError as e:
-                raise GraphQLError(e.message)
+                self.message_user(request, message=e.message, level=messages.ERROR)
+                return
             except Iamport.HttpError as e:
-                raise GraphQLError(_('환불이 실패했습니다'))
+                self.message_user(request, message=e._('환불이 실패했습니다'), level=messages.ERROR)
+                return
             ticket.status = Ticket.STATUS_CANCELLED
             ticket.cancelled_at = datetime.fromtimestamp(response['cancelled_at'])
             ticket.cancel_receipt_url = response['cancel_receipt_urls'][0]

@@ -111,7 +111,6 @@ class TransactionMixin(models.Model):
                               choices=(
                                   (STATUS_READY, 'ready'),
                                   (STATUS_PAID, 'paid'),
-                                  (STATUS_DELETE, 'deleted'),
                                   (STATUS_CANCELLED, 'cancelled')
                               ), default=STATUS_READY)
 

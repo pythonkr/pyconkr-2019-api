@@ -140,7 +140,7 @@ class BuyTicket(graphene.Mutation):
 
             return BuyTicket(ticket=ticket)
         except GraphQLError as e:
-            ticket.status = Ticket.STATUS_DELETE
+            ticket.status = Ticket.STATUS_CANCELLED
             ticket.save()
             raise e
 
