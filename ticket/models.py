@@ -86,7 +86,7 @@ class TicketProduct(models.Model):
 class TransactionMixin(models.Model):
     STATUS_READY = 'ready'
     STATUS_PAID = 'paid'
-    STATUS_DELETE = 'delete'
+    STATUS_ERROR = 'error'
     STATUS_CANCELLED = 'cancelled'
 
     is_domestic_card = models.BooleanField(default=True)
@@ -111,8 +111,11 @@ class TransactionMixin(models.Model):
                               choices=(
                                   (STATUS_READY, 'ready'),
                                   (STATUS_PAID, 'paid'),
-                                  (STATUS_CANCELLED, 'cancelled')
+                                  (STATUS_CANCELLED, 'cancelled'),
+                                  (STATUS_ERROR, 'error')
                               ), default=STATUS_READY)
+    reason = models.CharField(max_length=255, null=True, blank=True,
+                              help_text='결재 실패 시 실패 사유를 저장합니다.')
 
     class Meta:
         abstract = True
