@@ -4,6 +4,9 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from iamport import Iamport
+from import_export import fields
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 
 from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct
@@ -25,7 +28,27 @@ class TicketProductAdmin(admin.ModelAdmin):
 admin.site.register(TicketProduct, TicketProductAdmin)
 
 
-class TicketAdmin(admin.ModelAdmin):
+class TicketResource(resources.ModelResource):
+    class Meta:
+        model = Ticket
+
+    id = fields.Field(column_name='id', attribute='id')
+    name = fields.Field(column_name='name', attribute='owner__profile__name')
+    email = fields.Field(column_name='email', attribute='owner__profile__email')
+    product = fields.Field(column_name='product', attribute='product')
+    status = fields.Field(column_name='status', attribute='status')
+    is_domestic_card = fields.Field(column_name='is_domestic_card', attribute='is_domestic_card')
+    amount = fields.Field(column_name='amount', attribute='amount')
+    imp_uid = fields.Field(column_name='imp_uid', attribute='imp_uid')
+    paid_at = fields.Field(column_name='paid_at', attribute='paid_at')
+    cancelled_at = fields.Field(column_name='cancelled_at', attribute='cancelled_at')
+    receipt_url = fields.Field(column_name='receipt_url', attribute='receipt_url')
+    created_at = fields.Field(column_name='created_at', attribute='created_at')
+    updated_at = fields.Field(column_name='created_at', attribute='updated_at')
+
+
+class TicketAdmin(ImportExportModelAdmin):
+    resource_class = TicketResource
     list_display = ('id', 'owner', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
                     'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at')
     search_fields = ['owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
