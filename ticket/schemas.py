@@ -2,6 +2,7 @@ from datetime import datetime
 
 import graphene
 from constance import config
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
@@ -140,7 +141,8 @@ class BuyTicket(graphene.Mutation):
 
             return BuyTicket(ticket=ticket)
         except GraphQLError as e:
-            ticket.status = Ticket.STATUS_CANCELLED
+            ticket.status = Ticket.STATUS_ERROR
+            ticket.reason = str(e)[:250]
             ticket.save()
             raise e
 
@@ -238,7 +240,6 @@ class Mutations(graphene.ObjectType):
 
 
 def get_ticket_product(product_type, user):
-    from django.db.models import Q
     return TicketProduct.objects.filter(type=product_type, active=True) \
         .filter(Q(ticket_for=user) | Q(ticket_for__isnull=True))
 
@@ -275,4 +276,5 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_my_tickets(self, info):
-        return Ticket.objects.filter(owner=info.context.user)
+        return Ticket.objects.filter(owner=info.context.user) \
+            .filter((Q(status=Ticket.STATUS_PAID) | Q(status=Ticket.STATUS_CANCELLED)))
