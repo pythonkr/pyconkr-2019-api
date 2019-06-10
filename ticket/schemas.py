@@ -142,7 +142,7 @@ class BuyTicket(graphene.Mutation):
             return BuyTicket(ticket=ticket)
         except GraphQLError as e:
             ticket.status = Ticket.STATUS_ERROR
-            ticket.reason = e.message[:250]
+            ticket.reason = str(e)[:250]
             ticket.save()
             raise e
 
