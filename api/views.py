@@ -1,6 +1,9 @@
 import json
+import traceback
+
 from django.shortcuts import render
 from graphene_file_upload.utils import place_files_in_operations
+from graphql.error import GraphQLLocatedError
 from graphql_extensions.views import GraphQLView
 
 
@@ -12,6 +15,13 @@ def robots(request):
 
 
 class PyConGraphQLView(GraphQLView):
+    @staticmethod
+    def format_error(error):
+        if isinstance(error, GraphQLLocatedError):
+            error = error.original_error
+        traceback.print_tb(error.__traceback__)
+        return GraphQLView.format_error(error)
+
     def parse_body(self, request):
         """Handle multipart request spec for multipart/form-data"""
         content_type = self.get_content_type(request)
