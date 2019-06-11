@@ -5,9 +5,9 @@ from api.tests.base import BaseTestCase
 from api.oauth_tokenbackend import OAuthTokenBackend
 from api.tests.common import generate_mock_response
 from api.tests.oauth_app_response import \
-    GITHUB_USER_RESPONSE, GITHUB_EMAILS_RESPONSE,\
-    GOOGLE_USER_RESPONSE, NAVER_USER_RESPONSE,\
-    FACEBOOK_USER_RESPONSE
+    GITHUB_USER_RESPONSE, GITHUB_EMAILS_RESPONSE, \
+    GOOGLE_USER_RESPONSE, NAVER_USER_RESPONSE, \
+    FACEBOOK_USER_RESPONSE, FACEBOOK_USER_RESPONSE_WITHOUT_EMAIL
 
 
 class OAuthTokenBackendTestCase(BaseTestCase):
@@ -71,7 +71,6 @@ class OAuthTokenBackendTestCase(BaseTestCase):
         self.assertEqual(
             GITHUB_USER_RESPONSE['avatar_url'], user.profile.avatar_url)
 
-
     @mock.patch('api.oauth_tokenbackend.OAuth2Session.fetch_token')
     @mock.patch('api.oauth_tokenbackend.OAuth2Session.get')
     def test_google_authenticate(self, mock_get, mock_fetch_token):
@@ -126,6 +125,32 @@ class OAuthTokenBackendTestCase(BaseTestCase):
 
     @mock.patch('api.oauth_tokenbackend.OAuth2Session.fetch_token')
     @mock.patch('api.oauth_tokenbackend.OAuth2Session.get')
+    def test_facebook_authenticate_not_contain_email(self, mock_get, mock_fetch_token):
+        # Given
+        mock_resp = generate_mock_response(
+            status=200, json=FACEBOOK_USER_RESPONSE_WITHOUT_EMAIL)
+        mock_get.side_effect = [mock_resp]
+        request = self.request_factory.get('/')
+
+        # When
+        user = self.backend.authenticate(
+            request=request, oauth_type='facebook',
+            client_id='prod_facebook_client_id',
+            code='TEST_CODE', redirect_uri='REDIRECT_ME')
+
+        # Then
+        self.assertIsNotNone(user)
+        self.assertEqual(
+            f'prod_facebook_{FACEBOOK_USER_RESPONSE["id"]}', user.username)
+        self.assertEqual(user.profile.email, '')
+        self.assertEqual(user.email, '')
+        self.assertEqual(Profile.OAUTH_FACEBOOK, user.profile.oauth_type)
+        self.assertEqual(
+            FACEBOOK_USER_RESPONSE['picture']['data']['url'], user.profile.avatar_url)
+        self.assertEqual(FACEBOOK_USER_RESPONSE['name'], user.profile.name)
+
+    @mock.patch('api.oauth_tokenbackend.OAuth2Session.fetch_token')
+    @mock.patch('api.oauth_tokenbackend.OAuth2Session.get')
     def test_naver_authenticate(self, mock_get, mock_fetch_token):
         # Given
         mock_resp = generate_mock_response(
@@ -142,7 +167,7 @@ class OAuthTokenBackendTestCase(BaseTestCase):
         # Then
         self.assertIsNotNone(user)
         self.assertEqual(
-            f'prod_naver_{ NAVER_USER_RESPONSE["response"]["id"] }', user.username)
+            f'prod_naver_{NAVER_USER_RESPONSE["response"]["id"]}', user.username)
         self.assertEqual(NAVER_USER_RESPONSE['response']['email'], user.email)
         self.assertEqual(NAVER_USER_RESPONSE['response']['email'], user.profile.email)
         self.assertEqual(Profile.OAUTH_NAVER, user.profile.oauth_type)

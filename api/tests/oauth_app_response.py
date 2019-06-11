@@ -50,6 +50,20 @@ FACEBOOK_USER_RESPONSE = {
         }
     }
 }
+
+FACEBOOK_USER_RESPONSE_WITHOUT_EMAIL = {
+    'id': '2523090854429414',
+    'name': 'YoungGun Na',
+    'picture': {
+        'data': {
+            'height': 50,
+            'is_silhouette': False,
+            'url': 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2523090854429414&height=50&width=50&ext=1553601897&hash=AeSuGdFJ_wG3K2tt',
+            'width': 50
+        }
+    }
+}
+
 NAVER_USER_RESPONSE = {
     'resultcode': '00',
     'message': 'success',
