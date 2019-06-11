@@ -133,7 +133,7 @@ class OAuthTokenBackend:
             'id': data['id'],
             'name': data['name'],
             'avatar_url': data['picture'],
-            'email': data['email'],
+            'email': data['email'] if 'email' in data else '',
             'oauth_type': Profile.OAUTH_GOOGLE
         }
 
@@ -151,7 +151,7 @@ class OAuthTokenBackend:
             'id': data['id'],
             'name': data['name'],
             'avatar_url': data['picture']['data']['url'],
-            'email': data['email'],
+            'email': data['email'] if 'email' in data else '',
             'oauth_type': Profile.OAUTH_FACEBOOK
         }
 
