@@ -2,6 +2,7 @@ MY_PRESENTATION_PROPOSAL = '''
 query getMyPresentationProposal {
     myPresentationProposal {
         name
+        desc
         owner {
             username
         }
@@ -38,6 +39,7 @@ mutation createOrUpdatePresentationProposal($data: PresentationProposalInput!) {
     createOrUpdatePresentationProposal(data: $data) {
         proposal {
             name
+            desc
             backgroundDesc
             detailDesc
             language
