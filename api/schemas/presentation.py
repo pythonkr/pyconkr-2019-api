@@ -229,6 +229,7 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     categories = graphene.List(CategoryNode)
     difficulties = graphene.List(DifficultyNode)
+    presentations = graphene.List(PresentationProposalNode)
 
     my_presentation_proposal = graphene.Field(PresentationProposalNode)
     assigned_cfp_reviews = graphene.List(CFPReviewNode)
@@ -239,6 +240,9 @@ class Query(graphene.ObjectType):
 
     def resolve_difficulties(self, info):
         return Difficulty.objects.all()
+
+    def resolve_presentations(self, info):
+        return Presentation.objects.filter(accepted=True)
 
     @login_required
     def resolve_my_presentation_proposal(self, info):
