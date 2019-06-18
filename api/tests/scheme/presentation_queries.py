@@ -1,3 +1,39 @@
+PRESENTATIONS = '''
+query getPresentations {
+    presentations {
+        name
+        desc
+        owner {
+            username
+        }
+        backgroundDesc
+        detailDesc
+        language
+        duration
+        category {
+            id
+            name
+            nameKo
+            nameEn
+            slug
+            visible
+        }
+        difficulty {
+            id
+            name
+            nameKo
+            nameEn
+        }
+        isPresentedBefore
+        placePresentedBefore
+        presentedSlideUrlBefore
+        recordable
+        submitted
+        accepted
+    }
+}
+'''
+
 MY_PRESENTATION_PROPOSAL = '''
 query getMyPresentationProposal {
     myPresentationProposal {

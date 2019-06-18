@@ -7,7 +7,7 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.tests.base import BaseTestCase
-from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL
+from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, PRESENTATIONS
 
 TIMEZONE = get_current_timezone()
 
@@ -30,7 +30,7 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         schedule.presentation_review_finish_at = now() + timedelta(days=20)
         schedule.save()
 
-    def test_create_proposal(self):
+    def create_proposal(self):
         variables = {
             'data': {
                 'name': '흥미로운 GraphQL',
@@ -42,14 +42,28 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
                 'placePresentedBefore': '학교 강당 앞',
                 'presentedSlideUrlBefore': 'my.previous.url',
                 'comment': '밥은 주시는거죠?',
-                'submitted': True,
+                'submitted': True
             }
         }
 
-        response = self.client.execute(CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, variables)
+        return self.client.execute(CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, variables)
+
+    def test_create_proposal(self):
+        response = self.create_proposal()
         data = response.data
         self.assertIsNotNone(data['createOrUpdatePresentationProposal'])
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
+
+    def test_get_presentations(self):
+        self.create_proposal()
+        presentation = Presentation.objects.first()
+        presentation.accepted = True
+        presentation.save()
+
+        response = self.client.execute(PRESENTATIONS)
+        data = response.data
+        self.assertIsNotNone(data['presentations'])
+        self.assertIsNotNone(data['presentations'][0])
 
     def test_update_proposal_first_step(self):
         variables = {
