@@ -76,17 +76,6 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertIsNotNone(data['presentation'])
         self.assertEqual(presentation.id, data['presentation']['id'])
 
-    def test_get_presentation(self):
-        self.create_proposal()
-        presentation = Presentation.objects.first()
-        presentation.accepted = True
-        presentation.save()
-
-        response = self.client.execute(PRESENTATIONS)
-        data = response.data
-        self.assertIsNotNone(data['presentations'])
-        self.assertIsNotNone(data['presentations'][0])
-
     def test_update_proposal_first_step(self):
         variables = {
             'data': {
