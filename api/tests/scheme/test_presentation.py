@@ -70,8 +70,11 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         presentation = Presentation.objects.first()
         presentation.accepted = True
         presentation.save()
+        variables = {
+            'id': presentation.id
+        }
 
-        response = self.client.execute(PRESENTATION)
+        response = self.client.execute(PRESENTATION, variables)
         data = response.data
         self.assertIsNotNone(data['presentation'])
         self.assertEqual(presentation.id, data['presentation']['id'])
