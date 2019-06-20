@@ -7,7 +7,7 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.tests.base import BaseTestCase
-from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, PRESENTATIONS
+from api.tests.scheme.presentation_queries import CREATE_OR_UPDATE_PRESENTATION_PROPOSAL, PRESENTATIONS, PRESENTATION
 
 TIMEZONE = get_current_timezone()
 
@@ -55,6 +55,28 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertIsNotNone(data['createOrUpdatePresentationProposal']['proposal'])
 
     def test_get_presentations(self):
+        self.create_proposal()
+        presentation = Presentation.objects.first()
+        presentation.accepted = True
+        presentation.save()
+
+        response = self.client.execute(PRESENTATIONS)
+        data = response.data
+        self.assertIsNotNone(data['presentations'])
+        self.assertIsNotNone(data['presentations'][0])
+
+    def test_get_presentation(self):
+        self.create_proposal()
+        presentation = Presentation.objects.first()
+        presentation.accepted = True
+        presentation.save()
+
+        response = self.client.execute(PRESENTATION)
+        data = response.data
+        self.assertIsNotNone(data['presentation'])
+        self.assertEqual(presentation.id, data['presentation']['id'])
+
+    def test_get_presentation(self):
         self.create_proposal()
         presentation = Presentation.objects.first()
         presentation.accepted = True

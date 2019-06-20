@@ -7,7 +7,6 @@ query getPresentations {
             username
         }
         backgroundDesc
-        detailDesc
         language
         duration
         category {
@@ -24,9 +23,38 @@ query getPresentations {
             nameKo
             nameEn
         }
-        isPresentedBefore
-        placePresentedBefore
-        presentedSlideUrlBefore
+        recordable
+        submitted
+        accepted
+    }
+}
+'''
+
+PRESENTATION = '''
+query getPresentation($id: Int!) {
+    presentation(id: $id) {
+        name
+        desc
+        owner {
+            username
+        }
+        backgroundDesc
+        language
+        duration
+        category {
+            id
+            name
+            nameKo
+            nameEn
+            slug
+            visible
+        }
+        difficulty {
+            id
+            name
+            nameKo
+            nameEn
+        }
         recordable
         submitted
         accepted
