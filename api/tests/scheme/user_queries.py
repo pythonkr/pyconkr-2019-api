@@ -20,6 +20,12 @@ query getMe {
             nationality
             image
             avatarUrl
+            blogUrl
+            githubUrl
+            facebookUrl
+            twitterUrl
+            linkedInUrl
+            instagramUrl
         }
     }
 }
@@ -43,6 +49,12 @@ mutation UpdateProfile($data: ProfileInput!) {
             nationality
             image
             avatarUrl
+            blogUrl
+            githubUrl
+            facebookUrl
+            twitterUrl
+            linkedInUrl
+            instagramUrl
         }
     }
 }
