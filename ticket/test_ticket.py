@@ -24,9 +24,11 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             email='me@pycon.kr')
         self.client.authenticate(self.user)
         self.earlybird_product = self.create_conference_product(name='얼리버드 티켓')
+        self.deposit_conference_product = self.create_deposit_conference_product(name='단체 현금 구매 티켓')
         self.regular_product = self.create_conference_product(name='일반 티켓')
         self.youngcoder_product_1 = self.create_youngcoder_product(name='영코더1')
         self.youngcoder_product_2 = self.create_youngcoder_product(name='영코더2')
+        self.sprint_product = self.create_sprint_product(name='스프린트')
 
     def create_conference_product(self, name='얼리버드 티켓'):
         product = TicketProduct(
@@ -39,11 +41,35 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         product.save()
         return product
 
+    def create_deposit_conference_product(self, name='얼리버드 티켓'):
+        product = TicketProduct(
+            type=TicketProduct.TYPE_CONFERENCE,
+            name=name, total=3,
+            owner=self.user, price='1000')
+        product.is_deposit_ticket = True
+        product.ticket_open_at = now() - timedelta(days=2)
+        product.ticket_close_at = now() + timedelta(days=2)
+        product.cancelable_date = now() + timedelta(days=1)
+        product.save()
+        return product
+
     def create_youngcoder_product(self, name='영코더'):
         product = TicketProduct(
             type=TicketProduct.TYPE_YOUNG_CODER,
             name=name, total=3,
             owner=self.user, price='1000')
+        product.is_unique_in_type = False
+        product.ticket_open_at = now() - timedelta(days=2)
+        product.ticket_close_at = now() + timedelta(days=2)
+        product.cancelable_date = now() + timedelta(days=1)
+        product.save()
+        return product
+
+    def create_sprint_product(self, name='스프린트'):
+        product = TicketProduct(
+            type=TicketProduct.TYPE_SPRINT,
+            name=name, total=3,
+            owner=self.user, price='0')
         product.is_unique_in_type = False
         product.ticket_open_at = now() - timedelta(days=2)
         product.ticket_close_at = now() + timedelta(days=2)
@@ -75,6 +101,41 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(data['buyTicket']['ticket']['pgTid'], 'pg_tid')
         self.assertIsNotNone(data['buyTicket']['ticket']['receiptUrl'])
 
+        self.assertEqual(1, Ticket.objects.all().count())
+
+    @mock.patch('ticket.schemas.config')
+    def test_buy_deposit_ticket(self, mock_config):
+        # Given
+        self.mock_config(mock_config)
+
+        variables = {
+            "productId": str(self.deposit_conference_product.id),
+            "payment": {
+                "cardNumber": 'asdf'
+            }
+        }
+
+        response = self.client.execute(BUY_TICKET, variables)
+        data = response.data
+        self.assertIsNotNone(data['buyTicket'])
+        self.assertEqual(Ticket.STATUS_DEPOSIT_WAITING, data['buyTicket']['ticket']['status'].lower())
+        self.assertEqual(1, Ticket.objects.all().count())
+
+    @mock.patch('ticket.schemas.config')
+    def test_buy_sprint_ticket(self, mock_config):
+        # Given
+        self.mock_config(mock_config)
+
+        variables = {
+            "productId": str(self.sprint_product.id),
+            "payment": {
+            }
+        }
+
+        response = self.client.execute(BUY_TICKET, variables)
+        data = response.data
+        self.assertIsNotNone(data['buyTicket'])
+        self.assertEqual(Ticket.STATUS_PAID, data['buyTicket']['ticket']['status'].lower())
         self.assertEqual(1, Ticket.objects.all().count())
 
     @mock.patch('ticket.schemas.config')
@@ -144,12 +205,10 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertIsNotNone(result.errors)
 
     def mock_config_and_iamporter(self, mock_config, mock_iamport):
-        mock_config.return_value = {
-            'IMP_DOM_API_KEY': 'KEY',
-            'IMP_DOM_API_SECRET': 'SECRET',
-            'IMP_INTL_API_KEY': 'KEY',
-            'IMP_INTL_API_SECRET': 'SECRET'
-        }
+        self.mock_config(mock_config)
+        self.mock_iamport(mock_iamport)
+
+    def mock_iamport(self, mock_iamport):
         iamport_instance = mock_iamport.return_value
         response = {
             'amount': '60000',
@@ -177,6 +236,14 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             'merchant_uid': 'pyconkr_1556189352'
         }
         iamport_instance.cancel.return_value = cancel_response
+
+    def mock_config(self, mock_config):
+        mock_config.return_value = {
+            'IMP_DOM_API_KEY': 'KEY',
+            'IMP_DOM_API_SECRET': 'SECRET',
+            'IMP_INTL_API_KEY': 'KEY',
+            'IMP_INTL_API_SECRET': 'SECRET'
+        }
 
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)

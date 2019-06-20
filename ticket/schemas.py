@@ -65,14 +65,13 @@ class TicketNode(DjangoObjectType):
 
 
 class PaymentInput(graphene.InputObjectType):
-    is_domestic_card = graphene.Boolean(required=True)
+    is_domestic_card = graphene.Boolean(default_value=True)
     amount = graphene.Int(
+        default_value=0,
         description='결제할 금액을 의미합니다. 수정 가능한 상품인 경우(개인후원)에만 사용됩니다.'
     )
-    card_number = graphene.String(required=True,
-                                  description='결제에 사용할 카드 번호입니다. (e.g, xxxx-xxxx-xxxx-xxxx)')
-    expiry = graphene.String(required=True,
-                             description='결제에 사용하는 카드의 만료 기간입니다. (e.g, YYYY-MM)')
+    card_number = graphene.String(description='결제에 사용할 카드 번호입니다. (e.g, xxxx-xxxx-xxxx-xxxx)')
+    expiry = graphene.String(description='결제에 사용하는 카드의 만료 기간입니다. (e.g, YYYY-MM)')
     birth = graphene.String(
         description='한국 카드일 때 사용하며 생년월일의 형태를 가집니다.(e.g, 880101)')
     pwd_2digit = graphene.String(
@@ -101,11 +100,26 @@ class BuyTicket(graphene.Mutation):
         if not config.IMP_DOM_API_KEY or not config.IMP_INTL_API_KEY:
             raise GraphQLError(_('아이엠포트 계정 정보가 설정되어 있지 않습니다.'))
         user = info.context.user
-        payment_params = BuyTicket.get_payment_params(user, payment)
+
         try:
             product = TicketProduct.objects.get(pk=product_id)
         except TicketProduct.DoesNotExist:
             raise GraphQLError(f'Ticket project is not exists.(product_id: {product_id})')
+        if Ticket.objects.filter(owner=user, product=product, status=Ticket.STATUS_READY).exists():
+            raise GraphQLError(_('결제가 진행 중입니다. 잠시 후 다시 시도해주세요. 문제가 지속 발생할 경우 support@pycon.kr로 연락주세요.'))
+        ticket = Ticket.objects.create(
+            is_domestic_card=payment.is_domestic_card,
+            owner=user,
+            product=product,
+            amount=payment.amount,
+            status=Ticket.STATUS_READY,
+            options=options
+        )
+
+        if product.is_deposit_ticket:
+            ticket.status = Ticket.STATUS_DEPOSIT_WAITING
+            ticket.save()
+            return BuyTicket(ticket=ticket)
         if product.ticket_for.exists() and info.context.user not in product.ticket_for.all():
             raise GraphQLError(f'사용자에게 판매하는 티켓이 아닙니다.')
         if BuyTicket.has_same_unique_ticket_type(product, info.context.user):
@@ -113,24 +127,20 @@ class BuyTicket(graphene.Mutation):
         BuyTicket.check_product(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
-        if Ticket.objects.filter(owner=user, product=product, status=Ticket.STATUS_READY).exists():
-            raise GraphQLError(_('결제가 진행 중입니다. 잠시 후 다시 시도해주세요. 문제가 지속 발생할 경우 support@pycon.kr로 연락주세요.'))
-        ticket = Ticket.objects.create(
-            is_domestic_card=payment.is_domestic_card,
-            owner=user,
-            product=product,
-            status=Ticket.STATUS_READY,
-            options=options
-        )
+
         try:
+            if product.price == 0:
+                ticket.status = Ticket.STATUS_PAID
+                ticket.save()
+                return BuyTicket(ticket=ticket)
             try:
+                payment_params = BuyTicket.get_payment_params(user, payment)
                 response = BuyTicket.create_payment(product, payment, payment_params)
             except Iamport.ResponseError as e:
                 raise GraphQLError(e.message)
             except Iamport.HttpError as e:
                 raise GraphQLError(_(f'아이엠포트 결제가 실패하였습니다.({e.code})'))
 
-            ticket.amount = response['amount']
             ticket.merchant_uid = response['merchant_uid']
             ticket.imp_uid = response['imp_uid']
             ticket.pg_tid = response['pg_tid']

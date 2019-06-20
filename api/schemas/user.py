@@ -82,6 +82,12 @@ class ProfileInput(graphene.InputObjectType):
     organization = graphene.String()
     nationality = graphene.String()
     signature = graphene.String()
+    blog_url = graphene.String()
+    github_url = graphene.String()
+    facebook_url = graphene.String()
+    twitter_url = graphene.String()
+    linkedin_url = graphene.String()
+    instagram_url = graphene.String()
 
 
 class UpdateProfile(graphene.Mutation):

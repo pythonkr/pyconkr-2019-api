@@ -134,6 +134,7 @@ class PresentationResource(resources.ModelResource):
 
 class PresentationAdmin(ImportExportModelAdmin):
     resource_class = PresentationResource
+    actions = ('accept',)
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
     list_filter = (
@@ -151,6 +152,9 @@ class PresentationAdmin(ImportExportModelAdmin):
             profile, _ = Profile.objects.get_or_create(user=obj.owner)
             return profile
         return ''
+
+    def accept(self, request, queryset):
+        queryset.update(accepted=True)
 
 
 admin.site.register(Presentation, PresentationAdmin)
