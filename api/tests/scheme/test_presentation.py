@@ -77,7 +77,7 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         response = self.client.execute(PRESENTATION, variables)
         data = response.data
         self.assertIsNotNone(data['presentation'])
-        self.assertEqual(presentation.id, data['presentation']['id'])
+        self.assertEqual(str(presentation.id), str(data['presentation']['id']))
 
     def test_update_proposal_first_step(self):
         variables = {
