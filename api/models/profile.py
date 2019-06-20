@@ -32,6 +32,12 @@ class Profile(models.Model):
     nationality = models.CharField(max_length=100, blank=True, default='')
     image = SorlImageField(upload_to='profile', blank=True, default='')
     avatar_url = models.CharField(max_length=500, blank=True, default='')
+    blog_url = models.CharField(max_length=200, blank=True, default='')
+    github_url = models.CharField(max_length=200, blank=True, default='')
+    facebook_url = models.CharField(max_length=200, blank=True, default='')
+    twitter_url = models.CharField(max_length=200, blank=True, default='')
+    linked_in_url = models.CharField(max_length=200, blank=True, default='')
+    instagram_url = models.CharField(max_length=200, blank=True, default='')
 
     def __str__(self):
         return f'{self.name}({self.email})'

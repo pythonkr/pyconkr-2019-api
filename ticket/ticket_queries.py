@@ -52,6 +52,7 @@ mutation BuyTicket($productId: ID!, $payment: PaymentInput!, $options: JSONStrin
           pgTid
           receiptUrl
           paidAt
+          status
         }
     }
 }

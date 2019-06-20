@@ -58,7 +58,7 @@ class TicketAdmin(ImportExportModelAdmin):
         ('is_domestic_card', admin.BooleanFieldListFilter),
         'status',
     )
-    actions = ['refund']
+    actions = ['refund', 'set_paid']
 
     def owner_profile(self, obj):
         if obj.owner:
@@ -92,6 +92,9 @@ class TicketAdmin(ImportExportModelAdmin):
             ticket.cancel_receipt_url = response['cancel_receipt_urls'][0]
             ticket.save()
         self.message_user(request, message='환불이 성공했습니다.')
+
+    def set_paid(self, request, queryset):
+        queryset.update(status=Ticket.STATUS_PAID)
 
 
 admin.site.register(Ticket, TicketAdmin)
