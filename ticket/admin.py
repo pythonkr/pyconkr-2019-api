@@ -93,7 +93,7 @@ class TicketAdmin(ImportExportModelAdmin):
             ticket.save()
         self.message_user(request, message='환불이 성공했습니다.')
 
-    def set_paid(selfself, request, queryset):
+    def set_paid(self, request, queryset):
         queryset.update(status=Ticket.STATUS_PAID)
 
 
