@@ -2,6 +2,7 @@ PRESENTATIONS = '''
 query getPresentations {
     presentations {
         id
+        isKeynote
         name
         desc
         owner {
@@ -35,6 +36,7 @@ PRESENTATION = '''
 query getPresentation($id: Int!) {
     presentation(id: $id) {
         id
+        isKeynote
         name
         desc
         owner {

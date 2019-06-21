@@ -52,6 +52,7 @@ class Program(models.Model):
 class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
+    is_keynote = models.BooleanField(default=False, help_text='키노트 스피커인 경우 TRUE로 설정합니다.')
     owner = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     background_desc = models.TextField(blank=True, default='')
 
