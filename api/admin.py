@@ -98,7 +98,7 @@ class ScheduleAdmin(admin.ModelAdmin):
                        'conference_ticket_start_at', 'conference_ticket_finish_at',
                        'tutorial_ticket_start_at', 'tutorial_ticket_finish_at',
                        'sprint_ticket_start_at', 'sprint_ticket_finish_at',
-                       'babycare_ticket_start_at', 'babycare_ticket_finish_at',
+                       'childcare_ticket_start_at', 'childcare_ticket_finish_at',
                        'youngcoder_ticket_start_at', 'youngcoder_ticket_finish_at')
         }),
         ('재정지원', {
