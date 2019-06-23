@@ -16,7 +16,7 @@ from ticket.models import TicketProduct, Ticket
 class TicketTypeNode(graphene.Enum):
     CONFERENCE = TicketProduct.TYPE_CONFERENCE
     YOUNG_CODER = TicketProduct.TYPE_YOUNG_CODER
-    BABY_CARE = TicketProduct.TYPE_BABY_CARE
+    CHILD_CARE = TicketProduct.TYPE_CHILD_CARE
     TUTORIAL = TicketProduct.TYPE_TUTORIAL
     SPRINT = TicketProduct.TYPE_SPRINT
     HEALTH_CARE = TicketProduct.TYPE_HEALTH_CARE
@@ -258,7 +258,7 @@ class Query(graphene.ObjectType):
     ticket_product = graphene.Field(TicketProductNode)
     conference_products = graphene.List(TicketProductNode)
     young_coder_products = graphene.List(TicketProductNode)
-    baby_care_products = graphene.List(TicketProductNode)
+    child_care_products = graphene.List(TicketProductNode)
     tutorial_products = graphene.List(TicketProductNode)
     sprint_products = graphene.List(TicketProductNode)
     health_care_products = graphene.List(TicketProductNode)
@@ -272,8 +272,8 @@ class Query(graphene.ObjectType):
     def resolve_young_coder_products(self, info):
         return get_ticket_product(TicketProduct.TYPE_YOUNG_CODER, info.context.user)
 
-    def resolve_baby_care_products(self, info):
-        return get_ticket_product(TicketProduct.TYPE_BABY_CARE, info.context.user)
+    def resolve_child_care_products(self, info):
+        return get_ticket_product(TicketProduct.TYPE_CHILD_CARE, info.context.user)
 
     def resolve_tutorial_products(self, info):
         return get_ticket_product(TicketProduct.TYPE_TUTORIAL, info.context.user)

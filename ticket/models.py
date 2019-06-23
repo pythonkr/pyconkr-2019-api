@@ -10,7 +10,7 @@ UserModel = get_user_model()
 class TicketProduct(models.Model):
     TYPE_CONFERENCE = 'C'
     TYPE_YOUNG_CODER = 'Y'
-    TYPE_BABY_CARE = 'B'
+    TYPE_CHILD_CARE = 'B'
     TYPE_TUTORIAL = 'T'
     TYPE_SPRINT = 'S'
     TYPE_HEALTH_CARE = 'H'
@@ -20,7 +20,7 @@ class TicketProduct(models.Model):
                             choices=(
                                 (TYPE_CONFERENCE, _('컨퍼런스')),
                                 (TYPE_YOUNG_CODER, _('영코더')),
-                                (TYPE_BABY_CARE, _('아이돌봄')),
+                                (TYPE_CHILD_CARE, _('아이돌봄')),
                                 (TYPE_TUTORIAL, _('튜토리얼')),
                                 (TYPE_SPRINT, _('스프린트')),
                                 (TYPE_HEALTH_CARE, _('체육시간')),

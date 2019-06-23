@@ -47,8 +47,8 @@
     "patron_ticket_finish_at": null,
     "conference_ticket_start_at": "2019-06-03T05:00:00Z",
     "conference_ticket_finish_at": null,
-    "babycare_ticket_start_at": "2019-06-17T05:00:00Z",
-    "babycare_ticket_finish_at": null,
+    "childcare_ticket_start_at": "2019-06-17T05:00:00Z",
+    "childcare_ticket_finish_at": null,
     "youngcoder_ticket_start_at": "2019-06-17T05:00:00Z",
     "youngcoder_ticket_finish_at": null
   }
