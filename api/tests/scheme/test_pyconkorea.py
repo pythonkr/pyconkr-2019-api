@@ -66,8 +66,8 @@ class ScheduleTest(BaseTestCase):
                 conferenceTicketStartAt
                 conferenceTicketFinishAt
             
-                babycareTicketStartAt
-                babycareTicketFinishAt
+                childcareTicketStartAt
+                childcareTicketFinishAt
             
                 youngcoderTicketStartAt
                 youngcoderTicketFinishAt

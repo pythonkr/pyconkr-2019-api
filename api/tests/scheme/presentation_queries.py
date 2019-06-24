@@ -1,3 +1,71 @@
+PRESENTATIONS = '''
+query getPresentations {
+    presentations {
+        id
+        isKeynote
+        name
+        desc
+        owner {
+            username
+        }
+        backgroundDesc
+        language
+        duration
+        category {
+            id
+            name
+            nameKo
+            nameEn
+            slug
+            visible
+        }
+        difficulty {
+            id
+            name
+            nameKo
+            nameEn
+        }
+        recordable
+        submitted
+        accepted
+    }
+}
+'''
+
+PRESENTATION = '''
+query getPresentation($id: Int!) {
+    presentation(id: $id) {
+        id
+        isKeynote
+        name
+        desc
+        owner {
+            username
+        }
+        backgroundDesc
+        language
+        duration
+        category {
+            id
+            name
+            nameKo
+            nameEn
+            slug
+            visible
+        }
+        difficulty {
+            id
+            name
+            nameKo
+            nameEn
+        }
+        recordable
+        submitted
+        accepted
+    }
+}
+'''
+
 MY_PRESENTATION_PROPOSAL = '''
 query getMyPresentationProposal {
     myPresentationProposal {

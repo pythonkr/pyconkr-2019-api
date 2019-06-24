@@ -87,7 +87,7 @@ msgstr "YoungCoder"
 
 #: ticket/models.py:22
 msgid "아이돌봄"
-msgstr "BabyCare"
+msgstr "ChildCare"
 
 #: ticket/models.py:23
 msgid "튜토리얼"

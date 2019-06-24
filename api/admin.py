@@ -11,7 +11,7 @@ from api.models.agreement import Agreement
 from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
-from api.models.program import Place, Category, Difficulty
+from api.models.program import Place, Category, Difficulty, Sprint
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
@@ -98,7 +98,7 @@ class ScheduleAdmin(admin.ModelAdmin):
                        'conference_ticket_start_at', 'conference_ticket_finish_at',
                        'tutorial_ticket_start_at', 'tutorial_ticket_finish_at',
                        'sprint_ticket_start_at', 'sprint_ticket_finish_at',
-                       'babycare_ticket_start_at', 'babycare_ticket_finish_at',
+                       'childcare_ticket_start_at', 'childcare_ticket_finish_at',
                        'youngcoder_ticket_start_at', 'youngcoder_ticket_finish_at')
         }),
         ('재정지원', {
@@ -134,6 +134,7 @@ class PresentationResource(resources.ModelResource):
 
 class PresentationAdmin(ImportExportModelAdmin):
     resource_class = PresentationResource
+    actions = ('accept',)
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
     list_filter = (
@@ -151,6 +152,9 @@ class PresentationAdmin(ImportExportModelAdmin):
             profile, _ = Profile.objects.get_or_create(user=obj.owner)
             return profile
         return ''
+
+    def accept(self, request, queryset):
+        queryset.update(accepted=True)
 
 
 admin.site.register(Presentation, PresentationAdmin)
@@ -210,6 +214,36 @@ class DifficultyAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Difficulty, DifficultyAdmin)
+
+class SprintResource(resources.ModelResource):
+    owner = fields.Field(column_name='owner', attribute='owner__profile__name')
+
+    class Meta:
+        model = Sprint
+
+class SprintAdmin(ImportExportModelAdmin):
+    resource_class = SprintResource
+    actions = ('accept',)
+    list_display = ('id', 'owner_profile', 'name', 'language',
+                    'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
+    list_filter = (
+        'language',
+        ('submitted', admin.BooleanFieldListFilter),
+        ('accepted', admin.BooleanFieldListFilter),
+        ('place', admin.RelatedOnlyFieldListFilter),
+    )
+
+    def owner_profile(self, obj):
+        if obj.owner:
+            profile, _ = Profile.objects.get_or_create(user=obj.owner)
+            return profile
+        return ''
+
+    def accept(self, request, queryset):
+        queryset.update(submitted=True, accepted=True)
+
+
+admin.site.register(Sprint, SprintAdmin)
 
 
 class SponsorLevelAdmin(admin.ModelAdmin):

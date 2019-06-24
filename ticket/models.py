@@ -10,7 +10,7 @@ UserModel = get_user_model()
 class TicketProduct(models.Model):
     TYPE_CONFERENCE = 'C'
     TYPE_YOUNG_CODER = 'Y'
-    TYPE_BABY_CARE = 'B'
+    TYPE_CHILD_CARE = 'B'
     TYPE_TUTORIAL = 'T'
     TYPE_SPRINT = 'S'
     TYPE_HEALTH_CARE = 'H'
@@ -20,7 +20,7 @@ class TicketProduct(models.Model):
                             choices=(
                                 (TYPE_CONFERENCE, _('컨퍼런스')),
                                 (TYPE_YOUNG_CODER, _('영코더')),
-                                (TYPE_BABY_CARE, _('아이돌봄')),
+                                (TYPE_CHILD_CARE, _('아이돌봄')),
                                 (TYPE_TUTORIAL, _('튜토리얼')),
                                 (TYPE_SPRINT, _('스프린트')),
                                 (TYPE_HEALTH_CARE, _('체육시간')),
@@ -36,6 +36,8 @@ class TicketProduct(models.Model):
                                 help_text='판매할 티켓의 총 개수입니다.')
     owner = models.ForeignKey(UserModel, null=True, blank=True, on_delete=models.SET_NULL)
     price = models.IntegerField(default=0)
+    is_deposit_ticket = models.BooleanField(default=False,
+                                            help_text='단체 구매 등으로 티켓을 현금으로 입금하는 경우에 True로 설정합니다.')
     is_editable_price = models.BooleanField(default=False,
                                             help_text='개인후원과 같이 가격을 상향조정할 수 있는지 여부를 나타냅니다.')
     is_unique_in_type = models.BooleanField(default=True,
@@ -85,6 +87,7 @@ class TicketProduct(models.Model):
 
 class TransactionMixin(models.Model):
     STATUS_READY = 'ready'
+    STATUS_DEPOSIT_WAITING = 'waiting'
     STATUS_PAID = 'paid'
     STATUS_ERROR = 'error'
     STATUS_CANCELLED = 'cancelled'
@@ -106,10 +109,10 @@ class TransactionMixin(models.Model):
     cancel_receipt_url = models.CharField(max_length=255, blank=True, default='',
                                           help_text='결제 취소 영수증 URL입니다. 이 값은 카드 결제 취소 내역을 보여줄 때에 사용됩니다.')
     cancelled_at = models.DateTimeField(null=True, blank=True)
-
     status = models.CharField(max_length=10,
                               choices=(
                                   (STATUS_READY, 'ready'),
+                                  (STATUS_DEPOSIT_WAITING, 'waiting'),
                                   (STATUS_PAID, 'paid'),
                                   (STATUS_CANCELLED, 'cancelled'),
                                   (STATUS_ERROR, 'error')

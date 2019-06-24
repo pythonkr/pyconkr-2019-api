@@ -57,12 +57,39 @@ class DurationNode(graphene.Enum):
 class PresentationProposalNode(DjangoObjectType):
     class Meta:
         model = Presentation
+        description = """
+        제안서를 위한 노드입니다. 
+        공개되지 않는 몇몇 필드들이 포함되어 있기 때문에 당사자가 아니라면 조회할 수 없어야 합니다.
+        """
 
     owner = graphene.Field(UserNode)
     language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
     category = graphene.Field(CategoryNode)
     difficulty = graphene.Field(DifficultyNode)
+
+
+class PublicPresentationNode(DjangoObjectType):
+    class Meta:
+        model = Presentation
+        exclude_fields = ('detail_desc', 'is_presented_before', 'place_presented_before',
+                          'presented_slide_url_before', 'comment')
+        description = """
+        공개되는 발표 정보입니다.
+        """
+
+    owner = graphene.Field(UserNode)
+    secondary_owner = graphene.Field(UserNode)
+    language = graphene.Field(LanguageNode)
+    duration = graphene.Field(DurationNode)
+    category = graphene.Field(CategoryNode)
+    difficulty = graphene.Field(DifficultyNode)
+    desc = graphene.String()
+
+    def resolve_desc(self, info):
+        if self.desc:
+            return self.desc
+        return self.detail_desc
 
 
 class ProposalForReviewNode(DjangoObjectType):
@@ -229,6 +256,8 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     categories = graphene.List(CategoryNode)
     difficulties = graphene.List(DifficultyNode)
+    presentations = graphene.List(PublicPresentationNode)
+    presentation = graphene.Field(PublicPresentationNode, id=graphene.Int())
 
     my_presentation_proposal = graphene.Field(PresentationProposalNode)
     assigned_cfp_reviews = graphene.List(CFPReviewNode)
@@ -239,6 +268,12 @@ class Query(graphene.ObjectType):
 
     def resolve_difficulties(self, info):
         return Difficulty.objects.all()
+
+    def resolve_presentations(self, info):
+        return Presentation.objects.filter(accepted=True)
+
+    def resolve_presentation(self, info, id):
+        return Presentation.objects.get(pk=id, accepted=True)
 
     @login_required
     def resolve_my_presentation_proposal(self, info):

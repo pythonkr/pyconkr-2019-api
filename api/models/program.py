@@ -52,7 +52,10 @@ class Program(models.Model):
 class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
+    is_keynote = models.BooleanField(default=False, help_text='키노트 스피커인 경우 TRUE로 설정합니다.')
     owner = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
+    secondary_owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
+                                        related_name='secondary_owner_of')
     background_desc = models.TextField(blank=True, default='')
 
     place = models.ForeignKey(
@@ -80,6 +83,21 @@ class Presentation(Program):
     presented_slide_url_before = models.CharField(
         max_length=255, blank=True, default='')
     comment = models.TextField(blank=True, default='')
+    submitted = models.BooleanField(default=False)
+    accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.owner}/{self.name}'
+
+
+class Sprint(Program):
+    opensource_desc = models.TextField(blank=True, default='')
+    opensource_url = models.CharField(
+        max_length=255, blank=True, default='')
+    place = models.ForeignKey(
+        Place, blank=True, null=True, on_delete=models.SET_NULL)
+    started_at = models.DateTimeField(null=True, blank=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
     submitted = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
 

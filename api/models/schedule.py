@@ -57,8 +57,8 @@ class Schedule(models.Model):
     conference_ticket_start_at = models.DateTimeField(null=True, blank=True)
     conference_ticket_finish_at = models.DateTimeField(null=True, blank=True)
 
-    babycare_ticket_start_at = models.DateTimeField(null=True, blank=True)
-    babycare_ticket_finish_at = models.DateTimeField(null=True, blank=True)
+    childcare_ticket_start_at = models.DateTimeField(null=True, blank=True)
+    childcare_ticket_finish_at = models.DateTimeField(null=True, blank=True)
 
     youngcoder_ticket_start_at = models.DateTimeField(null=True, blank=True)
     youngcoder_ticket_finish_at = models.DateTimeField(null=True, blank=True)
