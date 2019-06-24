@@ -79,10 +79,17 @@ class PublicPresentationNode(DjangoObjectType):
         """
 
     owner = graphene.Field(UserNode)
+    secondary_owner = graphene.Field(UserNode)
     language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
     category = graphene.Field(CategoryNode)
     difficulty = graphene.Field(DifficultyNode)
+    desc = graphene.String()
+
+    def resolve_desc(self, info):
+        if self.desc:
+            return self.desc
+        return self.detail_desc
 
 
 class ProposalForReviewNode(DjangoObjectType):

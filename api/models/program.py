@@ -54,6 +54,7 @@ class Presentation(Program):
     DURATION_LONG = 'L'
     is_keynote = models.BooleanField(default=False, help_text='키노트 스피커인 경우 TRUE로 설정합니다.')
     owner = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
+    secondary_owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='secondary_owner_of')
     background_desc = models.TextField(blank=True, default='')
 
     place = models.ForeignKey(
@@ -86,3 +87,5 @@ class Presentation(Program):
 
     def __str__(self):
         return f'{self.owner}/{self.name}'
+
+
