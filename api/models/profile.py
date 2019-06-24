@@ -1,7 +1,7 @@
-from django.db import models
 from django.contrib.auth import get_user_model
-from django.dispatch import receiver
+from django.db import models
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 from sorl.thumbnail import ImageField as SorlImageField
 
 # pylint: disable=invalid-name
@@ -55,3 +55,12 @@ def save_user_profile(sender, instance, **kwargs):
         instance.profile.save()
     else:
         Profile.objects.create(user=instance)
+
+
+def get_sns_email(self):
+    if not hasattr(self, 'profile'):
+        return self.name
+    return f'[{self.profile.get_oauth_type_display()}] {self.profile.name} ({self.profile.email})'
+
+
+get_user_model().add_to_class("__str__", get_sns_email)
