@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 # pylint: disable=unused-import
 import os
 
-import sentry_sdk
 from django.utils.translation import ugettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
 

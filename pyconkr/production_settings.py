@@ -1,4 +1,6 @@
 # pylint: disable=unused-wildcard-import,wildcard-import
+import sentry_sdk
+
 from pyconkr.settings import *
 
 DEBUG = False
