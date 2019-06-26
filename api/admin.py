@@ -11,7 +11,7 @@ from api.models.agreement import Agreement
 from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
-from api.models.program import Place, Category, Difficulty, Sprint
+from api.models.program import Place, Category, Difficulty, Sprint, Tutorial
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
@@ -218,9 +218,32 @@ class DifficultyAdmin(admin.ModelAdmin):
 admin.site.register(Difficulty, DifficultyAdmin)
 
 
-class SprintResource(resources.ModelResource):
-    owner = fields.Field(column_name='owner', attribute='owner__profile__name')
+class TutorialResource(resources.ModelResource):
+    class Meta:
+        model = Sprint
 
+
+class TutorialAdmin(ImportExportModelAdmin):
+    resource_class = TutorialResource
+    actions = ('accept',)
+    list_display = ('id', 'owner', 'name', 'num_of_participants', 'language', 'difficulty',
+                    'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
+    list_filter = (
+        'difficulty',
+        'language',
+        ('submitted', admin.BooleanFieldListFilter),
+        ('accepted', admin.BooleanFieldListFilter),
+        ('place', admin.RelatedOnlyFieldListFilter),
+    )
+
+    def accept(self, request, queryset):
+        queryset.update(submitted=True, accepted=True)
+
+
+admin.site.register(Tutorial, TutorialAdmin)
+
+
+class SprintResource(resources.ModelResource):
     class Meta:
         model = Sprint
 

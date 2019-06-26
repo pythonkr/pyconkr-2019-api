@@ -37,7 +37,7 @@ class Program(models.Model):
 
     name = models.CharField(max_length=255, null=True)
     desc = models.TextField(blank=True, default='')
-    visible = models.BooleanField(default=False)
+    visible = models.BooleanField(default=True)
 
     language = models.CharField(max_length=1,
                                 choices=(
@@ -91,9 +91,29 @@ class Presentation(Program):
 
 
 class Sprint(Program):
+    num_of_participants = models.IntegerField(default=0,
+                                              help_text='수강 적절 인원 수 입니다.')
+    owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     opensource_desc = models.TextField(blank=True, default='')
     opensource_url = models.CharField(
         max_length=255, blank=True, default='')
+    place = models.ForeignKey(
+        Place, blank=True, null=True, on_delete=models.SET_NULL)
+    started_at = models.DateTimeField(null=True, blank=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
+    submitted = models.BooleanField(default=False)
+    accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.owner}/{self.name}'
+
+
+class Tutorial(Program):
+    num_of_participants = models.IntegerField(default=0,
+                                              help_text='수강 적절 인원 수 입니다.')
+    owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    difficulty = models.ForeignKey(
+        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
     started_at = models.DateTimeField(null=True, blank=True)
