@@ -12,7 +12,7 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 
 from api.models import CFPReview
-from api.models.program import Place, Category, Difficulty
+from api.models.program import Category, Difficulty
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode
