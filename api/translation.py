@@ -3,7 +3,7 @@ from modeltranslation.translator import register, TranslationOptions
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
 from api.models.profile import Profile
-from api.models.program import Place, Category, Difficulty, Program, Presentation
+from api.models.program import Place, Category, Difficulty, Program, Presentation, Tutorial, Sprint
 
 
 @register(Schedule)
@@ -40,6 +40,13 @@ class ProgramTranslationOptions(TranslationOptions):
 class PresentationTranslationOptions(TranslationOptions):
     fields = ('background_desc',)
 
+@register(Tutorial)
+class TutorialTranslationOptions(TranslationOptions):
+    pass
+
+@register(Sprint)
+class SprintTranslationOptions(TranslationOptions):
+    pass
 
 @register(SponsorLevel)
 class SponsorLevelTranslationOptions(TranslationOptions):

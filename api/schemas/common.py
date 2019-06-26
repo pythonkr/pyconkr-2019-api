@@ -3,7 +3,29 @@ import graphene
 import pytz
 from graphene_django import DjangoObjectType
 
-from api.models.program import Program
+from api.models.program import Program, Difficulty, Place
+
+
+class PlaceNode(DjangoObjectType):
+    class Meta:
+        model = Place
+        description = """
+        It is the place where the program is held.
+        This can be either in the room or in the lobby.
+        """
+
+
+class DifficultyNode(DjangoObjectType):
+    class Meta:
+        model = Difficulty
+        description = """
+        Difficulty of presentation.
+        """
+
+
+class LanguageNode(graphene.Enum):
+    KOREAN = Program.LANGUAGE_KOREAN
+    ENGLISH = Program.LANGUAGE_ENGLISH
 
 
 class SeoulDateTime(graphene.types.Scalar):
@@ -29,6 +51,7 @@ class SeoulDateTime(graphene.types.Scalar):
     def parse_value(value):
         return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
 
+
 class ImageUrl(graphene.types.Scalar):
     '''
     It is used to get image url for graphene queries.
@@ -44,6 +67,7 @@ class ImageUrl(graphene.types.Scalar):
             return ''
         return obj.url
 
+
 class FileUrl(graphene.types.Scalar):
     '''
     It is used to get file url for graphene queries.
@@ -58,6 +82,7 @@ class FileUrl(graphene.types.Scalar):
         if not obj.name:
             return ''
         return obj.url
+
 
 class ProgramNode(DjangoObjectType):
     class Meta:
