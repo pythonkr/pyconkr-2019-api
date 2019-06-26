@@ -91,6 +91,8 @@ class Presentation(Program):
 
 
 class Sprint(Program):
+    num_of_participants = models.IntegerField(default=0,
+                                              help_text='수강 적절 인원 수 입니다.')
     opensource_desc = models.TextField(blank=True, default='')
     opensource_url = models.CharField(
         max_length=255, blank=True, default='')
