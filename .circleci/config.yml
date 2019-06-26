@@ -27,7 +27,7 @@ jobs:
           name: pylint
           command: |
             . venv/bin/activate
-            pylint pyconkr api ticket
+            pylint pyconkr api ticket notice
       - run:
           name: run tests
           command: |

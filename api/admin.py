@@ -8,7 +8,6 @@ from sorl.thumbnail.admin import AdminImageMixin
 
 from api.models import CFPReview
 from api.models.agreement import Agreement
-from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
 from api.models.program import Place, Category, Difficulty, Sprint, Tutorial
@@ -323,10 +322,3 @@ class SponsorAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(Sponsor, SponsorAdmin)
-
-
-class NoticeAdmin(admin.ModelAdmin):
-    list_display = ('message', 'created_at')
-
-
-admin.site.register(Notice, NoticeAdmin)
