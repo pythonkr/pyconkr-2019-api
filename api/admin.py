@@ -226,6 +226,7 @@ class TutorialResource(resources.ModelResource):
 class TutorialAdmin(ImportExportModelAdmin):
     resource_class = TutorialResource
     actions = ('accept',)
+    autocomplete_fields = ['owner', ]
     list_display = ('id', 'owner', 'name', 'num_of_participants', 'language', 'difficulty',
                     'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
     list_filter = (
@@ -251,6 +252,7 @@ class SprintResource(resources.ModelResource):
 class SprintAdmin(ImportExportModelAdmin):
     resource_class = SprintResource
     actions = ('accept',)
+    autocomplete_fields = ['owner', ]
     list_display = ('id', 'owner_profile', 'name', 'language',
                     'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
     list_filter = (
