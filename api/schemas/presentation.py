@@ -15,17 +15,8 @@ from api.models import CFPReview
 from api.models.program import Place, Category, Difficulty
 from api.models.program import Presentation
 from api.models.schedule import Schedule
-from api.schemas.common import SeoulDateTime
+from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode
 from api.schemas.user import UserNode
-
-
-class PlaceNode(DjangoObjectType):
-    class Meta:
-        model = Place
-        description = """
-        It is the place where the program is held.
-        This can be either in the room or in the lobby.
-        """
 
 
 class CategoryNode(DjangoObjectType):
@@ -34,19 +25,6 @@ class CategoryNode(DjangoObjectType):
         description = """
         Category of presentation.
         """
-
-
-class DifficultyNode(DjangoObjectType):
-    class Meta:
-        model = Difficulty
-        description = """
-        Difficulty of presentation.
-        """
-
-
-class LanguageNode(graphene.Enum):
-    KOREAN = Presentation.LANGUAGE_KOREAN
-    ENGLISH = Presentation.LANGUAGE_ENGLISH
 
 
 class DurationNode(graphene.Enum):

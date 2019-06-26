@@ -2,6 +2,8 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from api.models.program import Sprint
+from api.schemas.common import SeoulDateTime, PlaceNode
+from api.schemas.user import UserNode
 
 
 class SprintNode(DjangoObjectType):
@@ -10,6 +12,11 @@ class SprintNode(DjangoObjectType):
         description = """
         Sprint
         """
+
+    place = graphene.Field(PlaceNode)
+    owner = graphene.Field(UserNode)
+    started_at = graphene.Field(SeoulDateTime)
+    finished_at = graphene.Field(SeoulDateTime)
 
 
 class Mutations(graphene.ObjectType):
