@@ -17,6 +17,7 @@ class TicketProductAdmin(admin.ModelAdmin):
     list_display = ('active', 'type', 'name', 'desc', 'total', 'remaining_count', 'owner_profile', 'price',
                     'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
                     'ticket_open_at', 'ticket_close_at', 'warning')
+    autocomplete_fields = ['owner', 'ticket_for']
 
     def owner_profile(self, obj):
         if obj.owner:
@@ -49,6 +50,7 @@ class TicketResource(resources.ModelResource):
 
 class TicketAdmin(ImportExportModelAdmin):
     resource_class = TicketResource
+    autocomplete_fields = ['owner']
     list_display = ('id', 'owner', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
                     'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at')
     search_fields = ['owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',

@@ -33,6 +33,7 @@ class AgreementInline(admin.StackedInline):
 
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline, AgreementInline,)
+    search_fields = ['email', 'profile__email', 'profile__name']
 
 
 admin.site.unregister(UserModel)
@@ -137,6 +138,7 @@ class PresentationAdmin(ImportExportModelAdmin):
     actions = ('accept',)
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
+    autocomplete_fields = ['secondary_owner']
     list_filter = (
         'language',
         ('submitted', admin.BooleanFieldListFilter),
@@ -215,11 +217,13 @@ class DifficultyAdmin(admin.ModelAdmin):
 
 admin.site.register(Difficulty, DifficultyAdmin)
 
+
 class SprintResource(resources.ModelResource):
     owner = fields.Field(column_name='owner', attribute='owner__profile__name')
 
     class Meta:
         model = Sprint
+
 
 class SprintAdmin(ImportExportModelAdmin):
     resource_class = SprintResource
