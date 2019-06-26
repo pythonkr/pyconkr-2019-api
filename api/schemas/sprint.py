@@ -21,7 +21,7 @@ class Query(graphene.ObjectType):
     sprint = graphene.Field(SprintNode, id=graphene.Int())
 
     def resolve_sprints(self, info):
-        return Sprint.objects.filter(visible=True)
+        return Sprint.objects.filter(accepted=True)
 
     def resolve_sprint(self, info, id):
         return Sprint.objects.get(pk=id, accepted=True)

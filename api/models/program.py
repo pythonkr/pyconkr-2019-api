@@ -103,3 +103,19 @@ class Sprint(Program):
 
     def __str__(self):
         return f'{self.owner}/{self.name}'
+
+
+class Tutorial(Program):
+    num_of_participants = models.IntegerField(default=0,
+                                              help_text='수강 적절 인원 수 입니다.')
+    difficulty = models.ForeignKey(
+        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
+    place = models.ForeignKey(
+        Place, blank=True, null=True, on_delete=models.SET_NULL)
+    started_at = models.DateTimeField(null=True, blank=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
+    submitted = models.BooleanField(default=False)
+    accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.owner}/{self.name}'
