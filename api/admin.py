@@ -138,7 +138,7 @@ class PresentationAdmin(ImportExportModelAdmin):
     actions = ('accept',)
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
-    autocomplete_fields = ['secondary_owner']
+    autocomplete_fields = ['owner', 'secondary_owner']
     list_filter = (
         'language',
         ('submitted', admin.BooleanFieldListFilter),
