@@ -60,7 +60,7 @@ def save_user_profile(sender, instance, **kwargs):
 def get_sns_email(self):
     if not hasattr(self, 'profile'):
         return self.name
-    return f'[{self.profile.get_oauth_type_display()}] {self.profile.name} ({self.profile.email})'
+    return f'{self.profile.get_oauth_type_display()}_{self.profile.email}_{self.profile.name}'
 
 
 get_user_model().add_to_class("__str__", get_sns_email)
