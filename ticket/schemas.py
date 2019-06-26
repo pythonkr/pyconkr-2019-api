@@ -176,7 +176,6 @@ class BuyTicket(graphene.Mutation):
         payload = {
             'merchant_uid': f'pyconkr_{timezone.now().timestamp()}',
             'name': product.name_ko,
-            'amount': product.price,
             **payment_params
         }
 
