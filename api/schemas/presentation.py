@@ -118,7 +118,11 @@ class CFPReviewNode(DjangoObjectType):
 
 class PresentationProposalInput(graphene.InputObjectType):
     name = graphene.String()
+    name_ko = graphene.String()
+    name_en = graphene.String()
     desc = graphene.String()
+    desc_ko = graphene.String()
+    desc_en = graphene.String()
     category_id = graphene.ID()
     difficulty_id = graphene.ID()
     background_desc = graphene.String()
