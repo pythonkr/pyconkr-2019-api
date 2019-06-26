@@ -7,6 +7,7 @@ import api.schemas.presentation
 import api.schemas.schedule
 import api.schemas.sponsor
 import api.schemas.user
+import api.schemas.tutorial
 import api.schemas.sprint
 import ticket.schemas
 
