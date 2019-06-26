@@ -10,6 +10,7 @@ import api.schemas.user
 import api.schemas.tutorial
 import api.schemas.sprint
 import ticket.schemas
+import notice.schemas
 
 
 class SleepPingQuery(graphene.ObjectType):
@@ -29,6 +30,7 @@ class Mutations(api.schemas.schedule.Mutations,
                 api.schemas.tutorial.Mutations,
                 api.schemas.sprint.Mutations,
                 ticket.schemas.Mutations,
+                notice.schemas.Mutations,
                 graphene.ObjectType):
     pass
 
@@ -41,6 +43,7 @@ class Query(api.schemas.schedule.Query,
             api.schemas.tutorial.Query,
             api.schemas.sprint.Query,
             ticket.schemas.Query,
+            notice.schemas.Query,
             SleepPingQuery,
             graphene.ObjectType):
     pass
