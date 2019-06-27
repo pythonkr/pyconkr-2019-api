@@ -56,7 +56,12 @@ class PatronNode(DjangoObjectType):
                        'organization', 'image', 'avatar_url')
         description = 'Patron profiles'
 
-    image = graphene.Field(ImageUrl)
+    image = graphene.String()
+
+    def resolve_image(self, info):
+        if self.image.name:
+            return self.image.url
+        return self.avatar_url
 
 
 class UserNode(DjangoObjectType):
