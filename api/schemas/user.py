@@ -41,7 +41,12 @@ class ProfileNode(DjangoObjectType):
         description = 'User Profile'
 
     oauth_type = graphene.Field(OauthTypeNode)
-    image = graphene.Field(ImageUrl)
+    image = graphene.String()
+
+    def resolve_image(self, info):
+        if self.image.name:
+            return self.image.url
+        return self.avatar_url
 
 
 class PatronNode(DjangoObjectType):

@@ -115,6 +115,26 @@ class UserTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(profile['organization'], '좋은회사')
         self.assertEqual(profile['nationality'], '우리나라')
 
+    def test_me_image(self):
+        # Given
+        user = UserModel(username='develop_github_123')
+        user.save()
+        user.profile.name_ko = '파이콘 천사'
+        user.profile.bio_ko = '파이콘 천사입니다.'
+        user.profile.avatar_url = 'url.com'
+        user.save()
+
+        self.client.authenticate(user)
+
+        # When
+        result = self.client.execute(ME)
+
+        # Then
+        actual = loads(dumps(result.data))
+        self.assertIsNotNone(actual)
+        profile = actual['me']['profile']
+        self.assertEqual(profile['image'], 'url.com')
+
     def test_me_anonymous(self):
         # When
         actual = self.client.execute(ME)
