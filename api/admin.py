@@ -219,7 +219,7 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 class TutorialResource(resources.ModelResource):
     class Meta:
-        model = Sprint
+        model = Tutorial
 
 
 class TutorialAdmin(ImportExportModelAdmin):
