@@ -2,6 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from api.models.program import Tutorial
+from api.schemas.common import LanguageNode
 
 
 class TutorialNode(DjangoObjectType):
@@ -10,6 +11,8 @@ class TutorialNode(DjangoObjectType):
         description = """
         Sprint
         """
+
+    language = graphene.Field(LanguageNode)
 
 
 class Mutations(graphene.ObjectType):
