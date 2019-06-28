@@ -49,7 +49,25 @@ class Program(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class Presentation(Program):
+class ProgramMixin(models.Model):
+    LANGUAGE_ENGLISH = 'E'
+    LANGUAGE_KOREAN = 'K'
+
+    name2 = models.CharField(max_length=255, null=True)
+    desc2 = models.TextField(blank=True, default='')
+    visible2 = models.BooleanField(default=True)
+
+    language2 = models.CharField(max_length=1,
+                                 choices=(
+                                     (LANGUAGE_ENGLISH, ('English')),
+                                     (LANGUAGE_KOREAN, ('Korean')),
+                                 ), default=LANGUAGE_KOREAN)
+
+    class Meta:
+        abstract = True
+
+
+class Presentation(ProgramMixin, Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
     is_keynote = models.BooleanField(default=False, help_text='키노트 스피커인 경우 TRUE로 설정합니다.')
