@@ -8,6 +8,9 @@ UserModel = get_user_model()
 
 
 class TicketProduct(models.Model):
+    class Meta:
+        ordering = ['-order', 'id']
+
     TYPE_CONFERENCE = 'C'
     TYPE_YOUNG_CODER = 'Y'
     TYPE_CHILD_CARE = 'B'
@@ -57,6 +60,7 @@ class TicketProduct(models.Model):
                                         help_text='티켓 판매되는 대상 유저들을 의미합니다. '
                                                   '만약 비어있을 경우 모든 유저에게 판매가 되며, '
                                                   '하나라도 유저가 지정되어 있으면 그 유저 외에는 볼 수 없습니다.')
+    order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
