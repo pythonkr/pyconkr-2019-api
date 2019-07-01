@@ -490,7 +490,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             product=product, owner=self.user, status=TransactionMixin.STATUS_PAID,
             imp_uid='imp_testtest')
         variables = {
-            "ticketId": ticket.id,
+            "ticketId": to_global_id(TicketNode._meta.name, ticket.pk),
         }
         result = self.client.execute(CANCEL_TICKET, variables)
         data = result.data
@@ -511,7 +511,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             product=product, owner=self.user, status=TransactionMixin.STATUS_PAID,
             imp_uid='imp_testtest')
         variables = {
-            "ticketId": ticket.id,
+            "ticketId": to_global_id(TicketNode._meta.name, ticket.pk),
         }
         result = self.client.execute(CANCEL_TICKET, variables)
         self.assertIsNotNone(result.errors)
@@ -529,7 +529,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             product=product, owner=another_user, status=TransactionMixin.STATUS_PAID,
             imp_uid='imp_testtest')
         variables = {
-            "ticketId": ticket.id,
+            "ticketId": to_global_id(TicketNode._meta.name, ticket.pk),
         }
         result = self.client.execute(CANCEL_TICKET, variables)
         self.assertIsNotNone(result.errors)
@@ -544,7 +544,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             product=product, owner=self.user, status=TransactionMixin.STATUS_PAID,
             imp_uid='imp_testtest')
         variables = {
-            "ticketId": ticket.id,
+            "ticketId": to_global_id(TicketNode._meta.name, ticket.pk),
         }
         self.client.execute(CANCEL_TICKET, variables)
         result = self.client.execute(CANCEL_TICKET, variables)
