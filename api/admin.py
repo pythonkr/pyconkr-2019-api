@@ -196,7 +196,13 @@ class CFPReviewAdmin(ImportExportModelAdmin):
 admin.site.register(CFPReview, CFPReviewAdmin)
 
 
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceResource(resources.ModelResource):
+    class Meta:
+        model = Place
+
+
+class PlaceAdmin(ImportExportModelAdmin):
+    resource_class = PlaceResource
     list_display = ('id', 'name')
 
 
@@ -219,7 +225,7 @@ admin.site.register(Difficulty, DifficultyAdmin)
 
 class TutorialResource(resources.ModelResource):
     class Meta:
-        model = Sprint
+        model = Tutorial
 
 
 class TutorialAdmin(ImportExportModelAdmin):

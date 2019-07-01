@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
+from graphql_relay import from_global_id
 from iamport import Iamport
 
 from ticket.models import TicketProduct, Ticket
@@ -107,28 +108,28 @@ class BuyTicket(graphene.Mutation):
             raise GraphQLError(f'Ticket project is not exists.(product_id: {product_id})')
         if Ticket.objects.filter(owner=user, product=product, status=Ticket.STATUS_READY).exists():
             raise GraphQLError(_('결제가 진행 중입니다. 잠시 후 다시 시도해주세요. 문제가 지속 발생할 경우 support@pycon.kr로 연락주세요.'))
-        ticket = Ticket.objects.create(
-            is_domestic_card=payment.is_domestic_card,
-            owner=user,
-            product=product,
-            amount=payment.amount,
-            status=Ticket.STATUS_READY,
-            options=options
-        )
-
-        if product.is_deposit_ticket:
-            ticket.status = Ticket.STATUS_DEPOSIT_WAITING
-            ticket.save()
-            return BuyTicket(ticket=ticket)
-        if product.ticket_for.exists() and info.context.user not in product.ticket_for.all():
-            raise GraphQLError(f'사용자에게 판매하는 티켓이 아닙니다.')
         if BuyTicket.has_same_unique_ticket_type(product, info.context.user):
             raise GraphQLError(f'선택한 티켓은 여러 장 구매할 수 없습니다.')
+        if product.ticket_for.exists() and info.context.user not in product.ticket_for.all():
+            raise GraphQLError(f'사용자에게 판매하는 티켓이 아닙니다.')
         BuyTicket.check_product(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
-
         try:
+            ticket = Ticket.objects.create(
+                is_domestic_card=payment.is_domestic_card,
+                owner=user,
+                product=product,
+                amount=payment.amount,
+                status=Ticket.STATUS_READY,
+                options=options
+            )
+
+            if product.is_deposit_ticket:
+                ticket.status = Ticket.STATUS_DEPOSIT_WAITING
+                ticket.save()
+                return BuyTicket(ticket=ticket)
+
             if product.price == 0:
                 ticket.status = Ticket.STATUS_PAID
                 ticket.save()
@@ -211,7 +212,8 @@ class CancelTicket(graphene.Mutation):
 
     @login_required
     def mutate(self, info, ticket_id):
-        ticket = Ticket.objects.get(pk=ticket_id)
+        ticket_pk = from_global_id(ticket_id)[1]
+        ticket = Ticket.objects.get(pk=ticket_pk)
         if ticket.owner != info.context.user:
             raise GraphQLError(_('다른 유저의 티켓을 환불할 수 없습니다.'))
         if ticket.status != Ticket.STATUS_PAID:
