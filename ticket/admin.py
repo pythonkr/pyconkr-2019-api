@@ -14,9 +14,9 @@ from ticket.schemas import create_iamport
 
 
 class TicketProductAdmin(admin.ModelAdmin):
-    list_display = ('active', 'type', 'name', 'desc', 'total', 'remaining_count', 'owner_profile', 'price',
+    list_display = ('active', 'type', 'name', 'total', 'remaining_count', 'owner_profile', 'price',
                     'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
-                    'ticket_open_at', 'ticket_close_at', 'warning')
+                    'ticket_open_at', 'ticket_close_at')
     autocomplete_fields = ['owner', 'ticket_for']
 
     def owner_profile(self, obj):
@@ -52,9 +52,9 @@ class TicketAdmin(ImportExportModelAdmin):
     resource_class = TicketResource
     autocomplete_fields = ['owner']
     list_display = ('id', 'owner', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
-                    'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at')
+                    'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at', 'reason')
     search_fields = ['owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
-                     'merchant_uid', 'imp_uid']
+                     'merchant_uid', 'imp_uid', 'reason']
     list_filter = (
         ('product', admin.RelatedOnlyFieldListFilter),
         ('is_domestic_card', admin.BooleanFieldListFilter),

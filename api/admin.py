@@ -8,10 +8,9 @@ from sorl.thumbnail.admin import AdminImageMixin
 
 from api.models import CFPReview
 from api.models.agreement import Agreement
-from api.models.notices import Notice
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
-from api.models.program import Place, Category, Difficulty, Sprint
+from api.models.program import Place, Category, Difficulty, Sprint, Tutorial
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
@@ -138,7 +137,7 @@ class PresentationAdmin(ImportExportModelAdmin):
     actions = ('accept',)
     list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
-    autocomplete_fields = ['secondary_owner']
+    autocomplete_fields = ['owner', 'secondary_owner']
     list_filter = (
         'language',
         ('submitted', admin.BooleanFieldListFilter),
@@ -197,7 +196,13 @@ class CFPReviewAdmin(ImportExportModelAdmin):
 admin.site.register(CFPReview, CFPReviewAdmin)
 
 
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceResource(resources.ModelResource):
+    class Meta:
+        model = Place
+
+
+class PlaceAdmin(ImportExportModelAdmin):
+    resource_class = PlaceResource
     list_display = ('id', 'name')
 
 
@@ -218,9 +223,33 @@ class DifficultyAdmin(admin.ModelAdmin):
 admin.site.register(Difficulty, DifficultyAdmin)
 
 
-class SprintResource(resources.ModelResource):
-    owner = fields.Field(column_name='owner', attribute='owner__profile__name')
+class TutorialResource(resources.ModelResource):
+    class Meta:
+        model = Tutorial
 
+
+class TutorialAdmin(ImportExportModelAdmin):
+    resource_class = TutorialResource
+    actions = ('accept',)
+    autocomplete_fields = ['owner', ]
+    list_display = ('id', 'owner', 'name', 'num_of_participants', 'language', 'difficulty',
+                    'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
+    list_filter = (
+        'difficulty',
+        'language',
+        ('submitted', admin.BooleanFieldListFilter),
+        ('accepted', admin.BooleanFieldListFilter),
+        ('place', admin.RelatedOnlyFieldListFilter),
+    )
+
+    def accept(self, request, queryset):
+        queryset.update(submitted=True, accepted=True)
+
+
+admin.site.register(Tutorial, TutorialAdmin)
+
+
+class SprintResource(resources.ModelResource):
     class Meta:
         model = Sprint
 
@@ -228,6 +257,7 @@ class SprintResource(resources.ModelResource):
 class SprintAdmin(ImportExportModelAdmin):
     resource_class = SprintResource
     actions = ('accept',)
+    autocomplete_fields = ['owner', ]
     list_display = ('id', 'owner_profile', 'name', 'language',
                     'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
     list_filter = (
@@ -298,10 +328,3 @@ class SponsorAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(Sponsor, SponsorAdmin)
-
-
-class NoticeAdmin(admin.ModelAdmin):
-    list_display = ('message', 'created_at')
-
-
-admin.site.register(Notice, NoticeAdmin)
