@@ -19,8 +19,9 @@ def fix_tshirtsize(apps, schema_editor):
             continue
         if 'tshirtsize' in t.options:
             old = t.options['tshirtsize']
-            t.options['tshirtsize'] = replace_map[old]
-            t.save()
+            if old in replace_map:
+                t.options['tshirtsize'] = replace_map[old]
+                t.save()
 
 
 class Migration(migrations.Migration):
