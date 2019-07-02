@@ -16,6 +16,7 @@ from ticket.models import TicketProduct, Ticket
 
 class TicketTypeNode(graphene.Enum):
     CONFERENCE = TicketProduct.TYPE_CONFERENCE
+    GROUP_CONFERENCE = TicketProduct.TYPE_GROUP_CONFERENCE
     YOUNG_CODER = TicketProduct.TYPE_YOUNG_CODER
     CHILD_CARE = TicketProduct.TYPE_CHILD_CARE
     TUTORIAL = TicketProduct.TYPE_TUTORIAL
