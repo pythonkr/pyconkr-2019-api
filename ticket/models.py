@@ -12,6 +12,7 @@ class TicketProduct(models.Model):
         ordering = ['-order', 'id']
 
     TYPE_CONFERENCE = 'C'
+    TYPE_GROUP_CONFERENCE = 'G'
     TYPE_YOUNG_CODER = 'Y'
     TYPE_CHILD_CARE = 'B'
     TYPE_TUTORIAL = 'T'
@@ -22,6 +23,7 @@ class TicketProduct(models.Model):
     type = models.CharField(max_length=1,
                             choices=(
                                 (TYPE_CONFERENCE, _('컨퍼런스')),
+                                (TYPE_GROUP_CONFERENCE, _('컨퍼런스 단체')),
                                 (TYPE_YOUNG_CODER, _('영코더')),
                                 (TYPE_CHILD_CARE, _('아이돌봄')),
                                 (TYPE_TUTORIAL, _('튜토리얼')),

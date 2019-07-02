@@ -268,7 +268,9 @@ class Query(graphene.ObjectType):
     my_ticket = graphene.relay.Node.Field(TicketNode)
 
     def resolve_conference_products(self, info):
-        return get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)
+        conference_product = get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)
+        group_conference_product = get_ticket_product(TicketProduct.TYPE_GROUP_CONFERENCE, info.context.user)
+        return conference_product | group_conference_product
 
     def resolve_young_coder_products(self, info):
         return get_ticket_product(TicketProduct.TYPE_YOUNG_CODER, info.context.user)
