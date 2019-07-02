@@ -7,12 +7,12 @@ def fix_tshirtsize(apps, schema_editor):
     ticket_model = apps.get_model('ticket', 'Ticket')
     replace_map = {
         'S(85)': 'S(90)',
-        'M(90)': 'M(95)',
-        'L(95)': 'L(100)',
-        'XL(100)': 'XL(105)',
-        '2XL(105)': '2XL(110)',
-        '3XL(110)': '3XL(115)',
-        '4XL(115)': '4XL(120)'
+        'M(90)': 'S(90)',
+        'L(95)': 'M(95)',
+        'XL(100)': 'L(100)',
+        '2XL(105)': 'XL(105)',
+        '3XL(110)': '2XL(110)',
+        '4XL(115)': '3XL(115)'
     }
     for t in ticket_model.objects.all():
         if isinstance(t.options, str):
