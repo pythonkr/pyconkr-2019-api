@@ -1,3 +1,7 @@
+import math
+from datetime import timedelta, timezone
+
+from constance import config
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -14,6 +18,7 @@ from api.models.program import Place, Category, Difficulty, Sprint, Tutorial
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
+from ticket.models import TicketProduct
 
 UserModel = get_user_model()
 
@@ -230,7 +235,7 @@ class TutorialResource(resources.ModelResource):
 
 class TutorialAdmin(ImportExportModelAdmin):
     resource_class = TutorialResource
-    actions = ('accept',)
+    actions = ('accept', 'update_ticket_product')
     autocomplete_fields = ['owner', ]
     list_display = ('id', 'owner', 'name', 'num_of_participants', 'language', 'difficulty',
                     'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
@@ -244,6 +249,46 @@ class TutorialAdmin(ImportExportModelAdmin):
 
     def accept(self, request, queryset):
         queryset.update(submitted=True, accepted=True)
+
+    def update_ticket_product(self, request, queryset):
+        for tutorial in queryset:
+            if not tutorial.accepted:
+                continue
+            if not tutorial.ticket_product:
+                tutorial.ticket_product = TicketProduct.objects.create()
+                tutorial.save()
+            product = tutorial.ticket_product
+            product.type = TicketProduct.TYPE_TUTORIAL
+            product.name = tutorial.name
+            product.name_en = tutorial.name_en
+            product.name_ko = tutorial.name_ko
+            product.owner = tutorial.owner
+            product.desc = tutorial.desc
+            product.desc_en = tutorial.desc_en
+            product.desc_ko = tutorial.desc_ko
+            product.start_at = tutorial.started_at
+            product.finish_at = tutorial.finished_at
+            period_delta = tutorial.finished_at - tutorial.started_at
+            period_hour = math.ceil(period_delta.seconds / 60 / 60)
+            product.price = config.TUTORIAL_PRICE_PER_HOUR * period_hour
+            cancelable_date = tutorial.started_at - timedelta(days=2)
+            KST = timezone(timedelta(hours=9))
+            cancelable_date = cancelable_date.replace(hour=18, minute=0, second=0,
+                                                      microsecond=0, tzinfo=KST)
+            product.cancelable_date = cancelable_date
+            product.warning_ko = f'취소, 환불 기한: {cancelable_date.year}년 ' \
+                f'{cancelable_date.month}월 {cancelable_date.day}일 오후 6시까지'
+            product.warning_en = f'Refund due date: {cancelable_date.year}-' \
+                f'{cancelable_date.month}-{cancelable_date.day} 6pm'
+
+            product.total = tutorial.num_of_participants
+
+            schedule = Schedule.objects.last()
+            if schedule:
+                product.ticket_open_at = schedule.tutorial_ticket_start_at
+                product.ticket_close_at = schedule.tutorial_ticket_finish_at
+            product.save()
+        self.message_user(request, message='제품 생성이 완료되었습니다.')
 
 
 admin.site.register(Tutorial, TutorialAdmin)
