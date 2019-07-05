@@ -104,7 +104,8 @@ class Sprint(Program):
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
     ticket_product = models.ForeignKey(
-        TicketProduct, blank=True, null=True, on_delete=models.SET_NULL)
+        TicketProduct, blank=True, null=True, on_delete=models.SET_NULL,
+        help_text='프로그램과 연관된 티켓 제품입니다. action으로 자동 생성되는 필드이니 절대 수동으로 선택하지 말아주세요.')
     started_at = models.DateTimeField(null=True, blank=True)
     finished_at = models.DateTimeField(null=True, blank=True)
     submitted = models.BooleanField(default=False)
@@ -123,7 +124,8 @@ class Tutorial(Program):
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
     ticket_product = models.ForeignKey(
-        TicketProduct, blank=True, null=True, on_delete=models.SET_NULL)
+        TicketProduct, blank=True, null=True, on_delete=models.SET_NULL,
+        help_text='프로그램과 연관된 티켓 제품입니다. action으로 자동 생성되는 필드이니 절대 수동으로 선택하지 말아주세요.')
     started_at = models.DateTimeField(null=True, blank=True)
     finished_at = models.DateTimeField(null=True, blank=True)
     submitted = models.BooleanField(default=False)

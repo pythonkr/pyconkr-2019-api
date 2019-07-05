@@ -263,8 +263,8 @@ class TutorialAdmin(ImportExportModelAdmin):
             product.name_en = tutorial.name_en
             product.name_ko = tutorial.name_ko
             product.owner = tutorial.owner
-            product.desc = tutorial.desc
-            product.desc_en = tutorial.desc_en
+            product.desc_en = 'You can pick up your name tag by presenting this ticket ' \
+                              'at the venue on the day of the tutorial.'
             product.desc_ko = tutorial.desc_ko
             product.start_at = tutorial.started_at
             product.finish_at = tutorial.finished_at
@@ -290,6 +290,8 @@ class TutorialAdmin(ImportExportModelAdmin):
             product.save()
         self.message_user(request, message='제품 생성이 완료되었습니다.')
 
+    update_ticket_product.short_description = "선택한 프로그램으로 Product 생성"
+
 
 admin.site.register(Tutorial, TutorialAdmin)
 
@@ -301,7 +303,7 @@ class SprintResource(resources.ModelResource):
 
 class SprintAdmin(ImportExportModelAdmin):
     resource_class = SprintResource
-    actions = ('accept',)
+    actions = ('accept', 'update_ticket_product',)
     autocomplete_fields = ['owner', ]
     list_display = ('id', 'owner_profile', 'name', 'language',
                     'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
@@ -320,6 +322,46 @@ class SprintAdmin(ImportExportModelAdmin):
 
     def accept(self, request, queryset):
         queryset.update(submitted=True, accepted=True)
+
+    def update_ticket_product(self, request, queryset):
+        for sprint in queryset:
+            if not sprint.accepted:
+                continue
+            if not sprint.ticket_product:
+                sprint.ticket_product = TicketProduct.objects.create()
+                sprint.save()
+            product = sprint.ticket_product
+            product.type = TicketProduct.TYPE_SPRINT
+            product.name = sprint.name
+            product.name_en = sprint.name_en
+            product.name_ko = sprint.name_ko
+            product.owner = sprint.owner
+            product.desc_en = 'You can pick up your name tag by presenting this ticket ' \
+                              'at the venue on the day of the sprint.'
+            product.desc_ko = '스프린트 당일 행사장에서 본 티켓을 제시하시면 명찰을 수령하실 수 있습니다.'
+            product.start_at = sprint.started_at
+            product.finish_at = sprint.finished_at
+            product.price = 0
+            cancelable_date = sprint.started_at - timedelta(days=2)
+            KST = timezone(timedelta(hours=9))
+            cancelable_date = cancelable_date.replace(hour=18, minute=0, second=0,
+                                                      microsecond=0, tzinfo=KST)
+            product.cancelable_date = cancelable_date
+            product.warning_ko = f'취소, 환불 기한: {cancelable_date.year}년 ' \
+                f'{cancelable_date.month}월 {cancelable_date.day}일 오후 6시까지'
+            product.warning_en = f'Refund due date: {cancelable_date.year}-' \
+                f'{cancelable_date.month}-{cancelable_date.day} 6pm'
+
+            product.total = sprint.num_of_participants
+
+            schedule = Schedule.objects.last()
+            if schedule:
+                product.ticket_open_at = schedule.sprint_ticket_start_at
+                product.ticket_close_at = schedule.sprint_ticket_finish_at
+            product.save()
+        self.message_user(request, message='제품 생성이 완료되었습니다.')
+
+    update_ticket_product.short_description = "선택한 프로그램으로 Product 생성"
 
 
 admin.site.register(Sprint, SprintAdmin)
