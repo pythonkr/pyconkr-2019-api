@@ -18,7 +18,7 @@ class TicketProductAdmin(admin.ModelAdmin):
                     'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
                     'ticket_open_at', 'ticket_close_at')
     search_fields = ['type', 'ticket_close_at']
-    list_filter = ('ticket_clost_at')
+    list_filter = ['ticket_clost_at']
     autocomplete_fields = ['owner', 'ticket_for']
 
     def owner_profile(self, obj):
