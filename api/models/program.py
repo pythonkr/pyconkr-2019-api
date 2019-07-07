@@ -101,6 +101,8 @@ class Sprint(Program):
     opensource_desc = models.TextField(blank=True, default='')
     opensource_url = models.CharField(
         max_length=255, blank=True, default='')
+    programming_language = models.CharField(
+        max_length=128, blank=True, default='')
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
     ticket_product = models.ForeignKey(

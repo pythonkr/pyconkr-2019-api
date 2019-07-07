@@ -305,7 +305,7 @@ class SprintAdmin(ImportExportModelAdmin):
     resource_class = SprintResource
     actions = ('accept', 'update_ticket_product',)
     autocomplete_fields = ['owner', ]
-    list_display = ('id', 'owner_profile', 'name', 'language',
+    list_display = ('id', 'owner_profile', 'name', 'language', 'programming_language'
                     'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
     list_filter = (
         'language',
