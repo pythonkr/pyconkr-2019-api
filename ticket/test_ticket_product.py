@@ -48,7 +48,7 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(2, len(data['conferenceProducts']))
         self.assertEqual('CONFERENCE', data['conferenceProducts'][0]['type'])
 
-    def test_WHEN_티켓을_구매했으면_get_ticket_products_THEN_구매_개수_출력(self):
+    def test_GIVEN_unique_in_type이면_WHEN_get_ticket_products_THEN_같은_타입의_isPurchased도_true(self):
         product = self.create_ticket_product(
             name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE,
             is_unique_in_type=True)
