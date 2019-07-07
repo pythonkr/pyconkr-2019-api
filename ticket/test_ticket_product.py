@@ -21,10 +21,11 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
             email='me@pycon.kr')
         self.client.authenticate(self.user)
 
-    def create_ticket_product(self, product_type, owner=None, name='티켓', price=50000, total=3):
+    def create_ticket_product(self, product_type, owner=None, name='티켓', price=50000, total=3, is_unique_in_type=False):
         product = TicketProduct(
             type=product_type, name=name, total=total,
-            owner=owner, price=price)
+            owner=owner, price=price,
+            is_unique_in_type=is_unique_in_type)
         product.ticket_open_at = now() - timedelta(days=2)
         product.ticket_close_at = now() + timedelta(days=2)
         product.save()
@@ -32,9 +33,11 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     def test_get_ticket_products(self):
         self.create_ticket_product(
-            name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE)
+            name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE,
+            is_unique_in_type=True)
         self.create_ticket_product(
-            name='일반 티켓', product_type=TicketProduct.TYPE_CONFERENCE)
+            name='일반 티켓', product_type=TicketProduct.TYPE_CONFERENCE,
+            is_unique_in_type=True)
 
         self.create_ticket_product(
             name='튜토리얼', product_type=TicketProduct.TYPE_TUTORIAL, owner=self.user)
@@ -45,6 +48,37 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(2, len(data['conferenceProducts']))
         self.assertEqual('CONFERENCE', data['conferenceProducts'][0]['type'])
 
+    def test_GIVEN_unique_in_type이면_WHEN_get_ticket_products_THEN_같은_타입의_isPurchased도_true(self):
+        product = self.create_ticket_product(
+            name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE,
+            is_unique_in_type=True)
+        self.create_ticket_product(
+            name='일반 티켓', product_type=TicketProduct.TYPE_CONFERENCE,
+            is_unique_in_type=True)
+        Ticket.objects.create(
+            product=product, owner=self.user, status=TransactionMixin.STATUS_PAID)
+
+        result = self.client.execute(TICKET_PRODUCTS)
+        data = result.data
+        self.assertEqual(1, data['conferenceProducts'][0]['purchaseCount'])
+        self.assertEqual(True, data['conferenceProducts'][0]['isPurchased'])
+        self.assertEqual(True, data['conferenceProducts'][1]['isPurchased'])
+
+    def test_GIVEN_unique_in_type이라도_type이_다르면_WHEN_get_ticket_products_THEN_isPurchased가_false(self):
+        product = self.create_ticket_product(
+            name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE,
+            is_unique_in_type=True)
+        self.create_ticket_product(
+            name='튜토리얼', product_type=TicketProduct.TYPE_TUTORIAL, owner=self.user)
+        Ticket.objects.create(
+            product=product, owner=self.user, status=TransactionMixin.STATUS_PAID)
+
+        result = self.client.execute(TICKET_PRODUCTS)
+        data = result.data
+        self.assertEqual(1, data['conferenceProducts'][0]['purchaseCount'])
+        self.assertEqual(True, data['conferenceProducts'][0]['isPurchased'])
+        self.assertEqual(False, data['tutorialProducts'][0]['isPurchased'])
+
     def test_WHEN_티켓을_구매했으면_get_ticket_products_THEN_구매_개수_출력(self):
         product = self.create_ticket_product(
             name='얼리버드 티켓', product_type=TicketProduct.TYPE_CONFERENCE)
@@ -54,6 +88,7 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(TICKET_PRODUCTS)
         data = result.data
         self.assertEqual(1, data['conferenceProducts'][0]['purchaseCount'])
+        self.assertEqual(True, data['conferenceProducts'][0]['isPurchased'])
 
     def test_WHEN_다른_유저가_티켓을_구매했으면_get_ticket_products_THEN_영향_안미침(self):
         product = self.create_ticket_product(
@@ -67,6 +102,7 @@ class TicketProductTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(TICKET_PRODUCTS)
         data = result.data
         self.assertEqual(0, data['conferenceProducts'][0]['purchaseCount'])
+        self.assertEqual(False, data['conferenceProducts'][0]['isPurchased'])
 
     def test_WHEN_매진이면_get_ticket_products_THEN_매진이라고_반환(self):
         product = self.create_ticket_product(

@@ -33,6 +33,8 @@ class TicketProductNode(DjangoObjectType):
     purchase_count = graphene.Int(description='로그인 했을 때에는 이 값에 구매한 티켓 개수가 들어갑니다.')
     is_sold_out = graphene.Boolean(description='True면 매진, False면 판매중 입니다.')
     remaining_count = graphene.Int(description='해당 제품에 남아있는 티켓 개수입니다.')
+    is_purchased = graphene.Boolean(description='True면 유저가 해당 티켓을 구매하였으면 True가 반환됩니다. '
+                                                '컨퍼런스와 같이 티켓이 여러 종류로 판매되는 경우 하나라도 구매했으면 True가 반환됩니다.')
 
     def resolve_purchase_count(self, info):
         if info.context.user.is_authenticated:
@@ -44,6 +46,18 @@ class TicketProductNode(DjangoObjectType):
 
     def resolve_remaining_count(self, info):
         return self.remaining_count
+
+    def resolve_is_purchased(self, info):
+        user = info.context.user
+        if not user.is_authenticated:
+            return False
+        if self.is_unique_in_type:
+            return Ticket.objects.filter(
+                owner=user, product__type=self.type, status=Ticket.STATUS_PAID
+            ).exists()
+        return Ticket.objects.filter(
+            owner=user, product__id=self.id, status=Ticket.STATUS_PAID
+        ).exists()
 
 
 class TicketNode(DjangoObjectType):

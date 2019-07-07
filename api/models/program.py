@@ -1,5 +1,9 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
+
+from ticket.models import TicketProduct
+
+UserModel = get_user_model()
 
 
 class Place(models.Model):
@@ -53,8 +57,8 @@ class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
     is_keynote = models.BooleanField(default=False, help_text='키노트 스피커인 경우 TRUE로 설정합니다.')
-    owner = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
-    secondary_owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
+    owner = models.OneToOneField(UserModel, null=True, on_delete=models.SET_NULL)
+    secondary_owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL,
                                         related_name='secondary_owner_of')
     background_desc = models.TextField(blank=True, default='')
 
@@ -91,14 +95,17 @@ class Presentation(Program):
 
 
 class Sprint(Program):
-    num_of_participants = models.IntegerField(default=0,
-                                              help_text='수강 적절 인원 수 입니다.')
-    owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     opensource_desc = models.TextField(blank=True, default='')
     opensource_url = models.CharField(
         max_length=255, blank=True, default='')
+    programming_language = models.CharField(
+        max_length=128, blank=True, default='')
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
+    ticket_product = models.ForeignKey(
+        TicketProduct, blank=True, null=True, on_delete=models.SET_NULL,
+        help_text='프로그램과 연관된 티켓 제품입니다. action으로 자동 생성되는 필드이니 절대 수동으로 선택하지 말아주세요.')
     started_at = models.DateTimeField(null=True, blank=True)
     finished_at = models.DateTimeField(null=True, blank=True)
     submitted = models.BooleanField(default=False)
@@ -111,11 +118,14 @@ class Sprint(Program):
 class Tutorial(Program):
     num_of_participants = models.IntegerField(default=0,
                                               help_text='수강 적절 인원 수 입니다.')
-    owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     difficulty = models.ForeignKey(
         Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
+    ticket_product = models.ForeignKey(
+        TicketProduct, blank=True, null=True, on_delete=models.SET_NULL,
+        help_text='프로그램과 연관된 티켓 제품입니다. action으로 자동 생성되는 필드이니 절대 수동으로 선택하지 말아주세요.')
     started_at = models.DateTimeField(null=True, blank=True)
     finished_at = models.DateTimeField(null=True, blank=True)
     submitted = models.BooleanField(default=False)

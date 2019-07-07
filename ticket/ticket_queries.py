@@ -1,5 +1,44 @@
 TICKET_PRODUCTS = '''
 query getTicketProducts {
+  tutorialProducts {
+    id
+    type
+    name
+    nameKo
+    nameEn
+    desc
+    descKo
+    descEn
+    warning
+    warningKo
+    warningEn
+    startAt
+    finishAt
+    total
+    remainingCount
+    isSoldOut
+    owner {
+      profile {
+        name
+        nameKo
+        nameEn
+        email
+        image
+        avatarUrl
+      }
+    }
+    price
+    isEditablePrice
+    isUniqueInType
+    active
+    cancelableDate
+    ticketOpenAt
+    ticketCloseAt
+    createdAt
+    updatedAt
+    purchaseCount
+    isPurchased
+  }
   conferenceProducts {
     id
     type
@@ -37,6 +76,7 @@ query getTicketProducts {
     createdAt
     updatedAt
     purchaseCount
+    isPurchased
   }
 }
 '''
