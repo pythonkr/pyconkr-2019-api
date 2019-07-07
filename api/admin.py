@@ -305,8 +305,9 @@ class SprintAdmin(ImportExportModelAdmin):
     resource_class = SprintResource
     actions = ('accept', 'update_ticket_product',)
     autocomplete_fields = ['owner', ]
-    list_display = ('id', 'owner_profile', 'name', 'language', 'programming_language'
-                    'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
+    list_display = ('id', 'owner_profile', 'name', 'language', 'programming_language',
+                    'place', 'started_at', 'finished_at', 'submitted',
+                    'accepted',)
     list_filter = (
         'language',
         ('submitted', admin.BooleanFieldListFilter),
@@ -352,7 +353,7 @@ class SprintAdmin(ImportExportModelAdmin):
             product.warning_en = f'Refund due date: {cancelable_date.year}-' \
                 f'{cancelable_date.month}-{cancelable_date.day} 6pm'
 
-            product.total = sprint.num_of_participants
+            product.total = 100
 
             schedule = Schedule.objects.last()
             if schedule:
