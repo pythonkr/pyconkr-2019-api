@@ -54,7 +54,7 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     tutorials = graphene.List(TutorialNode)
     tutorial = graphene.Field(TutorialNode, id=graphene.Int())
-    my_tutorials = graphene.Field(TutorialNode)
+    my_tutorials = graphene.List(TutorialNode)
 
     def resolve_tutorials(self, info):
         return Tutorial.objects.filter(visible=True, accepted=True)
