@@ -23,7 +23,8 @@ class Profile(models.Model):
                                       (OAUTH_FACEBOOK, ('facebook')),
                                       (OAUTH_NAVER, ('naver')),
                                   ), default=OAUTH_GITHUB)
-
+    is_volunteer = models.BooleanField(default=False)
+    is_organizer = models.BooleanField(default=False)
     name = models.CharField(max_length=100, blank=True, default='')
     bio = models.TextField(max_length=4000, blank=True, default='')
     email = models.EmailField(blank=True, default='')

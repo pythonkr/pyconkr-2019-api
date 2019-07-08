@@ -38,6 +38,10 @@ class AgreementInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline, AgreementInline,)
     search_fields = ['email', 'profile__email', 'profile__name']
+    list_filter = (
+        ('profile__is_volunteer', admin.BooleanFieldListFilter),
+        ('profile__is_organizer', admin.BooleanFieldListFilter),
+    )
 
 
 admin.site.unregister(UserModel)
