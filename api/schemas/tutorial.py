@@ -5,7 +5,8 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 
 from api.models.program import Tutorial
-from api.schemas.common import LanguageNode
+from api.schemas.common import LanguageNode, PlaceNode, SeoulDateTime
+from api.schemas.user import UserNode
 
 
 class TutorialNode(DjangoObjectType):
@@ -16,6 +17,10 @@ class TutorialNode(DjangoObjectType):
         """
 
     language = graphene.Field(LanguageNode)
+    place = graphene.Field(PlaceNode)
+    owner = graphene.Field(UserNode)
+    started_at = graphene.Field(SeoulDateTime)
+    finished_at = graphene.Field(SeoulDateTime)
 
 
 class TutorialInput(graphene.InputObjectType):
@@ -54,7 +59,7 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     tutorials = graphene.List(TutorialNode)
     tutorial = graphene.Field(TutorialNode, id=graphene.Int())
-    my_tutorials = graphene.Field(TutorialNode)
+    my_tutorials = graphene.List(TutorialNode)
 
     def resolve_tutorials(self, info):
         return Tutorial.objects.filter(visible=True, accepted=True)
