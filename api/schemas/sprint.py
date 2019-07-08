@@ -4,7 +4,7 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 from django.utils.translation import ugettext_lazy as _
 from api.models.program import Sprint
-from api.schemas.common import SeoulDateTime, PlaceNode
+from api.schemas.common import SeoulDateTime, PlaceNode, LanguageNode
 from api.schemas.user import UserNode
 
 
@@ -17,6 +17,7 @@ class SprintNode(DjangoObjectType):
 
     place = graphene.Field(PlaceNode)
     owner = graphene.Field(UserNode)
+    language = graphene.Field(LanguageNode)
     started_at = graphene.Field(SeoulDateTime)
     finished_at = graphene.Field(SeoulDateTime)
 
