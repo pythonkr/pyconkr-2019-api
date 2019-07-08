@@ -4,7 +4,7 @@ query getSprints {
         id
         name
         desc
-        numOfParticipants
+        programmingLanguage
         language
         opensourceDesc
         opensourceUrl
@@ -28,7 +28,7 @@ query getSprint($id: Int!) {
         id
         name
         desc
-        numOfParticipants
+        programmingLanguage
         language
         opensourceDesc
         opensourceUrl

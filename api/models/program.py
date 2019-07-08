@@ -95,12 +95,12 @@ class Presentation(Program):
 
 
 class Sprint(Program):
-    num_of_participants = models.IntegerField(default=0,
-                                              help_text='수강 적절 인원 수 입니다.')
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     opensource_desc = models.TextField(blank=True, default='')
     opensource_url = models.CharField(
         max_length=255, blank=True, default='')
+    programming_language = models.CharField(
+        max_length=128, blank=True, default='')
     place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
     ticket_product = models.ForeignKey(
