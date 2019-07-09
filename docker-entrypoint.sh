@@ -37,9 +37,10 @@ python manage.py crontab add
 python manage.py crontab show
 service cron start
 
-touch /srv/logs/gunicorn.log
-touch /srv/logs/access.log
-tail -n 0 -f /srv/logs/*.log &
+mkdir -p /logs
+touch /logs/gunicorn.log
+touch /logs/access.log
+tail -n 0 -f /logs/*.log &
 
 echo "==== Starting server ====="
 gunicorn pyconkr.wsgi:application \
@@ -51,5 +52,5 @@ gunicorn pyconkr.wsgi:application \
     --max-requests-jitter 5 \
     -k gevent \
     --log-level=info \
-    --log-file=/srv/logs/gunicorn.log \
-    --access-logfile=/srv/logs/access.log
+    --log-file=/logs/gunicorn.log \
+    --access-logfile=/logs/access.log
