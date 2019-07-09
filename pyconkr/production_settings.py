@@ -41,38 +41,38 @@ AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_REGION_NAME = 'ap-northeast-2'
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'django.log',
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'file', ],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django': {
-            'handlers': ['console', 'file', ],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(levelname)s %(asctime)s %(module)s '
+#                       '%(process)d %(thread)d %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'django.log',
+#         },
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         }
+#     },
+#     'loggers': {
+#         '': {
+#             'handlers': ['console', 'file', ],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'django': {
+#             'handlers': ['console', 'file', ],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#     },
+# }
 
 # Sentry
 sentry_sdk.init(

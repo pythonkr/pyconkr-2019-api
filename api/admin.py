@@ -38,6 +38,10 @@ class AgreementInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline, AgreementInline,)
     search_fields = ['email', 'profile__email', 'profile__name']
+    list_filter = (
+        ('profile__is_volunteer', admin.BooleanFieldListFilter),
+        ('profile__is_organizer', admin.BooleanFieldListFilter),
+    )
 
 
 admin.site.unregister(UserModel)
@@ -259,13 +263,20 @@ class TutorialAdmin(ImportExportModelAdmin):
                 tutorial.save()
             product = tutorial.ticket_product
             product.type = TicketProduct.TYPE_TUTORIAL
+            product.is_unique_in_type = False
             product.name = tutorial.name
             product.name_en = tutorial.name_en
             product.name_ko = tutorial.name_ko
             product.owner = tutorial.owner
             product.desc_en = 'You can pick up your name tag by presenting this ticket ' \
                               'at the venue on the day of the tutorial.'
-            product.desc_ko = tutorial.desc_ko
+            product.desc_ko = '튜토리얼 당일 행사장에서 본 티켓을 제시하시면 명찰을 수령하실 수 있습니다.'
+            if tutorial.place:
+                product.desc_ko += f'\n\n튜토리얼 장소: {tutorial.place.name_ko}'
+                product.desc_en += f'\n\nTutorial Place: {tutorial.place.name_en}'
+            if tutorial.owner:
+                product.desc_ko += f'\n진행자: {tutorial.owner.profile.name_ko}'
+                product.desc_en += f'\nTutor: {tutorial.owner.profile.name_en}'
             product.start_at = tutorial.started_at
             product.finish_at = tutorial.finished_at
             period_delta = tutorial.finished_at - tutorial.started_at
@@ -333,6 +344,7 @@ class SprintAdmin(ImportExportModelAdmin):
                 sprint.save()
             product = sprint.ticket_product
             product.type = TicketProduct.TYPE_SPRINT
+            product.is_unique_in_type = False
             product.name = sprint.name
             product.name_en = sprint.name_en
             product.name_ko = sprint.name_ko
@@ -340,6 +352,12 @@ class SprintAdmin(ImportExportModelAdmin):
             product.desc_en = 'You can pick up your name tag by presenting this ticket ' \
                               'at the venue on the day of the sprint.'
             product.desc_ko = '스프린트 당일 행사장에서 본 티켓을 제시하시면 명찰을 수령하실 수 있습니다.'
+            if sprint.place:
+                product.desc_ko += f'\n\n스프린트 장소: {sprint.place.name_ko}'
+                product.desc_en += f'\n\nSprint Place: {sprint.place.name_en}'
+            if sprint.owner:
+                product.desc_ko += f'\n진행자: {sprint.owner.profile.name_ko}'
+                product.desc_en += f'\nTutor: {sprint.owner.profile.name_en}'
             product.start_at = sprint.started_at
             product.finish_at = sprint.finished_at
             product.price = 0
