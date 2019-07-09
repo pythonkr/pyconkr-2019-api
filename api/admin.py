@@ -263,6 +263,7 @@ class TutorialAdmin(ImportExportModelAdmin):
                 tutorial.save()
             product = tutorial.ticket_product
             product.type = TicketProduct.TYPE_TUTORIAL
+            product.is_unique_in_type = False
             product.name = tutorial.name
             product.name_en = tutorial.name_en
             product.name_ko = tutorial.name_ko
@@ -337,6 +338,7 @@ class SprintAdmin(ImportExportModelAdmin):
                 sprint.save()
             product = sprint.ticket_product
             product.type = TicketProduct.TYPE_SPRINT
+            product.is_unique_in_type = False
             product.name = sprint.name
             product.name_en = sprint.name_en
             product.name_ko = sprint.name_ko
