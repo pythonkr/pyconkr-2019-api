@@ -293,11 +293,11 @@ class TutorialAdmin(ImportExportModelAdmin):
                 f'{cancelable_date.month}-{cancelable_date.day} 6pm'
 
             product.total = tutorial.num_of_participants
-
+            product.ticket_close_at = tutorial.finished_at
             schedule = Schedule.objects.last()
             if schedule:
                 product.ticket_open_at = schedule.tutorial_ticket_start_at
-                product.ticket_close_at = tutorial.started_at
+
             product.save()
         self.message_user(request, message='제품 생성이 완료되었습니다.')
 
@@ -372,11 +372,11 @@ class SprintAdmin(ImportExportModelAdmin):
                 f'{cancelable_date.month}-{cancelable_date.day} 6pm'
 
             product.total = 100
-
+            product.ticket_close_at = sprint.finished_at
             schedule = Schedule.objects.last()
             if schedule:
                 product.ticket_open_at = schedule.sprint_ticket_start_at
-                product.ticket_close_at = sprint.started_at
+
             product.save()
         self.message_user(request, message='제품 생성이 완료되었습니다.')
 
