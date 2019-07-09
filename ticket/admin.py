@@ -13,7 +13,13 @@ from ticket.models import Ticket, TicketProduct
 from ticket.schemas import create_iamport
 
 
-class TicketProductAdmin(admin.ModelAdmin):
+class TicketProductResource(resources.ModelResource):
+    class Meta:
+        model = TicketProduct
+
+
+class TicketProductAdmin(ImportExportModelAdmin):
+    resource_class = TicketProductResource
     list_display = ('active', 'type', 'name', 'total', 'remaining_count', 'owner_profile', 'price',
                     'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
                     'ticket_open_at', 'ticket_close_at')
