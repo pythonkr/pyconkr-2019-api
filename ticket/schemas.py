@@ -235,6 +235,11 @@ class CancelTicket(graphene.Mutation):
             raise GraphQLError(_('이미 환불된 티켓이거나 결제되지 않은 티켓입니다.'))
         if not ticket.product.is_cancelable_date():
             raise GraphQLError(_('환불 가능 기한이 지났습니다.'))
+        if ticket.amount == 0:
+            ticket.status = Ticket.STATUS_CANCELLED
+            ticket.reason = '무료 티켓 취소'
+            ticket.save()
+            return CancelTicket(ticket=ticket)
         try:
             iamport = create_iamport(ticket.is_domestic_card)
             response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)
