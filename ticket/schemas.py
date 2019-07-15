@@ -238,6 +238,7 @@ class CancelTicket(graphene.Mutation):
         if ticket.amount == 0:
             ticket.status = Ticket.STATUS_CANCELLED
             ticket.reason = '무료 티켓 취소'
+            ticket.cancelled_at = timezone.now()
             ticket.save()
             return CancelTicket(ticket=ticket)
         try:
