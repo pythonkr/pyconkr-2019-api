@@ -25,7 +25,7 @@ class Query(graphene.ObjectType):
     young_coder = graphene.Field(YoungCoderNode, id=graphene.Int())
 
     def resolve_young_coders(self, info):
-        return YoungCoder.objects.filter(visable=True)
+        return YoungCoder.objects.filter(visible=True)
 
     def resolve_young_coder(self, info, id):
         return YoungCoder.objects.get(pk=id)
