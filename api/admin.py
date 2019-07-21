@@ -409,6 +409,7 @@ class SponsorAdmin(ImportExportModelAdmin):
                     'manager_email', 'business_registration_number',
                     'url', 'submitted', 'accepted', 'paid_at')
     actions = ['accept', 'reject']
+    autocomplete_fields = ['creator',]
 
     list_filter = (
         ('submitted', admin.BooleanFieldListFilter),
