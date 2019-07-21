@@ -2,7 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from api.models.program import YoungCoder
-from api.schemas.common import DifficultyNode
+from api.schemas.common import DifficultyNode, ImageUrl
 
 
 class YoungCoderNode(DjangoObjectType):
@@ -13,6 +13,7 @@ class YoungCoderNode(DjangoObjectType):
         """
 
     difficulty = graphene.Field(DifficultyNode)
+    company_logo = graphene.Field(ImageUrl)
 
 
 class Mutations(graphene.ObjectType):
