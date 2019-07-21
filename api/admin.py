@@ -14,7 +14,7 @@ from api.models import CFPReview
 from api.models.agreement import Agreement
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
-from api.models.program import Place, Category, Difficulty, Sprint, Tutorial
+from api.models.program import Place, Category, Difficulty, Sprint, Tutorial, YoungCoder
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
@@ -386,6 +386,19 @@ class SprintAdmin(ImportExportModelAdmin):
 admin.site.register(Sprint, SprintAdmin)
 
 
+class YoungCoderResource(resources.ModelResource):
+    class Meta:
+        model = YoungCoder
+
+
+class YoungCoderAdmin(ImportExportModelAdmin):
+    resource_class = YoungCoderResource
+    list_display = ('id', 'name', 'company_name', 'difficulty', 'visible', 'schedule_desc')
+
+
+admin.site.register(YoungCoder, YoungCoderAdmin)
+
+
 class SponsorLevelAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'visible', 'price', 'limit', 'current_remaining_number',
                     'accepted_count', 'ticket_count', 'presentation_count', 'booth_info',
@@ -409,7 +422,7 @@ class SponsorAdmin(ImportExportModelAdmin):
                     'manager_email', 'business_registration_number',
                     'url', 'submitted', 'accepted', 'paid_at')
     actions = ['accept', 'reject']
-    autocomplete_fields = ['creator',]
+    autocomplete_fields = ['creator', ]
 
     list_filter = (
         ('submitted', admin.BooleanFieldListFilter),

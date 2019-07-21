@@ -9,6 +9,7 @@ import api.schemas.sponsor
 import api.schemas.user
 import api.schemas.tutorial
 import api.schemas.sprint
+import api.schemas.youngcoder
 import ticket.schemas
 import notice.schemas
 
@@ -29,6 +30,7 @@ class Mutations(api.schemas.schedule.Mutations,
                 api.schemas.sponsor.Mutations,
                 api.schemas.tutorial.Mutations,
                 api.schemas.sprint.Mutations,
+                api.schemas.youngcoder.Mutations,
                 ticket.schemas.Mutations,
                 notice.schemas.Mutations,
                 graphene.ObjectType):
@@ -42,6 +44,7 @@ class Query(api.schemas.schedule.Query,
             api.schemas.sponsor.Query,
             api.schemas.tutorial.Query,
             api.schemas.sprint.Query,
+            api.schemas.youngcoder.Query,
             ticket.schemas.Query,
             notice.schemas.Query,
             SleepPingQuery,

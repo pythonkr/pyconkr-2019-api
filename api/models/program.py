@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from sorl.thumbnail import ImageField as SorlImageField
 
 from ticket.models import TicketProduct
 
@@ -133,3 +134,20 @@ class Tutorial(Program):
 
     def __str__(self):
         return f'{self.owner}/{self.name}'
+
+
+class YoungCoder(Program):
+    num_of_participants = models.IntegerField(default=0,
+                                              help_text='수강 적절 인원 수 입니다.')
+    schedule_desc = models.CharField(max_length=255,
+                                     blank=True, default='',
+                                     help_text='일정을 설명하기 위한 필드입니다. e.g, 토요일 10시, 13시')
+    company_name = models.CharField(
+        max_length=64, blank=True, default='')
+    company_logo = SorlImageField(upload_to='profile', blank=True, default='')
+    company_desc = models.TextField(blank=True, default='')
+    difficulty = models.ForeignKey(
+        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def _str__(self):
+        return self.name
