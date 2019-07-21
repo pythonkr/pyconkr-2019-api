@@ -21,8 +21,8 @@ class Mutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    youngCoders = graphene.List(YoungCoderNode)
-    youngCoder = graphene.Field(YoungCoderNode, id=graphene.Int())
+    young_coders = graphene.List(YoungCoderNode)
+    young_coder = graphene.Field(YoungCoderNode, id=graphene.Int())
 
     def resolve_young_coders(self, info):
         return YoungCoder.objects.all()
