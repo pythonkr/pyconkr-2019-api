@@ -2,6 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from api.models.program import YoungCoder
+from api.schemas.common import DifficultyNode
 
 
 class YoungCoderNode(DjangoObjectType):
@@ -10,6 +11,8 @@ class YoungCoderNode(DjangoObjectType):
         description = """
         YoungCoder
         """
+
+    difficulty = graphene.Field(DifficultyNode)
 
 
 class Mutations(graphene.ObjectType):
