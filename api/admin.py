@@ -393,7 +393,7 @@ class YoungCoderResource(resources.ModelResource):
 
 class YoungCoderAdmin(ImportExportModelAdmin):
     resource_class = YoungCoderResource
-    list_display = ('id', 'name', 'company_name', 'recommend_age',)
+    list_display = ('id', 'name', 'company_name', 'difficulty',)
 
 
 admin.site.register(YoungCoder, YoungCoderAdmin)

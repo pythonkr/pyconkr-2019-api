@@ -143,8 +143,8 @@ class YoungCoder(Program):
         max_length=64, blank=True, default='')
     company_logo = SorlImageField(upload_to='profile', blank=True, default='')
     company_desc = models.TextField(blank=True, default='')
-    recommend_age = models.CharField(
-        max_length=64, blank=True, default='10세 이상')
+    difficulty = models.ForeignKey(
+        Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
 
     def _str__(self):
         return self.name

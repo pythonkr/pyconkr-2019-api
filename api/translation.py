@@ -53,7 +53,7 @@ class SprintTranslationOptions(TranslationOptions):
 
 @register(YoungCoder)
 class YoungCoderTranslationOptions(TranslationOptions):
-    fields = ('company_name', 'company_desc', 'recommend_age',)
+    fields = ('company_name', 'company_desc',)
 
 
 @register(SponsorLevel)
