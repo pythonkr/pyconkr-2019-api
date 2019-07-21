@@ -1,12 +1,7 @@
 import graphene
-from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
-from graphql_extensions.auth.decorators import login_required
-from graphql_extensions.exceptions import GraphQLError
 
-from api.models.program import Tutorial, YoungCoder
-from api.schemas.common import LanguageNode, PlaceNode, SeoulDateTime
-from api.schemas.user import UserNode
+from api.models.program import YoungCoder
 
 
 class YoungCoderNode(DjangoObjectType):
