@@ -58,6 +58,7 @@ class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
     is_keynote = models.BooleanField(default=False, help_text='키노트 스피커인 경우 TRUE로 설정합니다.')
+    is_breaktime = models.BooleanField(default=False, help_text='쉬는 시간일 경우 TRUE로 설정합니다.')
     owner = models.OneToOneField(UserModel, null=True, on_delete=models.SET_NULL)
     secondary_owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL,
                                         related_name='secondary_owner_of')

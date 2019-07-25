@@ -35,6 +35,9 @@ class TicketProductNode(DjangoObjectType):
     remaining_count = graphene.Int(description='해당 제품에 남아있는 티켓 개수입니다.')
     is_purchased = graphene.Boolean(description='True면 유저가 해당 티켓을 구매하였으면 True가 반환됩니다. '
                                                 '컨퍼런스와 같이 티켓이 여러 종류로 판매되는 경우 하나라도 구매했으면 True가 반환됩니다.')
+    available = graphene.Boolean(description='True면 유저가 티켓을 구매할 수 있습니다. '
+                                             '컨퍼런스와 같이 티켓이 여러 종류로 판매되는 경우 하나라도 구매했으면 False가 반환됩니다.'
+                                             '아이돌봄이나 영코더는 참가자 1인당 하루 2매까지만 구매가 가능합니다')
 
     def resolve_purchase_count(self, info):
         if info.context.user.is_authenticated:
@@ -58,6 +61,9 @@ class TicketProductNode(DjangoObjectType):
         return Ticket.objects.filter(
             owner=user, product__id=self.id, status=Ticket.STATUS_PAID
         ).exists()
+
+    def available(self, info):
+        return self.is_available(info.context.user)
 
 
 class TicketNode(DjangoObjectType):
@@ -123,10 +129,12 @@ class BuyTicket(graphene.Mutation):
             raise GraphQLError(f'Ticket project is not exists.(product_id: {product_id})')
         if Ticket.objects.filter(owner=user, product=product, status=Ticket.STATUS_READY).exists():
             raise GraphQLError(_('결제가 진행 중입니다. 잠시 후 다시 시도해주세요. 문제가 지속 발생할 경우 support@pycon.kr로 연락주세요.'))
-        if BuyTicket.has_same_unique_ticket_type(product, info.context.user):
-            raise GraphQLError(f'선택한 티켓은 여러 장 구매할 수 없습니다.')
+        if not product.is_available(info.context.user):
+            raise GraphQLError(_('선택한 티켓은 구매할 수 없습니다.'))
+        if product.is_minor_target_program() and not BuyTicket.has_conference_ticket(user):
+            raise GraphQLError(_('영코더/아이돌봄 티켓은 컨퍼런스 티켓 구매자에게만 판매됩니다.'))
         if product.ticket_for.exists() and info.context.user not in product.ticket_for.all():
-            raise GraphQLError(f'사용자에게 판매하는 티켓이 아닙니다.')
+            raise GraphQLError(_('사용자에게 판매하는 티켓이 아닙니다.'))
         BuyTicket.check_product(product)
         if product.is_editable_price and product.price > payment.amount:
             raise GraphQLError(_(f'이 상품은 티켓 가격({payment.amount}원)보다 높은 가격으로 구매해야 합니다.'))
@@ -173,12 +181,6 @@ class BuyTicket(graphene.Mutation):
             raise e
 
     @classmethod
-    def has_same_unique_ticket_type(cls, product, user):
-        if not product.is_unique_in_type:
-            return False
-        return Ticket.objects.filter(owner=user, product__type=product.type, status=Ticket.STATUS_PAID).exists()
-
-    @classmethod
     def check_product(cls, product):
         if product.is_sold_out:
             raise GraphQLError(_('티켓이 모두 판매되었습니다.'))
@@ -217,6 +219,13 @@ class BuyTicket(graphene.Mutation):
         if not params.get('buyer_name'):
             params['buyer_name'] = user.profile.name
         return params
+
+    @classmethod
+    def has_conference_ticket(cls, user):
+        return Ticket.objects.filter(
+            owner=user, status=Ticket.STATUS_PAID,
+            product__type=TicketProduct.TYPE_CONFERENCE
+        ).exists()
 
 
 class CancelTicket(graphene.Mutation):

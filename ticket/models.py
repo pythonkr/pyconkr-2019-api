@@ -87,6 +87,35 @@ class TicketProduct(models.Model):
     def is_cancelable_date(self):
         return self.cancelable_date and self.cancelable_date > timezone.now()
 
+    def is_available(self, user=None):
+        if not user:
+            return False
+        if not user.is_authenticated:
+            return False
+        if self.is_unique_in_type:
+            return not Ticket.objects.filter(
+                owner=user, product__type=self.type, status=Ticket.STATUS_PAID
+            )
+        if self.is_minor_target_program() and self.start_at:
+            # 영코더와 아이돌봄은 같은 날에 2개까지만 티켓을 판매합니다
+            ticket_count = Ticket.objects.filter(
+                owner=user,
+                product__start_at__year=self.start_at.year,
+                product__start_at__month=self.start_at.month,
+                product__start_at__day=self.start_at.day,
+                product__type=self.type,
+                status=Ticket.STATUS_PAID
+            ).count()
+            return ticket_count < 2
+
+        return not Ticket.objects.filter(
+            owner=user, product__id=self.id, status=Ticket.STATUS_PAID
+        )
+
+    def is_minor_target_program(self):
+        return self.type is TicketProduct.TYPE_YOUNG_CODER \
+               or self.type is TicketProduct.TYPE_CHILD_CARE
+
     def __str__(self):
         return self.name
 
