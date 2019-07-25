@@ -62,7 +62,7 @@ class TicketProductNode(DjangoObjectType):
             owner=user, product__id=self.id, status=Ticket.STATUS_PAID
         ).exists()
 
-    def available(self, info):
+    def resolve_available(self, info):
         return self.is_available(info.context.user)
 
 
