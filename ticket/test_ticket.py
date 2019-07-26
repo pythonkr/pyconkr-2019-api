@@ -30,6 +30,8 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         start_at_2 = now() + timedelta(days=15)
         self.youngcoder_product_1 = self.create_youngcoder_product(name='영코더1', start_at=start_at_1)
         self.youngcoder_product_2 = self.create_youngcoder_product(name='영코더2', start_at=start_at_2)
+        self.childcare_product_1 = self.create_childcare_product(name='아이돌봄1', start_at=start_at_1)
+        self.childcare_product_2 = self.create_childcare_product(name='아이돌봄2', start_at=start_at_2)
         self.sprint_product = self.create_sprint_product(name='스프린트')
 
     def create_conference_product(self, name='얼리버드 티켓'):
@@ -58,6 +60,20 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
     def create_youngcoder_product(self, name='영코더', start_at=None):
         product = TicketProduct(
             type=TicketProduct.TYPE_YOUNG_CODER,
+            name=name, total=3,
+            owner=self.user, price='1000')
+        product.is_unique_in_type = False
+        product.ticket_open_at = now() - timedelta(days=2)
+        product.ticket_close_at = now() + timedelta(days=2)
+        product.start_at = start_at if start_at else now() + timedelta(days=14)
+        product.finish_at = now() + timedelta(days=14)
+        product.cancelable_date = now() + timedelta(days=1)
+        product.save()
+        return product
+
+    def create_childcare_product(self, name='아이돌봄', start_at=None):
+        product = TicketProduct(
+            type=TicketProduct.TYPE_CHILD_CARE,
             name=name, total=3,
             owner=self.user, price='1000')
         product.is_unique_in_type = False
@@ -427,7 +443,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
 
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)
-    def test_buy_early_bird_ticket_컨퍼런스_티켓이_없으면_영코더_티켓_구매_불가(self, mock_iamport, mock_config):
+    def test_컨퍼런스_티켓이_없으면_영코더_아이돌봄_티켓_구매_불가(self, mock_iamport, mock_config):
         # Given
         self.mock_config_and_iamporter(mock_config, mock_iamport)
         variables = {
@@ -443,9 +459,22 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         result = self.client.execute(BUY_TICKET, variables)
         self.assertIsNotNone(result.errors)
 
+        variables = {
+            "productId": str(self.childcare_product_1.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        self.assertIsNotNone(result.errors)
+
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)
-    def test_buy_early_bird_ticket_컨퍼런스_티켓이_있어야_영코더_티켓_구매_가능(self, mock_iamport, mock_config):
+    def test_컨퍼런스_티켓이_있어야_영코더_티켓_구매_가능(self, mock_iamport, mock_config):
         # Given
         self.mock_config_and_iamporter(mock_config, mock_iamport)
         Ticket.objects.create(
@@ -486,7 +515,7 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
             product=self.youngcoder_product_1, owner=self.user, status=TransactionMixin.STATUS_PAID,
             imp_uid='imp_testtest')
         variables = {
-            "productId": str(self.youngcoder_product_2.id),
+            "productId": str(self.youngcoder_product_1.id),
             "payment": {
                 "isDomesticCard": True,
                 "cardNumber": "0000-0000-0000-0000",
@@ -497,6 +526,64 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         }
         result = self.client.execute(BUY_TICKET, variables)
         self.assertIsNotNone(result.errors)
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_buy_early_bird_ticket_아이돌봄_티켓_같은_날_3장_구매_불가(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        Ticket.objects.create(
+            product=self.earlybird_product, owner=self.user, status=TransactionMixin.STATUS_PAID
+        )
+        Ticket.objects.create(
+            product=self.childcare_product_1, owner=self.user, status=TransactionMixin.STATUS_PAID,
+            imp_uid='imp_testtest')
+        Ticket.objects.create(
+            product=self.childcare_product_1, owner=self.user, status=TransactionMixin.STATUS_PAID,
+            imp_uid='imp_testtest')
+        variables = {
+            "productId": str(self.childcare_product_1.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        self.assertIsNotNone(result.errors)
+
+    @mock.patch('ticket.schemas.config')
+    @mock.patch('ticket.schemas.Iamport', autospec=True)
+    def test_다른_날짜로_2장_1장_영코더_티켓_구매_가능(self, mock_iamport, mock_config):
+        # Given
+        self.mock_config_and_iamporter(mock_config, mock_iamport)
+        Ticket.objects.create(
+            product=self.earlybird_product, owner=self.user, status=TransactionMixin.STATUS_PAID
+        )
+        Ticket.objects.create(
+            product=self.youngcoder_product_1, owner=self.user, status=TransactionMixin.STATUS_PAID,
+            imp_uid='imp_testtest')
+        Ticket.objects.create(
+            product=self.youngcoder_product_1, owner=self.user, status=TransactionMixin.STATUS_PAID,
+            imp_uid='imp_testtest')
+        variables = {
+            "productId": str(self.youngcoder_product_2.id),
+            "payment": {
+                "isDomesticCard": True,
+                "cardNumber": "0000-0000-0000-0000",
+                "expiry": "2022-12",
+                "birth": "880101",
+                "pwd2digit": "11"
+            }
+        }
+        result = self.client.execute(BUY_TICKET, variables)
+        data = result.data
+        self.assertIsNotNone(data['buyTicket'])
+        self.assertIsNotNone(data['buyTicket']['ticket'])
+        self.assertEqual(data['buyTicket']['ticket']['pgTid'], 'pg_tid')
+        self.assertIsNotNone(data['buyTicket']['ticket']['receiptUrl'])
 
     def test_WHEN_티켓을_구매했으면_get_my_tickets_THEN_이력_출력(self):
         product = self.create_conference_product()

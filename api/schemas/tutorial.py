@@ -5,8 +5,9 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 
 from api.models.program import Tutorial
-from api.schemas.common import LanguageNode, PlaceNode, SeoulDateTime
+from api.schemas.common import LanguageNode, PlaceNode, SeoulDateTime, UserEmailNode
 from api.schemas.user import UserNode
+from ticket.models import Ticket
 
 
 class TutorialNode(DjangoObjectType):
@@ -21,6 +22,13 @@ class TutorialNode(DjangoObjectType):
     owner = graphene.Field(UserNode)
     started_at = graphene.Field(SeoulDateTime)
     finished_at = graphene.Field(SeoulDateTime)
+    participants = graphene.List(UserEmailNode)
+
+    def resolve_participants(self, info):
+        if self.owner != info.context.user:
+            return None
+        tickets = self.ticket_product.ticket_set.filter(status=Ticket.STATUS_PAID)
+        return [t.owner.profile for t in tickets]
 
 
 class TutorialInput(graphene.InputObjectType):
