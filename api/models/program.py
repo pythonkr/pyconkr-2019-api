@@ -58,6 +58,7 @@ class Presentation(Program):
     DURATION_SHORT = 'S'
     DURATION_LONG = 'L'
     is_keynote = models.BooleanField(default=False, help_text='키노트 스피커인 경우 TRUE로 설정합니다.')
+    is_breaktime = models.BooleanField(default=False, help_text='쉬는 시간일 경우 TRUE로 설정합니다.')
     owner = models.OneToOneField(UserModel, null=True, on_delete=models.SET_NULL)
     secondary_owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL,
                                         related_name='secondary_owner_of')
@@ -97,6 +98,7 @@ class Presentation(Program):
 
 class Sprint(Program):
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
+    is_breaktime = models.BooleanField(default=False, help_text='쉬는 시간일 경우 TRUE로 설정합니다.')
     opensource_desc = models.TextField(blank=True, default='')
     opensource_url = models.CharField(
         max_length=255, blank=True, default='')
@@ -120,6 +122,7 @@ class Tutorial(Program):
     num_of_participants = models.IntegerField(default=0,
                                               help_text='수강 적절 인원 수 입니다.')
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
+    is_breaktime = models.BooleanField(default=False, help_text='쉬는 시간일 경우 TRUE로 설정합니다.')
     difficulty = models.ForeignKey(
         Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     place = models.ForeignKey(

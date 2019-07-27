@@ -1,11 +1,13 @@
 import graphene
+from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
-from django.utils.translation import ugettext_lazy as _
+
 from api.models.program import Sprint
-from api.schemas.common import SeoulDateTime, PlaceNode, LanguageNode
+from api.schemas.common import SeoulDateTime, PlaceNode, LanguageNode, UserEmailNode
 from api.schemas.user import UserNode
+from ticket.models import Ticket
 
 
 class SprintNode(DjangoObjectType):
@@ -20,6 +22,13 @@ class SprintNode(DjangoObjectType):
     language = graphene.Field(LanguageNode)
     started_at = graphene.Field(SeoulDateTime)
     finished_at = graphene.Field(SeoulDateTime)
+    participants = graphene.List(UserEmailNode)
+
+    def resolve_participants(self, info):
+        if self.owner != info.context.user:
+            return None
+        tickets = self.ticket_product.ticket_set.filter(status=Ticket.STATUS_PAID)
+        return [t.owner.profile for t in tickets]
 
 
 class SprintInput(graphene.InputObjectType):

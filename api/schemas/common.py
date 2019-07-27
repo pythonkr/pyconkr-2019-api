@@ -3,6 +3,7 @@ import graphene
 import pytz
 from graphene_django import DjangoObjectType
 
+from api.models.profile import Profile
 from api.models.program import Program, Difficulty, Place
 
 
@@ -91,3 +92,18 @@ class ProgramNode(DjangoObjectType):
         Abstract node for program in Python Conference Korea.
         Many kinds of program inherit this node.
         """
+
+
+class UserEmailNode(DjangoObjectType):
+    class Meta:
+        model = Profile
+        only_fields = ('id', 'oauth_type', 'name', 'name_ko', \
+                       'name_en', 'organization', 'image', 'email')
+        description = '''
+            스프린트와 튜토리얼 진행자에게 제공되는 유저 이름, 조직, 이메일 정보입니다.
+        '''
+
+    def resolve_image(self, info):
+        if self.image.name:
+            return self.image.url
+        return self.avatar_url
