@@ -102,13 +102,13 @@ class PresentationTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual(proposal['backgroundDesc'], '자바')
         self.assertEqual(proposal['duration'], 'LONG')
         self.assertEqual(proposal['language'], 'ENGLISH')
-
-        self.assertEqual(self.user.presentation.name, '흥미로운 GraphQL')
-        self.assertEqual(self.user.presentation.category.id, 2)
-        self.assertEqual(self.user.presentation.difficulty.id, 2)
-        self.assertEqual(self.user.presentation.background_desc, '자바')
-        self.assertEqual(self.user.presentation.duration, Presentation.DURATION_LONG)
-        self.assertEqual(self.user.presentation.language, Presentation.LANGUAGE_ENGLISH)
+        presentation = Presentation.objects.get(owner=self.user)
+        self.assertEqual(presentation.name, '흥미로운 GraphQL')
+        self.assertEqual(presentation.category.id, 2)
+        self.assertEqual(presentation.difficulty.id, 2)
+        self.assertEqual(presentation.background_desc, '자바')
+        self.assertEqual(presentation.duration, Presentation.DURATION_LONG)
+        self.assertEqual(presentation.language, Presentation.LANGUAGE_ENGLISH)
 
     def test_update_proposal_second_step(self):
         Presentation.objects.create(owner=self.user, name='흥미로운 GraphQL')
