@@ -28,7 +28,8 @@ class SprintNode(DjangoObjectType):
         user = info.context.user
         if not has_owner_permission(user, self.owner):
             return None
-
+        if not self.ticket_product:
+            return None
         tickets = self.ticket_product.ticket_set.filter(status=Ticket.STATUS_PAID)
         return [t.owner.profile for t in tickets]
 
