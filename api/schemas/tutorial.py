@@ -25,10 +25,20 @@ class TutorialNode(DjangoObjectType):
     participants = graphene.List(UserEmailNode)
 
     def resolve_participants(self, info):
-        if self.owner != info.context.user:
+        user = info.context.user
+        if not self.has_owner_permission(user, self.owner):
             return None
         tickets = self.ticket_product.ticket_set.filter(status=Ticket.STATUS_PAID)
         return [t.owner.profile for t in tickets]
+
+    def has_owner_permission(self, user, owner):
+        if user.is_staff or user.is_superuser:
+            return True
+        if owner and owner is user:
+            return True
+        if user.profile and user.profile.is_organizer:
+            return True
+        return False
 
 
 class TutorialInput(graphene.InputObjectType):
