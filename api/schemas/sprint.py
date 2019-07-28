@@ -5,7 +5,7 @@ from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 
 from api.models.program import Sprint
-from api.schemas.common import SeoulDateTime, PlaceNode, LanguageNode, UserEmailNode
+from api.schemas.common import SeoulDateTime, PlaceNode, LanguageNode, UserEmailNode, has_owner_permission
 from api.schemas.user import UserNode
 from ticket.models import Ticket
 
@@ -26,20 +26,11 @@ class SprintNode(DjangoObjectType):
 
     def resolve_participants(self, info):
         user = info.context.user
-        if not self.has_owner_permission(user, self.owner):
+        if not has_owner_permission(user, self.owner):
             return None
 
         tickets = self.ticket_product.ticket_set.filter(status=Ticket.STATUS_PAID)
         return [t.owner.profile for t in tickets]
-
-    def has_owner_permission(self, user, owner):
-        if user.is_staff or user.is_superuser:
-            return True
-        if owner and owner is user:
-            return True
-        if user.profile and user.profile.is_organizer:
-            return True
-        return False
 
 
 class SprintInput(graphene.InputObjectType):

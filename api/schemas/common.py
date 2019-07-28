@@ -107,3 +107,13 @@ class UserEmailNode(DjangoObjectType):
         if self.image.name:
             return self.image.url
         return self.avatar_url
+
+
+def has_owner_permission(user, owner):
+    if user.is_staff or user.is_superuser:
+        return True
+    if owner and owner is user:
+        return True
+    if user.profile and user.profile.is_organizer:
+        return True
+    return False
