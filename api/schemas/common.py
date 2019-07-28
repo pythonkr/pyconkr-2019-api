@@ -110,6 +110,8 @@ class UserEmailNode(DjangoObjectType):
 
 
 def has_owner_permission(user, owner):
+    if user.is_anonymous:
+        return False
     if user.is_staff or user.is_superuser:
         return True
     if owner and owner is user:
