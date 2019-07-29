@@ -100,9 +100,7 @@ class TicketProduct(models.Model):
             # 영코더와 아이돌봄은 같은 날에 2개까지만 티켓을 판매합니다
             ticket_count = Ticket.objects.filter(
                 owner=user,
-                product__start_at__year=self.start_at.year,
-                product__start_at__month=self.start_at.month,
-                product__start_at__day=self.start_at.day,
+                product__start_at__contains=self.start_at.date(),
                 product__type=self.type,
                 status=Ticket.STATUS_PAID
             ).count()
