@@ -3,6 +3,7 @@ from graphene_django import DjangoObjectType
 
 from api.models.program import YoungCoder
 from api.schemas.common import DifficultyNode, ImageUrl
+from api.schemas.user import UserNode
 
 
 class YoungCoderNode(DjangoObjectType):
@@ -12,6 +13,7 @@ class YoungCoderNode(DjangoObjectType):
         YoungCoder
         """
 
+    owner = graphene.Field(UserNode)
     difficulty = graphene.Field(DifficultyNode)
     company_logo = graphene.Field(ImageUrl)
 

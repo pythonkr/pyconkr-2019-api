@@ -142,6 +142,7 @@ class Tutorial(Program):
 class YoungCoder(Program):
     num_of_participants = models.IntegerField(default=0,
                                               help_text='수강 적절 인원 수 입니다.')
+    owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     schedule_desc = models.CharField(max_length=255,
                                      blank=True, default='',
                                      help_text='일정을 설명하기 위한 필드입니다. e.g, 토요일 10시, 13시')
@@ -149,6 +150,7 @@ class YoungCoder(Program):
         max_length=64, blank=True, default='')
     company_logo = SorlImageField(upload_to='profile', blank=True, default='')
     company_desc = models.TextField(blank=True, default='')
+
     difficulty = models.ForeignKey(
         Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
 
