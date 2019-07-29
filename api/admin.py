@@ -48,7 +48,13 @@ admin.site.unregister(UserModel)
 admin.site.register(UserModel, UserAdmin)
 
 
+class OAuthSettingResource(resources.ModelResource):
+    class Meta:
+        model = OAuthSetting
+
+
 class OAuthSettingAdmin(admin.ModelAdmin):
+    resource_class = OAuthSettingResource
     list_display = ('id', 'env_name', 'enable',
                     'github_client_id', 'google_client_id',
                     'facebook_client_id', 'naver_client_id')
