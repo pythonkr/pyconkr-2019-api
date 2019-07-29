@@ -37,13 +37,16 @@ class Difficulty(models.Model):
 
 
 class Program(models.Model):
+    class Meta:
+        ordering = ['-order', 'id']
+
     LANGUAGE_ENGLISH = 'E'
     LANGUAGE_KOREAN = 'K'
 
     name = models.CharField(max_length=255, null=True)
     desc = models.TextField(blank=True, default='')
     visible = models.BooleanField(default=True)
-
+    order = models.IntegerField(default=0)
     language = models.CharField(max_length=1,
                                 choices=(
                                     (LANGUAGE_ENGLISH, ('English')),
