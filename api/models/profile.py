@@ -23,7 +23,8 @@ class Profile(models.Model):
                                       (OAUTH_FACEBOOK, ('facebook')),
                                       (OAUTH_NAVER, ('naver')),
                                   ), default=OAUTH_GITHUB)
-
+    is_volunteer = models.BooleanField(default=False)
+    is_organizer = models.BooleanField(default=False)
     name = models.CharField(max_length=100, blank=True, default='')
     bio = models.TextField(max_length=4000, blank=True, default='')
     email = models.EmailField(blank=True, default='')
@@ -60,7 +61,7 @@ def save_user_profile(sender, instance, **kwargs):
 def get_sns_email(self):
     if not hasattr(self, 'profile'):
         return self.name
-    return f'{self.profile.get_oauth_type_display()}_{self.profile.email}_{self.profile.name}'
+    return f'{self.profile.get_oauth_type_display()}_{self.profile.email}_{self.profile.name}({self.username})'
 
 
 get_user_model().add_to_class("__str__", get_sns_email)

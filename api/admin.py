@@ -1,3 +1,7 @@
+import math
+from datetime import timedelta, timezone
+
+from constance import config
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -10,10 +14,11 @@ from api.models import CFPReview
 from api.models.agreement import Agreement
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
-from api.models.program import Place, Category, Difficulty, Sprint, Tutorial
+from api.models.program import Place, Category, Difficulty, Sprint, Tutorial, YoungCoder
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
+from ticket.models import TicketProduct
 
 UserModel = get_user_model()
 
@@ -33,6 +38,10 @@ class AgreementInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline, AgreementInline,)
     search_fields = ['email', 'profile__email', 'profile__name']
+    list_filter = (
+        ('profile__is_volunteer', admin.BooleanFieldListFilter),
+        ('profile__is_organizer', admin.BooleanFieldListFilter),
+    )
 
 
 admin.site.unregister(UserModel)
@@ -230,7 +239,7 @@ class TutorialResource(resources.ModelResource):
 
 class TutorialAdmin(ImportExportModelAdmin):
     resource_class = TutorialResource
-    actions = ('accept',)
+    actions = ('accept', 'update_ticket_product')
     autocomplete_fields = ['owner', ]
     list_display = ('id', 'owner', 'name', 'num_of_participants', 'language', 'difficulty',
                     'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
@@ -245,6 +254,55 @@ class TutorialAdmin(ImportExportModelAdmin):
     def accept(self, request, queryset):
         queryset.update(submitted=True, accepted=True)
 
+    def update_ticket_product(self, request, queryset):
+        for tutorial in queryset:
+            if not tutorial.accepted:
+                continue
+            if not tutorial.ticket_product:
+                tutorial.ticket_product = TicketProduct.objects.create()
+                tutorial.save()
+            product = tutorial.ticket_product
+            product.type = TicketProduct.TYPE_TUTORIAL
+            product.is_unique_in_type = False
+            product.name = tutorial.name
+            product.name_en = tutorial.name_en
+            product.name_ko = tutorial.name_ko
+            product.owner = tutorial.owner
+            product.desc_en = 'You can pick up your name tag by presenting this ticket ' \
+                              'at the venue on the day of the tutorial.'
+            product.desc_ko = '튜토리얼 당일 행사장에서 본 티켓을 제시하시면 명찰을 수령하실 수 있습니다.'
+            if tutorial.place:
+                product.desc_ko += f'\n\n튜토리얼 장소: {tutorial.place.name_ko}'
+                product.desc_en += f'\n\nTutorial Place: {tutorial.place.name_en}'
+            if tutorial.owner:
+                product.desc_ko += f'\n진행자: {tutorial.owner.profile.name_ko}'
+                product.desc_en += f'\nTutor: {tutorial.owner.profile.name_en}'
+            product.start_at = tutorial.started_at
+            product.finish_at = tutorial.finished_at
+            period_delta = tutorial.finished_at - tutorial.started_at
+            period_hour = math.ceil(period_delta.seconds / 60 / 60)
+            product.price = config.TUTORIAL_PRICE_PER_HOUR * period_hour
+            cancelable_date = tutorial.started_at - timedelta(days=2)
+            KST = timezone(timedelta(hours=9))
+            cancelable_date = cancelable_date.replace(hour=18, minute=0, second=0,
+                                                      microsecond=0, tzinfo=KST)
+            product.cancelable_date = cancelable_date
+            product.warning_ko = f'취소, 환불 기한: {cancelable_date.year}년 ' \
+                f'{cancelable_date.month}월 {cancelable_date.day}일 오후 6시까지'
+            product.warning_en = f'Refund due date: {cancelable_date.year}-' \
+                f'{cancelable_date.month}-{cancelable_date.day} 6pm'
+
+            product.total = tutorial.num_of_participants
+            product.ticket_close_at = tutorial.finished_at
+            schedule = Schedule.objects.last()
+            if schedule:
+                product.ticket_open_at = schedule.tutorial_ticket_start_at
+
+            product.save()
+        self.message_user(request, message='제품 생성이 완료되었습니다.')
+
+    update_ticket_product.short_description = "선택한 프로그램으로 Product 생성"
+
 
 admin.site.register(Tutorial, TutorialAdmin)
 
@@ -256,10 +314,11 @@ class SprintResource(resources.ModelResource):
 
 class SprintAdmin(ImportExportModelAdmin):
     resource_class = SprintResource
-    actions = ('accept',)
+    actions = ('accept', 'update_ticket_product',)
     autocomplete_fields = ['owner', ]
-    list_display = ('id', 'owner_profile', 'name', 'language',
-                    'place', 'started_at', 'finished_at', 'submitted', 'accepted',)
+    list_display = ('id', 'owner_profile', 'name', 'language', 'programming_language',
+                    'place', 'started_at', 'finished_at', 'submitted',
+                    'accepted',)
     list_filter = (
         'language',
         ('submitted', admin.BooleanFieldListFilter),
@@ -276,8 +335,68 @@ class SprintAdmin(ImportExportModelAdmin):
     def accept(self, request, queryset):
         queryset.update(submitted=True, accepted=True)
 
+    def update_ticket_product(self, request, queryset):
+        for sprint in queryset:
+            if not sprint.accepted:
+                continue
+            if not sprint.ticket_product:
+                sprint.ticket_product = TicketProduct.objects.create()
+                sprint.save()
+            product = sprint.ticket_product
+            product.type = TicketProduct.TYPE_SPRINT
+            product.is_unique_in_type = False
+            product.name = sprint.name
+            product.name_en = sprint.name_en
+            product.name_ko = sprint.name_ko
+            product.owner = sprint.owner
+            product.desc_en = 'You can pick up your name tag by presenting this ticket ' \
+                              'at the venue on the day of the sprint.'
+            product.desc_ko = '스프린트 당일 행사장에서 본 티켓을 제시하시면 명찰을 수령하실 수 있습니다.'
+            if sprint.place:
+                product.desc_ko += f'\n\n스프린트 장소: {sprint.place.name_ko}'
+                product.desc_en += f'\n\nSprint Place: {sprint.place.name_en}'
+            if sprint.owner:
+                product.desc_ko += f'\n진행자: {sprint.owner.profile.name_ko}'
+                product.desc_en += f'\nTutor: {sprint.owner.profile.name_en}'
+            product.start_at = sprint.started_at
+            product.finish_at = sprint.finished_at
+            product.price = 0
+            cancelable_date = sprint.started_at - timedelta(days=2)
+            KST = timezone(timedelta(hours=9))
+            cancelable_date = cancelable_date.replace(hour=18, minute=0, second=0,
+                                                      microsecond=0, tzinfo=KST)
+            product.cancelable_date = cancelable_date
+            product.warning_ko = f'취소, 환불 기한: {cancelable_date.year}년 ' \
+                f'{cancelable_date.month}월 {cancelable_date.day}일 오후 6시까지'
+            product.warning_en = f'Refund due date: {cancelable_date.year}-' \
+                f'{cancelable_date.month}-{cancelable_date.day} 6pm'
+
+            product.total = 100
+            product.ticket_close_at = sprint.finished_at
+            schedule = Schedule.objects.last()
+            if schedule:
+                product.ticket_open_at = schedule.sprint_ticket_start_at
+
+            product.save()
+        self.message_user(request, message='제품 생성이 완료되었습니다.')
+
+    update_ticket_product.short_description = "선택한 프로그램으로 Product 생성"
+
 
 admin.site.register(Sprint, SprintAdmin)
+
+
+class YoungCoderResource(resources.ModelResource):
+    class Meta:
+        model = YoungCoder
+
+
+class YoungCoderAdmin(ImportExportModelAdmin):
+    resource_class = YoungCoderResource
+    list_display = ('id', 'name', 'company_name', 'difficulty', 'visible', 'schedule_desc')
+
+
+admin.site.register(YoungCoder, YoungCoderAdmin)
 
 
 class SponsorLevelAdmin(admin.ModelAdmin):
@@ -303,6 +422,7 @@ class SponsorAdmin(ImportExportModelAdmin):
                     'manager_email', 'business_registration_number',
                     'url', 'submitted', 'accepted', 'paid_at')
     actions = ['accept', 'reject']
+    autocomplete_fields = ['creator', ]
 
     list_filter = (
         ('submitted', admin.BooleanFieldListFilter),

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib import admin
 from django.contrib import messages
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from iamport import Iamport
 from import_export import fields
@@ -13,11 +14,18 @@ from ticket.models import Ticket, TicketProduct
 from ticket.schemas import create_iamport
 
 
-class TicketProductAdmin(admin.ModelAdmin):
+class TicketProductResource(resources.ModelResource):
+    class Meta:
+        model = TicketProduct
+
+
+class TicketProductAdmin(ImportExportModelAdmin):
+    resource_class = TicketProductResource
     list_display = ('active', 'type', 'name', 'total', 'remaining_count', 'owner_profile', 'price',
                     'is_editable_price', 'is_unique_in_type', 'active', 'cancelable_date',
                     'ticket_open_at', 'ticket_close_at')
     search_fields = ['type', 'ticket_close_at']
+    list_filter = ('type', 'ticket_close_at',)
     autocomplete_fields = ['owner', 'ticket_for']
 
     def owner_profile(self, obj):
@@ -81,6 +89,13 @@ class TicketAdmin(ImportExportModelAdmin):
             if ticket.status != Ticket.STATUS_PAID:
                 self.message_user(request, message=_('이미 환불된 티켓이거나 결제되지 않은 티켓입니다.'), level=messages.ERROR)
                 return
+            if ticket.amount == 0:
+                ticket.status = Ticket.STATUS_CANCELLED
+                ticket.reason = '무료 티켓 취소'
+                ticket.cancelled_at = timezone.now()
+                ticket.save()
+                continue
+
             try:
                 iamport = create_iamport(ticket.is_domestic_card)
                 response = iamport.cancel(u'티켓 환불', imp_uid=ticket.imp_uid)

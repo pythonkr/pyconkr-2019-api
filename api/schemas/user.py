@@ -162,6 +162,8 @@ class Mutations(graphene.ObjectType):
 class Query(graphene.ObjectType):
     me = graphene.Field(UserNode)
     patrons = graphene.List(PatronNode)
+    volunteers = graphene.List(PatronNode)
+    organizers = graphene.List(PatronNode)
 
     @login_required
     def resolve_me(self, info, **kwargs):
@@ -178,3 +180,9 @@ class Query(graphene.ObjectType):
             return [ticket.owner.profile for ticket in tickets]
         except TicketProduct.DoesNotExist:
             raise GraphQLError(_('개인후원 제품이 없습니다. 관리자에게 문의해주세요.'))
+
+    def resolve_volunteers(self, info):
+        return Profile.objects.filter(is_volunteer=True)
+
+    def resolve_organizers(self, info):
+        return Profile.objects.filter(is_organizer=True)
