@@ -148,9 +148,9 @@ query getMyTickets {
 }
 '''
 
-MY_TICKET = '''
-query getMyTicket($id: ID!) {
-  myTicket(id: $id) {
+TICKET = '''
+query getTicket($globalId: ID, $id: Int) {
+  ticket(globalId: $globalId, id: $id) {
     isDomesticCard
     amount
     merchantUid

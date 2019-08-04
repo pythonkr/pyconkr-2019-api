@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
-from graphql_extensions.exceptions import GraphQLError
+from graphql_extensions.exceptions import GraphQLError, PermissionDenied
 from graphql_relay import from_global_id
 from iamport import Iamport
 
@@ -306,7 +306,6 @@ class Query(graphene.ObjectType):
     health_care_products = graphene.List(TicketProductNode)
 
     my_tickets = graphene.List(TicketNode)
-    # my_ticket = graphene.relay.Node.Field(TicketNode)
     ticket = graphene.Field(
         TicketNode,
         global_id=graphene.ID(),
@@ -319,9 +318,11 @@ class Query(graphene.ObjectType):
         if id:
             ticket = Ticket.objects.get(pk=id)
 
-        if ticket and has_owner_permission(info.context.user, ticket.owner):
-            return ticket
-        return None
+        if not ticket:
+            return None
+        if not has_owner_permission(info.context.user, ticket.owner):
+            raise PermissionDenied()
+        return ticket
 
     def resolve_conference_products(self, info):
         conference_product = get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)

@@ -114,7 +114,7 @@ def has_owner_permission(user, owner):
         return False
     if user.is_staff or user.is_superuser:
         return True
-    if owner and owner is user:
+    if owner and owner == user:
         return True
     if user.profile and user.profile.is_organizer:
         return True
