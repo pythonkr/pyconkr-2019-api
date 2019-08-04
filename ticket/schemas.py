@@ -320,10 +320,10 @@ class Query(graphene.ObjectType):
     my_ticket = graphene.relay.Node.Field(TicketNode)
     ticket = graphene.Field(
         TicketNode,
-        global_id=graphene.ID(required=False),
-        id=graphene.Int(required=False))
+        global_id=graphene.ID(),
+        id=graphene.Int())
 
-    def resolve_ticket(self, info, global_id, id):
+    def resolve_ticket(self, info, global_id=None, id=None):
         ticket = None
         if global_id:
             ticket = Ticket.objects.get(pk=from_global_id(global_id)[1])
