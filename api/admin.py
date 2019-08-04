@@ -53,7 +53,7 @@ class OAuthSettingResource(resources.ModelResource):
         model = OAuthSetting
 
 
-class OAuthSettingAdmin(admin.ModelAdmin):
+class OAuthSettingAdmin(ImportExportModelAdmin):
     resource_class = OAuthSettingResource
     list_display = ('id', 'env_name', 'enable',
                     'github_client_id', 'google_client_id',
