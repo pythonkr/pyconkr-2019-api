@@ -165,5 +165,9 @@ class LightningTalk(models.Model):
     name = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     submitted_at = models.DateTimeField(null=True, blank=True)
-    accepted = models.BooleanField(default=True)
+    accepted = models.BooleanField(default=False)
     material = models.FileField(upload_to='lightningtalk', blank=True, default='')
+    comment = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return self.name
