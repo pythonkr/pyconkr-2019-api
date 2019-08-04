@@ -8,6 +8,8 @@ from django.utils.timezone import now
 from graphql_extensions.exceptions import PermissionDenied
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
+from api.models import Presentation, CFPReview
+from api.models.program import Tutorial, Sprint
 from api.tests.base import BaseTestCase
 from api.tests.common import generate_mock_response
 from api.tests.oauth_app_response import GITHUB_USER_RESPONSE
@@ -229,3 +231,90 @@ class UserTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertEqual('user5', result.data['patrons'][2]['name'])
         self.assertEqual('user1', result.data['patrons'][3]['name'])
         self.assertEqual('user2', result.data['patrons'][4]['name'])
+
+    def test_개인_후원자면_is_patron_True(self):
+        user = UserModel(username='develop_github_123')
+        user.save()
+
+        self.client.authenticate(user)
+        product = TicketProduct.objects.create(name='Patron', type=TicketProduct.TYPE_CONFERENCE,
+                                               is_editable_price=True, active=True)
+        Ticket.objects.create(owner=user, product=product, status=Ticket.STATUS_PAID, amount=3000, paid_at=now())
+        result = self.client.execute(ME)
+        self.assertTrue(result.data['me']['profile']['isPatron'])
+
+    def test_컨퍼런스_티켓이_후원이_아니면_is_patron_False(self):
+        user = UserModel(username='develop_github_123')
+        user.save()
+        self.client.authenticate(user)
+        result = self.client.execute(ME)
+        self.assertFalse(result.data['me']['profile']['isPatron'])
+
+    def test_오픈리뷰어면_is_open_reviewer_True(self):
+        user = UserModel.objects.create(username='develop_github_123')
+        speaker = UserModel.objects.create(username='speaker_github_123')
+        presentation = Presentation.objects.create(
+            name=f'presentation',
+            owner=speaker,
+            background_desc=f'background',
+            detail_desc=f'detail_desc',
+            submitted=True,
+            accepted=True)
+        CFPReview.objects.create(
+            owner=user,
+            presentation=presentation,
+            submitted=True
+        )
+        self.client.authenticate(user)
+
+        result = self.client.execute(ME)
+        self.assertTrue(result.data['me']['profile']['isOpenReviewer'])
+
+    def test_발표자면_is_speaker_True(self):
+        user = UserModel(username='develop_github_123')
+        user.save()
+        Presentation.objects.create(
+            name=f'presentation',
+            owner=user,
+            background_desc=f'background',
+            detail_desc=f'detail_desc',
+            submitted=True,
+            accepted=True)
+        self.client.authenticate(user)
+        result = self.client.execute(ME)
+        self.assertTrue(result.data['me']['profile']['isSpeaker'])
+
+    def test_튜토리얼_진행자면_is_tutorial_owner_True(self):
+        user = UserModel(username='develop_github_123')
+        user.save()
+        Tutorial.objects.create(
+            name=f'tutorial',
+            owner=user,
+            submitted=True,
+            accepted=True)
+        self.client.authenticate(user)
+        result = self.client.execute(ME)
+        self.assertTrue(result.data['me']['profile']['isTutorialOwner'])
+
+    def test_스프린트_진행자면_is_sprint_owner_True(self):
+        user = UserModel(username='develop_github_123')
+        user.save()
+        Sprint.objects.create(
+            name=f'sprint',
+            owner=user,
+            submitted=True,
+            accepted=True)
+        self.client.authenticate(user)
+        result = self.client.execute(ME)
+        self.assertTrue(result.data['me']['profile']['isSprintOwner'])
+
+    def test_아무것도_없으면_is머머들은_False(self):
+        user = UserModel.objects.create(username='develop_github_123')
+        self.client.authenticate(user)
+
+        result = self.client.execute(ME)
+        self.assertFalse(result.data['me']['profile']['isPatron'])
+        self.assertFalse(result.data['me']['profile']['isOpenReviewer'])
+        self.assertFalse(result.data['me']['profile']['isSpeaker'])
+        self.assertFalse(result.data['me']['profile']['isSprintOwner'])
+        self.assertFalse(result.data['me']['profile']['isTutorialOwner'])

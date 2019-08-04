@@ -42,6 +42,11 @@ class ProfileNode(DjangoObjectType):
 
     oauth_type = graphene.Field(OauthTypeNode)
     image = graphene.String()
+    is_patron = graphene.Boolean(source='is_patron')
+    is_open_reviewer = graphene.Boolean(source='is_open_reviewer')
+    is_speaker = graphene.Boolean(source='is_speaker')
+    is_sprint_owner = graphene.Boolean(source='is_sprint_owner')
+    is_tutorial_owner = graphene.Boolean(source='is_tutorial_owner')
 
     def resolve_image(self, info):
         if self.image.name:

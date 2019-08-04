@@ -100,7 +100,7 @@ class UserEmailNode(DjangoObjectType):
         only_fields = ('id', 'oauth_type', 'name', 'name_ko', \
                        'name_en', 'organization', 'image', 'email')
         description = '''
-            스프린트와 튜토리얼 진행자에게 제공되는 유저 이름, 조직, 이메일 정보입니다.
+            타인 제공되는 유저 이름, 조직, 이메일 정보입니다.
         '''
 
     def resolve_image(self, info):
@@ -115,6 +115,16 @@ def has_owner_permission(user, owner):
     if user.is_staff or user.is_superuser:
         return True
     if owner and owner is user:
+        return True
+    if user.profile and user.profile.is_organizer:
+        return True
+    return False
+
+
+def has_staff_permission(user):
+    if user.is_anonymous:
+        return False
+    if user.is_staff or user.is_superuser:
         return True
     if user.profile and user.profile.is_organizer:
         return True

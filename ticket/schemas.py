@@ -11,6 +11,7 @@ from graphql_extensions.exceptions import GraphQLError
 from graphql_relay import from_global_id
 from iamport import Iamport
 
+from api.schemas.common import has_staff_permission, SeoulDateTime
 from ticket.models import TicketProduct, Ticket
 
 
@@ -73,6 +74,9 @@ class TicketNode(DjangoObjectType):
         description = """
         Ticket
         """
+
+    registered_at = graphene.Field(SeoulDateTime)
+    ticket_id = graphene.String(source='ticket_id')
 
     @classmethod
     def get_node(cls, info, id):
@@ -273,6 +277,24 @@ def create_iamport(is_domestic_card):
                        imp_secret=config.IMP_DOM_API_SECRET)
     return Iamport(imp_key=config.IMP_INTL_API_KEY,
                    imp_secret=config.IMP_INTL_API_SECRET)
+
+
+class RegisterTicket(graphene.Mutation):
+    ticket = graphene.Field(TicketNode)
+
+    class Arguments:
+        ticket_id = graphene.ID(required=True)
+
+    @login_required
+    def mutate(self, info, ticket_id):
+        user = info.context.user
+        if not has_staff_permission(user):
+            raise GraphQLError(_('스태프만 티켓을 등록할 수 있습니다.'))
+        ticket_pk = from_global_id(ticket_id)[1]
+        ticket = Ticket.objects.get(pk=ticket_pk)
+        ticket.registered_at = timezone.now()
+        ticket.save()
+        return RegisterTicket(ticket=ticket)
 
 
 class Mutations(graphene.ObjectType):
