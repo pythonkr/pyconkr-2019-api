@@ -1,15 +1,12 @@
 import graphene
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from graphql_extensions.auth.decorators import login_required
-from graphql_extensions.exceptions import GraphQLError
 
-from api.models.program import Tutorial, LightningTalk
-from api.schemas.common import LanguageNode, PlaceNode, SeoulDateTime, UserEmailNode, has_owner_permission, FileUrl
+from api.models.program import LightningTalk
+from api.schemas.common import SeoulDateTime, FileUrl
 from api.schemas.user import UserNode
-from ticket.models import Ticket
 
 
 class LightningTalkNode(DjangoObjectType):
