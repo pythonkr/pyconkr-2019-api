@@ -83,6 +83,22 @@ class Profile(models.Model):
             accepted=True
         ).exists()
 
+    @property
+    def has_youngcoder(self):
+        return Ticket.objects.filter(
+            product__type=TicketProduct.TYPE_YOUNG_CODER,
+            owner=self.user,
+            status=Ticket.STATUS_PAID
+        ).exists()
+
+    @property
+    def has_babycare(self):
+        return Ticket.objects.filter(
+            product__type=TicketProduct.TYPE_BABY_CARE,
+            owner=self.user,
+            status=Ticket.STATUS_PAID
+        ).exists()
+
 
 @receiver(post_save, sender=UserModel)
 def create_user_profile(sender, instance, created, **kwargs):

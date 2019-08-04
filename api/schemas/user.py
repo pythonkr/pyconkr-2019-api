@@ -47,6 +47,8 @@ class ProfileNode(DjangoObjectType):
     is_speaker = graphene.Boolean(source='is_speaker')
     is_sprint_owner = graphene.Boolean(source='is_sprint_owner')
     is_tutorial_owner = graphene.Boolean(source='is_tutorial_owner')
+    has_youngcoder = graphene.Boolean(source='has_youngcoder')
+    has_babycare = graphene.Boolean(source='has_babycare')
 
     def resolve_image(self, info):
         if self.image.name:
