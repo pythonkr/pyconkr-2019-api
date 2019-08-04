@@ -11,7 +11,7 @@ from graphql_extensions.exceptions import GraphQLError
 from graphql_relay import from_global_id
 from iamport import Iamport
 
-from api.schemas.common import has_staff_permission, SeoulDateTime
+from api.schemas.common import has_staff_permission, SeoulDateTime, has_owner_permission
 from ticket.models import TicketProduct, Ticket
 
 
@@ -318,6 +318,20 @@ class Query(graphene.ObjectType):
 
     my_tickets = graphene.List(TicketNode)
     my_ticket = graphene.relay.Node.Field(TicketNode)
+    ticket = graphene.Field(
+        TicketNode,
+        global_id=graphene.ID(required=False),
+        id=graphene.Int(required=False))
+
+    def resolve_ticket(self, info, global_id, id):
+        ticket = None
+        if global_id:
+            ticket = Ticket.objects.get(pk=from_global_id(global_id)[1])
+        if id:
+            ticket = Ticket.objects.get(pk=id)
+        if ticket and has_owner_permission(info.context.user, ticket.owner):
+            return ticket
+        return None
 
     def resolve_conference_products(self, info):
         conference_product = get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)

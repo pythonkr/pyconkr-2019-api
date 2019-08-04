@@ -167,6 +167,4 @@ class Ticket(TransactionMixin, models.Model):
 
     @property
     def ticket_id(self):
-        # TODO: 내년엔 year를 실제 데이터로 사용하도록 바꿔주셔야 합니다 ;)
-        year = 2019
         return f'{year}{self.id.vfill(8)}'
