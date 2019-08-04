@@ -76,7 +76,7 @@ class TicketNode(DjangoObjectType):
         """
 
     registered_at = graphene.Field(SeoulDateTime)
-    ticket_id = graphene.String(source='ticket_id')
+    ticket_id = graphene.Int(source='ticket_id')
 
     @classmethod
     def get_node(cls, info, id):
@@ -329,6 +329,7 @@ class Query(graphene.ObjectType):
             ticket = Ticket.objects.get(pk=from_global_id(global_id)[1])
         if id:
             ticket = Ticket.objects.get(pk=id)
+
         if ticket and has_owner_permission(info.context.user, ticket.owner):
             return ticket
         return None

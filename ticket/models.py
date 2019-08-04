@@ -167,4 +167,4 @@ class Ticket(TransactionMixin, models.Model):
 
     @property
     def ticket_id(self):
-        return f'{year}{self.id.vfill(8)}'
+        return self.id
