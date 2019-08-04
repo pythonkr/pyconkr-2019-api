@@ -78,17 +78,6 @@ class TicketNode(DjangoObjectType):
     registered_at = graphene.Field(SeoulDateTime)
     ticket_id = graphene.Int(source='ticket_id')
 
-    @classmethod
-    def get_node(cls, info, id):
-        try:
-            ticket = cls._meta.model.objects.get(id=id)
-        except cls._meta.model.DoesNotExist:
-            return None
-
-        if info.context.user == ticket.owner:
-            return ticket
-        return None
-
 
 class PaymentInput(graphene.InputObjectType):
     is_domestic_card = graphene.Boolean(default_value=True)
@@ -317,7 +306,7 @@ class Query(graphene.ObjectType):
     health_care_products = graphene.List(TicketProductNode)
 
     my_tickets = graphene.List(TicketNode)
-    my_ticket = graphene.relay.Node.Field(TicketNode)
+    # my_ticket = graphene.relay.Node.Field(TicketNode)
     ticket = graphene.Field(
         TicketNode,
         global_id=graphene.ID(),
