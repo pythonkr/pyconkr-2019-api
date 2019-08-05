@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib import admin
 from django.contrib import messages
 from django.utils import timezone
+from django.utils.formats import localize
 from django.utils.translation import ugettext_lazy as _
 from iamport import Iamport
 from import_export import fields
@@ -12,6 +13,8 @@ from import_export.admin import ImportExportModelAdmin
 from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct, TicketForRegistration
 from ticket.schemas import create_iamport
+from django.utils.html import format_html_join
+from django.utils.safestring import mark_safe
 
 
 class TicketProductResource(resources.ModelResource):
@@ -71,7 +74,7 @@ class TicketAdmin(ImportExportModelAdmin):
         'product__type',
         ('product', admin.RelatedOnlyFieldListFilter),
     )
-    actions = ['refund', 'set_paid']
+    actions = ['refund', 'set_paid', 'register']
 
     def options_str(self, obj):
         if not obj.options:
@@ -79,6 +82,9 @@ class TicketAdmin(ImportExportModelAdmin):
         if isinstance(obj.options, str):
             return obj.options
         return '\n'.join([f'{k}: {v}' for k, v in obj.options.items()])
+
+    def register(self, obj):
+        obj.registration_set.create(registered_at=timezone.now())
 
     def refund(self, request, queryset):
         for ticket in queryset:
@@ -116,14 +122,24 @@ admin.site.register(Ticket, TicketAdmin)
 
 class TicketForRegistrationAdmin(admin.ModelAdmin):
     autocomplete_fields = ['owner']
-    list_display = ('id', 'status', 'product_type', 'product', 'owner_oauth_type', 'owner_name', 'owner_email',
-                    'owner_organization', 'options_str')
+    list_display = ('id', 'status', 'registrations', 'product_type', 'product', 'owner_oauth_type', 'owner_name',
+                    'owner_email', 'owner_organization', 'options_str')
     search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en']
     list_filter = (
         'status',
         'product__type',
         ('product', admin.RelatedOnlyFieldListFilter),
     )
+    actions = ['register']
+
+    def register(self, request, queryset):
+        for ticket in queryset:
+            ticket.registration_set.create(registered_at=timezone.now())
+
+    def registrations(self, obj):
+        return format_html_join(
+            mark_safe('<br>'), '{}',
+            ((localize(r.registered_at),) for r in obj.registration_set.all()))
 
     def options_str(self, obj):
         if not obj.options:
