@@ -5,13 +5,37 @@
   <title>티켓 출력하기</title>
 </head>
 <body>
-<p>{{ owner.profile.name }}님</p>
+{% if ticket.product.type != 'C' %}
+    <p>{{ ticket.product.name }}</p>
+{% endif %}
+<p>{{ profile.name }}님</p>
+<p>{{ profile.organization }}</p>
 
-{% if young_coder %}
+{% if profile.is_patron %}
+  <p>개인후원 버튼을 전달</p>
+{% endif %}
+
+{% if profile.is_open_reviewer %}
+  <p>오픈리뷰어 버튼을 전달</p>
+{% endif %}
+
+{% if profile.is_speaker %}
+  <p>발표자 버튼을 전달</p>
+{% endif %}
+
+{% if profile.is_tutorial_owner %}
+  <p>튜토리얼 진행자 버튼을 전달</p>
+{% endif %}
+
+{% if profile.is_sprint_owner %}
+  <p>스프린트 진행자 버튼을 전달</p>
+{% endif %}
+
+{% if profile.has_youngcoder %}
   <p>영코더 버튼을 전달</p>
 {% endif %}
 
-{% if child_care %}
+{% if profile.has_childcare %}
   <p>차일드 케어 내용을 안내</p>
 {% endif %}
 
