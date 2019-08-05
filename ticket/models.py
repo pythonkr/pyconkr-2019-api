@@ -178,6 +178,7 @@ class Ticket(TransactionMixin, models.Model):
         if self.owner and self.owner.profile.oauth_type:
             return self.owner.profile.get_oauth_type_display()
         return ''
+
     @property
     def owner_name(self):
         if self.owner:
@@ -195,3 +196,8 @@ class Ticket(TransactionMixin, models.Model):
         if self.owner:
             return self.owner.profile.organization
         return ''
+
+
+class TicketForRegistration(Ticket):
+    class Meta:
+        proxy = True
