@@ -65,9 +65,10 @@ class TicketAdmin(ImportExportModelAdmin):
     search_fields = ['owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
                      'merchant_uid', 'imp_uid', 'reason']
     list_filter = (
-        ('product', admin.RelatedOnlyFieldListFilter),
         ('is_domestic_card', admin.BooleanFieldListFilter),
         'status',
+        'product__type',
+        ('product', admin.RelatedOnlyFieldListFilter),
     )
     actions = ['refund', 'set_paid']
 
