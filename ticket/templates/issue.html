@@ -42,9 +42,15 @@
 
 <div class='no-print'>
   <div>
+    {% if 'tshirtsize' in ticket.options %}
+        <p>{{ ticket.options.tshirtsize }}</p>
+    {% endif %}
+
     {% if ticket.product.type != 'C' %}
         <p>{{ ticket.product.name }}</p>
     {% endif %}
+    <p>{{ profile.name }}님</p>
+    <p>{{ profile.organization }}</p>
 
     {% if profile.is_patron %}
       <p>개인후원 버튼을 전달</p>
