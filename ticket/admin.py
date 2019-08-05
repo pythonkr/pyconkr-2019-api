@@ -150,13 +150,14 @@ class TicketForRegistrationAdmin(admin.ModelAdmin):
         return '\n'.join([f'{k}: {v}' for k, v in obj.options.items()])
 
     def get_search_results(self, request, queryset, search_term):
+        # INFO: 모든 유져의 리스트를 조회할 수 없도록 한다.
+        if not search_term:
+            return TicketForRegistration.objects.none(), False
+
         queryset, use_distinct = super().get_search_results(request, queryset, search_term)
 
-        if search_term is None:
-            return queryset, use_distinct
-
         # INFO: QR 코드로 읽는 경우를 가정한다.
-        if search_term.startswith('https://www.pycon.kr/ticket/my-ticket?id=VGlja2V0Tm9kZToxNzk2'):
+        if search_term.startswith('https://www.pycon.kr/ticket/my-ticket?id='):
             global_id = search_term.split('=')[1]
             _, pk = from_global_id(global_id)
             queryset = Ticket.objects.filter(id=pk)
