@@ -60,9 +60,10 @@ class TicketResource(resources.ModelResource):
 class TicketAdmin(ImportExportModelAdmin):
     resource_class = TicketResource
     autocomplete_fields = ['owner']
-    list_display = ('id', 'owner', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
-                    'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at', 'reason')
-    search_fields = ['owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
+    list_display = ('id', 'status', 'product_type', 'product', 'owner_oauth_type', 'owner_name', 'owner_email',
+                    'owner_organization', 'is_domestic_card', 'merchant_uid', 'amount', 'imp_uid', 'paid_at',
+                    'options_str', 'cancelled_at', 'reason')
+    search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
                      'merchant_uid', 'imp_uid', 'reason']
     list_filter = (
         ('is_domestic_card', admin.BooleanFieldListFilter),
@@ -71,12 +72,6 @@ class TicketAdmin(ImportExportModelAdmin):
         ('product', admin.RelatedOnlyFieldListFilter),
     )
     actions = ['refund', 'set_paid']
-
-    def owner_profile(self, obj):
-        if obj.owner:
-            profile, _ = Profile.objects.get_or_create(user=obj.owner)
-            return profile
-        return ''
 
     def options_str(self, obj):
         if not obj.options:

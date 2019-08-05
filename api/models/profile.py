@@ -4,11 +4,12 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from sorl.thumbnail import ImageField as SorlImageField
 
-# pylint: disable=invalid-name
-from api.models import CFPReview, Presentation
-from api.models.program import Tutorial, Sprint
+from api.models.program import Tutorial, Sprint, Presentation
+
+from api.models.review import CFPReview
 from ticket.models import Ticket, TicketProduct
 
+# pylint: disable=invalid-name
 UserModel = get_user_model()
 
 

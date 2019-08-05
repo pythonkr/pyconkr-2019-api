@@ -168,3 +168,30 @@ class Ticket(TransactionMixin, models.Model):
     @property
     def ticket_id(self):
         return self.id
+
+    @property
+    def product_type(self):
+        return self.product.get_type_display()
+
+    @property
+    def owner_oauth_type(self):
+        if self.owner and self.owner.profile.oauth_type:
+            return self.owner.profile.get_oauth_type_display()
+        return ''
+    @property
+    def owner_name(self):
+        if self.owner:
+            return self.owner.profile.name
+        return ''
+
+    @property
+    def owner_email(self):
+        if self.owner:
+            return self.owner.profile.email
+        return ''
+
+    @property
+    def owner_organization(self):
+        if self.owner:
+            return self.owner.profile.organization
+        return ''
