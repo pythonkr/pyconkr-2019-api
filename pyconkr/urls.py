@@ -4,7 +4,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('api/', include('api.urls'))
+    path('api/', include('api.urls')),
+    path('ticket/', include('ticket.urls')),
 ]
 
 if settings.DEBUG:
