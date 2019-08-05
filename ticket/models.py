@@ -160,7 +160,7 @@ class TransactionMixin(models.Model):
 class Ticket(TransactionMixin, models.Model):
     owner = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     product = models.ForeignKey(TicketProduct, on_delete=models.CASCADE)
-    options = JSONField(default='{}')
+    options = JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
