@@ -5,6 +5,10 @@
   <title>티켓 출력하기</title>
 </head>
 <body>
+{% if 'tshirtsize' in ticket.options %}
+    <p>{{ ticket.options.tshirtsize }}</p>
+{% endif %}
+
 {% if ticket.product.type != 'C' %}
     <p>{{ ticket.product.name }}</p>
 {% endif %}
