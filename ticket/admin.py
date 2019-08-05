@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.utils.formats import localize
 from django.utils.translation import ugettext_lazy as _
+from graphql_relay import from_global_id
 from iamport import Iamport
 from import_export import fields
 from import_export import resources
@@ -153,8 +154,9 @@ class TicketForRegistrationAdmin(admin.ModelAdmin):
 
         # INFO: QR 코드로 읽는 경우를 가정한다.
         if search_term.startswith('https://www.pycon.kr/ticket/my-ticket?id=VGlja2V0Tm9kZToxNzk2'):
-            queryset = Ticket.objects.filter(id=2)
-
+            global_id = search_term.split('=')[1]
+            _, pk = from_global_id(global_id)
+            queryset = Ticket.objects.filter(id=pk)
             return queryset, False
 
         return queryset, use_distinct

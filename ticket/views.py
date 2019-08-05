@@ -12,7 +12,7 @@ def group_required(*group_names):
     return user_passes_test(in_groups)
 
 
-@group_required('admin', 'organizer', 'volunteer')
+@group_required('registration_helper')
 def issue(request):
     pass
 
