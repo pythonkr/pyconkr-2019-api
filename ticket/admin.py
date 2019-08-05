@@ -2,10 +2,11 @@ from datetime import datetime
 
 from django.contrib import admin
 from django.contrib import messages
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import localize
 from django.utils.translation import ugettext_lazy as _
-from graphql_relay import from_global_id
+from graphql_relay import from_global_id, to_global_id
 from iamport import Iamport
 from import_export import fields
 from import_export import resources
@@ -123,20 +124,18 @@ admin.site.register(Ticket, TicketAdmin)
 
 class TicketForRegistrationAdmin(admin.ModelAdmin):
     autocomplete_fields = ['owner']
-    list_display = ('owner_name', 'owner_email', 'product_type', 'status', 'registrations', 'product',
+    list_display = ('owner_name_with_reg', 'owner_email', 'product_type', 'status', 'registrations', 'product',
                     'options_str')
-    readonly_fields = ('register',)
     search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en']
     list_filter = ('status', 'product__type', )
     actions = ['register']
 
-    def register(self, request, queryset):
-        for ticket in queryset:
-            ticket.registration_set.create(registered_at=timezone.now())
-    def register(self, obj):
-        # FIXME: global_id 관련 처리를 해야 함
-        url = 'https://www.naver.com'
-        return format_html(f'<a class="button" href="{url}" target="_blank">등록하기</a>')
+    def owner_name_with_reg(self, obj):
+        global_id = to_global_id('TicketNode', obj.id)
+        url = reverse('ticket_issue', args=[global_id]),
+        # FIXME: reverse return 이 튜플로 됨
+        return format_html(f'<a class="button" href="{url[0]}" target="_blank">{obj.owner_name}</a>')
+    owner_name_with_reg.short_description = '이름'
 
     def registrations(self, obj):
         return format_html_join(
