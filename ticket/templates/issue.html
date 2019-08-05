@@ -3,17 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <title>티켓 출력하기</title>
+  <style>
+@import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
+.name-tag {
+  position:relative;
+}
+.name-tag .name {
+  font-family: 'Jeju Gothic', serif;
+  position:relative;
+  font-size: 15mm;
+  top: 2mm;
+  text-align: center;
+}
+.name-tag .org {
+  font-family: 'Jeju Gothic', serif;
+  color: gray;
+  font-size: 5mm;
+  position:relative;
+  top: 2mm;
+  text-align: center;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html, body {
+    width: 210mm;
+    height: 297mm;
+  }
+  .no-print {display:none}
+}
+  </style>
 </head>
 <body>
-<p>{{ owner.profile.name }}님</p>
 
-{% if young_coder %}
-  <p>영코더 버튼을 전달</p>
-{% endif %}
+<div class='no-print'>
+  <div>
+    {% if young_coder %}
+      <p>영코더 버튼을 전달</p>
+    {% endif %}
 
-{% if child_care %}
-  <p>차일드 케어 내용을 안내</p>
-{% endif %}
+    {% if child_care %}
+      <p>차일드 케어 내용을 안내</p>
+    {% endif %}
+  </div>
+  {{ csrf }}
+  <button id='ticket_issue' class='btn'>발권</button>
+</div>
+<div class="aera-print">
+  <div class='preview-border name-tag'>
+    <div class='name' style="text-align: center;">{{ owner.profile.name }}</div>
+    <div class='org' style="text-align: center;">{{ owner.profile.organization }}</div>
+  </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+$(document).ready( function () {
+  $('#ticket_issue').click(function(){
+    window.print();
+  });
+});
+</script>
+
 
 </body>
 </html>
