@@ -14,7 +14,7 @@ from import_export.admin import ImportExportModelAdmin
 from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct, TicketForRegistration
 from ticket.schemas import create_iamport
-from django.utils.html import format_html_join
+from django.utils.html import format_html_join, format_html
 from django.utils.safestring import mark_safe
 
 
@@ -123,19 +123,19 @@ admin.site.register(Ticket, TicketAdmin)
 
 class TicketForRegistrationAdmin(admin.ModelAdmin):
     autocomplete_fields = ['owner']
-    list_display = ('id', 'status', 'registrations', 'product_type', 'product', 'owner_oauth_type', 'owner_name',
-                    'owner_email', 'owner_organization', 'options_str')
+    list_display = ('id', 'register', 'status', 'registrations', 'product_type', 'product', 'owner_oauth_type',
+                    'owner_name', 'owner_email', 'owner_organization', 'options_str')
+    readonly_fields = ('register',)
     search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en']
     list_filter = (
         'status',
         'product__type',
         ('product', admin.RelatedOnlyFieldListFilter),
     )
-    actions = ['register']
 
-    def register(self, request, queryset):
-        for ticket in queryset:
-            ticket.registration_set.create(registered_at=timezone.now())
+    def register(self, obj):
+        url = 'https://www.naver.com'
+        return format_html(f'<a class="button" href="{url}" target="_blank">등록하기</a>')
 
     def registrations(self, obj):
         return format_html_join(
