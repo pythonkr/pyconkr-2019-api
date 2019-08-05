@@ -161,7 +161,6 @@ class Ticket(TransactionMixin, models.Model):
     owner = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     product = models.ForeignKey(TicketProduct, on_delete=models.CASCADE)
     options = JSONField(default='{}')
-    registered_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -196,6 +195,11 @@ class Ticket(TransactionMixin, models.Model):
         if self.owner:
             return self.owner.profile.organization
         return ''
+
+
+class Registration(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    registered_at = models.DateTimeField(null=True, blank=True)
 
 
 class TicketForRegistration(Ticket):
