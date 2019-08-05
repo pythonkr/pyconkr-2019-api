@@ -19,17 +19,11 @@ def group_required(*group_names):
 def issue(request, global_id):
     _, pk = from_global_id(global_id)
     ticket = get_object_or_404(Ticket, id=pk)
-    owner = ticket.owner
-
-    young_coder = False
-    child_care = True
-    # tutorial = []
-    # sprint = []
+    profile = ticket.owner.profile
 
     context = {
-        'owner': owner,
-        'young_coder': young_coder,
-        'child_care': child_care,
+        'profile': profile,
+        'ticket': ticket
     }
 
     return render(request, 'issue.html', context=context)

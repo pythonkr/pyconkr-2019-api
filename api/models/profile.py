@@ -93,9 +93,9 @@ class Profile(models.Model):
         ).exists()
 
     @property
-    def has_babycare(self):
+    def has_childcare(self):
         return Ticket.objects.filter(
-            product__type=TicketProduct.TYPE_BABY_CARE,
+            product__type=TicketProduct.TYPE_CHILD_CARE,
             owner=self.user,
             status=Ticket.STATUS_PAID
         ).exists()
