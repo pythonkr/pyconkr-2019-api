@@ -10,7 +10,7 @@ from graphql_relay import to_global_id
 from api.tests.base import BaseTestCase
 from ticket.models import TicketProduct, Ticket, TransactionMixin
 from ticket.schemas import TicketNode
-from ticket.ticket_queries import BUY_TICKET, MY_TICKETS, MY_TICKET, CANCEL_TICKET
+from ticket.ticket_queries import BUY_TICKET, MY_TICKETS, CANCEL_TICKET, TICKET
 
 TIMEZONE = get_current_timezone()
 
@@ -595,15 +595,15 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         self.assertIsNotNone(data['myTickets'])
         self.assertEqual(1, len(data['myTickets']))
 
-    def test_WHEN_티켓을_구매했으면_get_my_ticket_THEN_이력_출력(self):
+    def test_WHEN_티켓을_구매했으면_get_ticket_THEN_이력_출력(self):
         product = self.create_conference_product()
         ticket = Ticket.objects.create(
             product=product, owner=self.user, status=TransactionMixin.STATUS_PAID)
 
-        variables = {'id': to_global_id(TicketNode._meta.name, ticket.pk)}
-        result = self.client.execute(MY_TICKET, variables=variables)
+        variables = {'globalId': to_global_id(TicketNode._meta.name, ticket.pk)}
+        result = self.client.execute(TICKET, variables=variables)
         data = result.data
-        self.assertIsNotNone(data['myTicket'])
+        self.assertIsNotNone(data['ticket'])
         self.assertEqual(1, len(data))
 
     def test_WHEN_다른_유저의_티켓이력_출력_실패(self):
@@ -614,10 +614,10 @@ class TicketTestCase(BaseTestCase, JSONWebTokenTestCase):
         ticket = Ticket.objects.create(
             product=product, owner=other_user, status=TransactionMixin.STATUS_PAID)
 
-        variables = {'id': to_global_id(TicketNode._meta.name, ticket.pk)}
-        result = self.client.execute(MY_TICKET, variables=variables)
+        variables = {'globalId': to_global_id(TicketNode._meta.name, ticket.pk)}
+        result = self.client.execute(TICKET, variables=variables)
         data = result.data
-        self.assertIsNone(data['myTicket'])
+        self.assertIsNone(data['ticket'])
 
     @mock.patch('ticket.schemas.config')
     @mock.patch('ticket.schemas.Iamport', autospec=True)

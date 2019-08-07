@@ -7,10 +7,11 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
 from graphql_extensions.auth.decorators import login_required
-from graphql_extensions.exceptions import GraphQLError
+from graphql_extensions.exceptions import GraphQLError, PermissionDenied
 from graphql_relay import from_global_id
 from iamport import Iamport
 
+from api.schemas.common import has_staff_permission, SeoulDateTime, has_owner_permission
 from ticket.models import TicketProduct, Ticket
 
 
@@ -74,16 +75,8 @@ class TicketNode(DjangoObjectType):
         Ticket
         """
 
-    @classmethod
-    def get_node(cls, info, id):
-        try:
-            ticket = cls._meta.model.objects.get(id=id)
-        except cls._meta.model.DoesNotExist:
-            return None
-
-        if info.context.user == ticket.owner:
-            return ticket
-        return None
+    registered_at = graphene.Field(SeoulDateTime)
+    ticket_id = graphene.Int(source='ticket_id')
 
 
 class PaymentInput(graphene.InputObjectType):
@@ -275,6 +268,24 @@ def create_iamport(is_domestic_card):
                    imp_secret=config.IMP_INTL_API_SECRET)
 
 
+class RegisterTicket(graphene.Mutation):
+    ticket = graphene.Field(TicketNode)
+
+    class Arguments:
+        ticket_id = graphene.ID(required=True)
+
+    @login_required
+    def mutate(self, info, ticket_id):
+        user = info.context.user
+        if not has_staff_permission(user):
+            raise GraphQLError(_('스태프만 티켓을 등록할 수 있습니다.'))
+        ticket_pk = from_global_id(ticket_id)[1]
+        ticket = Ticket.objects.get(pk=ticket_pk)
+        ticket.registered_at = timezone.now()
+        ticket.save()
+        return RegisterTicket(ticket=ticket)
+
+
 class Mutations(graphene.ObjectType):
     buy_ticket = BuyTicket.Field()
     cancel_ticket = CancelTicket.Field()
@@ -295,7 +306,23 @@ class Query(graphene.ObjectType):
     health_care_products = graphene.List(TicketProductNode)
 
     my_tickets = graphene.List(TicketNode)
-    my_ticket = graphene.relay.Node.Field(TicketNode)
+    ticket = graphene.Field(
+        TicketNode,
+        global_id=graphene.ID(),
+        id=graphene.Int())
+
+    def resolve_ticket(self, info, global_id=None, id=None):
+        ticket = None
+        if global_id:
+            ticket = Ticket.objects.get(pk=from_global_id(global_id)[1])
+        if id:
+            ticket = Ticket.objects.get(pk=id)
+
+        if not ticket:
+            return None
+        if not has_owner_permission(info.context.user, ticket.owner):
+            raise PermissionDenied()
+        return ticket
 
     def resolve_conference_products(self, info):
         conference_product = get_ticket_product(TicketProduct.TYPE_CONFERENCE, info.context.user)

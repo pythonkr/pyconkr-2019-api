@@ -14,7 +14,7 @@ from api.models import CFPReview
 from api.models.agreement import Agreement
 from api.models.oauth_setting import OAuthSetting
 from api.models.profile import Profile
-from api.models.program import Place, Category, Difficulty, Sprint, Tutorial, YoungCoder
+from api.models.program import Place, Category, Difficulty, Sprint, Tutorial, YoungCoder, LightningTalk
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
@@ -53,7 +53,7 @@ class OAuthSettingResource(resources.ModelResource):
         model = OAuthSetting
 
 
-class OAuthSettingAdmin(admin.ModelAdmin):
+class OAuthSettingAdmin(ImportExportModelAdmin):
     resource_class = OAuthSettingResource
     list_display = ('id', 'env_name', 'enable',
                     'github_client_id', 'google_client_id',
@@ -454,3 +454,19 @@ class SponsorAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(Sponsor, SponsorAdmin)
+
+
+class LightningTalkResource(resources.ModelResource):
+    class Meta:
+        model = LightningTalk
+
+
+class LightningTalkAdmin(ImportExportModelAdmin):
+    resource_class = LightningTalkResource
+    list_display = ('name', 'owner', 'submitted_at', 'accepted')
+    list_filter = (
+        ('submitted', admin.BooleanFieldListFilter),
+    )
+
+
+admin.site.register(LightningTalk, LightningTalkAdmin)

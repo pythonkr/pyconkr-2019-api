@@ -10,7 +10,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from api.models.profile import Profile
-from ticket.models import Ticket, TicketProduct
+from ticket.models import Ticket, TicketProduct, TicketForRegistration
 from ticket.schemas import create_iamport
 
 
@@ -60,9 +60,10 @@ class TicketResource(resources.ModelResource):
 class TicketAdmin(ImportExportModelAdmin):
     resource_class = TicketResource
     autocomplete_fields = ['owner']
-    list_display = ('id', 'owner', 'owner_profile', 'product', 'is_domestic_card', 'merchant_uid', 'amount',
-                    'status', 'imp_uid', 'paid_at', 'options_str', 'cancelled_at', 'reason')
-    search_fields = ['owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
+    list_display = ('id', 'status', 'product_type', 'product', 'owner_oauth_type', 'owner_name', 'owner_email',
+                    'owner_organization', 'is_domestic_card', 'merchant_uid', 'amount', 'imp_uid', 'paid_at',
+                    'options_str', 'cancelled_at', 'reason')
+    search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
                      'merchant_uid', 'imp_uid', 'reason']
     list_filter = (
         ('is_domestic_card', admin.BooleanFieldListFilter),
@@ -71,12 +72,6 @@ class TicketAdmin(ImportExportModelAdmin):
         ('product', admin.RelatedOnlyFieldListFilter),
     )
     actions = ['refund', 'set_paid']
-
-    def owner_profile(self, obj):
-        if obj.owner:
-            profile, _ = Profile.objects.get_or_create(user=obj.owner)
-            return profile
-        return ''
 
     def options_str(self, obj):
         if not obj.options:
@@ -117,3 +112,25 @@ class TicketAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(Ticket, TicketAdmin)
+
+
+class TicketForRegistrationAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['owner']
+    list_display = ('id', 'status', 'product_type', 'product', 'owner_oauth_type', 'owner_name', 'owner_email',
+                    'owner_organization', 'options_str')
+    search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en']
+    list_filter = (
+        'status',
+        'product__type',
+        ('product', admin.RelatedOnlyFieldListFilter),
+    )
+
+    def options_str(self, obj):
+        if not obj.options:
+            return ''
+        if isinstance(obj.options, str):
+            return obj.options
+        return '\n'.join([f'{k}: {v}' for k, v in obj.options.items()])
+
+
+admin.site.register(TicketForRegistration, TicketForRegistrationAdmin)

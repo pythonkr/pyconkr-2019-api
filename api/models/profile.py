@@ -4,6 +4,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from sorl.thumbnail import ImageField as SorlImageField
 
+from api.models.program import Tutorial, Sprint, Presentation
+
+from api.models.review import CFPReview
+from ticket.models import Ticket, TicketProduct
+
 # pylint: disable=invalid-name
 UserModel = get_user_model()
 
@@ -42,6 +47,58 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.name}({self.email})'
+
+    @property
+    def is_patron(self):
+        return Ticket.objects.filter(
+            owner=self.user,
+            product__type=TicketProduct.TYPE_CONFERENCE,
+            product__is_editable_price=True,
+            status=Ticket.STATUS_PAID).exists()
+
+    @property
+    def is_open_reviewer(self):
+        return CFPReview.objects.filter(
+            owner=self.user,
+            submitted=True
+        ).exists()
+
+    @property
+    def is_speaker(self):
+        return Presentation.objects.filter(
+            owner=self.user,
+            accepted=True
+        ).exists()
+
+    @property
+    def is_tutorial_owner(self):
+        return Tutorial.objects.filter(
+            owner=self.user,
+            accepted=True
+        ).exists()
+
+    @property
+    def is_sprint_owner(self):
+        return Sprint.objects.filter(
+            owner=self.user,
+            accepted=True
+        ).exists()
+
+    @property
+    def has_youngcoder(self):
+        return Ticket.objects.filter(
+            product__type=TicketProduct.TYPE_YOUNG_CODER,
+            owner=self.user,
+            status=Ticket.STATUS_PAID
+        ).exists()
+
+    @property
+    def has_babycare(self):
+        return Ticket.objects.filter(
+            product__type=TicketProduct.TYPE_BABY_CARE,
+            owner=self.user,
+            status=Ticket.STATUS_PAID
+        ).exists()
 
 
 @receiver(post_save, sender=UserModel)

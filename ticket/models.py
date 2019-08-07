@@ -161,11 +161,43 @@ class Ticket(TransactionMixin, models.Model):
     owner = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     product = models.ForeignKey(TicketProduct, on_delete=models.CASCADE)
     options = JSONField(default='{}')
+    registered_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def ticket_id(self):
-        # TODO: 내년엔 year를 실제 데이터로 사용하도록 바꿔주셔야 합니다 ;)
-        year = 2019
-        return f'{year}{self.id.vfill(8)}'
+        return self.id
+
+    @property
+    def product_type(self):
+        return self.product.get_type_display()
+
+    @property
+    def owner_oauth_type(self):
+        if self.owner and self.owner.profile.oauth_type:
+            return self.owner.profile.get_oauth_type_display()
+        return ''
+
+    @property
+    def owner_name(self):
+        if self.owner:
+            return self.owner.profile.name
+        return ''
+
+    @property
+    def owner_email(self):
+        if self.owner:
+            return self.owner.profile.email
+        return ''
+
+    @property
+    def owner_organization(self):
+        if self.owner:
+            return self.owner.profile.organization
+        return ''
+
+
+class TicketForRegistration(Ticket):
+    class Meta:
+        proxy = True

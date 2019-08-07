@@ -26,6 +26,11 @@ query getMe {
             twitterUrl
             linkedInUrl
             instagramUrl
+            isPatron
+            isOpenReviewer
+            isSpeaker
+            isSprintOwner
+            isTutorialOwner
         }
     }
 }
