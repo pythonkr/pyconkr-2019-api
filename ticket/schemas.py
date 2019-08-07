@@ -311,6 +311,10 @@ class Query(graphene.ObjectType):
         global_id=graphene.ID(),
         id=graphene.Int())
 
+    my_ticket = graphene.Field(
+        TicketNode,
+        id=graphene.ID())
+
     def resolve_ticket(self, info, global_id=None, id=None):
         ticket = None
         if global_id:
@@ -320,6 +324,12 @@ class Query(graphene.ObjectType):
 
         if not ticket:
             return None
+        if not has_owner_permission(info.context.user, ticket.owner):
+            raise PermissionDenied()
+        return ticket
+
+    def resolve_my_ticket(self, info, id=None):
+        ticket = Ticket.objects.get(pk=from_global_id(id)[1])
         if not has_owner_permission(info.context.user, ticket.owner):
             raise PermissionDenied()
         return ticket
