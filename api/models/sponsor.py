@@ -99,7 +99,9 @@ class Sponsor(models.Model):
                                  help_text='홈페이지에 공개되는 후원사 로고 백터 파일입니다.')
     paid_at = models.DateTimeField(null=True, blank=True,
                                    help_text='후원금이 입금된 일시입니다. 아직 입금되지 않았을 경우 None이 들어갑니다.')
-    open_lunch_place = place = models.ForeignKey(
+    open_lunch_title = models.CharField(max_length=100, blank=True, default='',
+                                        help_text='열린점심 이름입니다. 홈페이지에 노출됩니다.')
+    open_lunch_place = models.ForeignKey(
         Place, blank=True, null=True, on_delete=models.SET_NULL)
     open_lunch_desc = models.TextField(null=True, blank=True,
                                        help_text='열린점심의 상세 설명입니다. 열린 점심을 하지 않는 후원사의 경우에는 공백으로 둡니다.')
