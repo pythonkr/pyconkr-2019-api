@@ -49,8 +49,8 @@ class SponsorNode(DjangoObjectType):
 class PublicSponsorNode(DjangoObjectType):
     class Meta:
         model = Sponsor
-        only_fields = ('id', 'name', 'name_ko', 'name_en', 'level', 'desc', 'desc_ko', 'desc_en',
-                       'url', 'logo_image', 'logo_vector')
+        exclude_fields = ('manager_name', 'manager_email', 'business_registration_number',
+                          'business_registration_file')
         interfaces = (graphene.relay.Node,)
 
         description = """
