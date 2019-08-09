@@ -46,7 +46,7 @@ echo "==== Starting server ====="
 gunicorn pyconkr.wsgi:application \
     --bind=0.0.0.0:8000 \
     --workers 13 \
-    --threads 512 \
+    --threads 256 \
     --worker-connections=5000 \
     --max-requests 10000 \
     --max-requests-jitter 5 \
