@@ -63,7 +63,7 @@ def issue(request, global_id):
         168: '',
         169: 'Pytest',
         170: '',
-        171: '',
+        171: 'Data Science with Python',
         172: 'Django in Beanstalk',
         173: '',
         174: '',
@@ -75,8 +75,10 @@ def issue(request, global_id):
 
     if ticket.product.type == TicketProduct.TYPE_TUTORIAL:
         product = tutorial_keys[ticket.product.tutorial_set.first().id]
+    elif ticket.product.type == TicketProduct.TYPE_CONFERENCE:
+        product = 'PYCON KOREA 2019'
     else:
-        product = None
+        product = ''
 
     context = {
         'profile': profile,

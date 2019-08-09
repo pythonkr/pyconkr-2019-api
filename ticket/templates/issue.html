@@ -28,29 +28,31 @@
   left: 51mm;
   width: 109mm;
   height: 66mm;
+  text-align: center;
 }
 .name-box .product {
   font-family: 'Jeju Gothic', serif;
   position:relative;
-  font-size: 8mm;
-  top: 15mm;
-  text-align: center;
+  display: inline-block;
+  font-size: 6mm;
+  margin-top: 2mm;
+  width: 95%;
+  margin-right: 2mm;
+  text-align: right;
 }
 .name-box .name {
   font-family: 'Jeju Gothic', serif;
   position:relative;
-  width: 95mm;
-  margin: 0 auto;
-  top: 20mm;
-  text-align: center;
+  display: inline-block;
+  width: 105mm;
 }
 .name-box .org {
   font-family: 'Jeju Gothic', serif;
-  color: gray;
-  font-size: 10mm;
+  font-size: 6mm;
   position:relative;
-  top: 80mm;
-  text-align: center;
+  display: inline-block;
+  color: gray;
+  top: 5mm;
 }
 .message-box {
   position:absolute;
@@ -100,11 +102,9 @@
     <span class="tshirt">{{ tshirtsize }}</span>
   </div>
   <div class='preview-border name-box'>
-    {% if product %}
-      <div class="product">{{ product }}</div>
-    {% endif %}
-    <div class='name'>{{ profile.name }}</div>
-    <div class='org'>{{ profile.organization }}</div>
+    <span class="product">{{ product }}</span>
+    <span class='name'>{{ profile.name }}</span>
+    <span class='org'>{{ profile.organization }}</span>
   </div>
   <div class="message-box">
     {% for message in additional_message %}
