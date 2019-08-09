@@ -167,6 +167,7 @@ class LightningTalk(models.Model):
     submitted_at = models.DateTimeField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     material = models.FileField(upload_to='lightningtalk', blank=True, default='')
+    materialLink = models.CharField(max_length=511, null=True)
     comment = models.TextField(blank=True, default='')
 
     def __str__(self):
