@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import localize
+from django.utils.html import format_html_join, format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from graphql_relay import from_global_id, to_global_id
 from iamport import Iamport
@@ -13,10 +15,8 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from api.models.profile import Profile
-from ticket.models import Ticket, TicketProduct, TicketForRegistration
+from ticket.models import Ticket, TicketProduct, TicketForRegistration, Registration
 from ticket.schemas import create_iamport
-from django.utils.html import format_html_join, format_html
-from django.utils.safestring import mark_safe
 
 
 class TicketProductResource(resources.ModelResource):
@@ -166,3 +166,13 @@ class TicketForRegistrationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(TicketForRegistration, TicketForRegistrationAdmin)
+
+
+class RegistrationAdmin(admin.ModelAdmin):
+    list_display = ('owner_name', 'owner_email', 'registered_at')
+    list_filter = ('ticket__product__type',)
+    search_fields = ('ticket__owner__profile__email',
+                     'ticket__owner__profile__name_ko', 'ticket__owner__profile__name_en',)
+
+
+admin.site.register(Registration, RegistrationAdmin)

@@ -201,6 +201,18 @@ class Registration(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     registered_at = models.DateTimeField(null=True, blank=True)
 
+    @property
+    def owner_name(self):
+        if self.ticket.owner:
+            return self.ticket.owner.profile.name
+        return ''
+
+    @property
+    def owner_email(self):
+        if self.ticket.owner:
+            return self.ticket.owner.profile.email
+        return ''
+
 
 class TicketForRegistration(Ticket):
     class Meta:
