@@ -9,6 +9,13 @@
 .name-tag {
   position:relative;
 }
+.name-tag .product {
+  font-family: 'Jeju Gothic', serif;
+  position:relative;
+  font-size: 15mm;
+  top: 15mm;
+  text-align: center;
+}
 .name-tag .name {
   font-family: 'Jeju Gothic', serif;
   position:relative;
@@ -52,50 +59,27 @@
 
 <div class='no-print'>
   <div>
-    {% if 'tshirtsize' in ticket.options %}
-        <p>{{ ticket.options.tshirtsize }}</p>
-    {% endif %}
-
     {% if ticket.product.type != 'C' %}
         <p>{{ ticket.product.name }}</p>
     {% endif %}
     <p>{{ profile.name }}님</p>
     <p>{{ profile.organization }}</p>
 
-    {% if profile.is_patron %}
-      <p>개인후원 버튼을 전달</p>
-    {% endif %}
-
-    {% if profile.is_open_reviewer %}
-      <p>오픈리뷰어 버튼을 전달</p>
-    {% endif %}
-
-    {% if profile.is_speaker %}
-      <p>발표자 버튼을 전달</p>
-    {% endif %}
-
-    {% if profile.is_tutorial_owner %}
-      <p>튜토리얼 진행자 버튼을 전달</p>
-    {% endif %}
-
-    {% if profile.is_sprint_owner %}
-      <p>스프린트 진행자 버튼을 전달</p>
-    {% endif %}
-
-    {% if profile.has_youngcoder %}
-      <p>영코더 버튼을 전달</p>
-    {% endif %}
-
-    {% if profile.has_childcare %}
-      <p>차일드 케어 내용을 안내</p>
-    {% endif %}
+    <p>
+      {% for message in additional_message %}
+        {{ message }}
+      {% endfor %}
+    </p>
   </div>
   {{ csrf }}
   <button id='ticket_issue' class='btn'>발권</button>
 </div>
 <div class="aera-print">
   <div class='preview-border name-tag'>
-    <div class="gift">L(100)</div>
+    {% if product %}
+      <div class="product">{{ product }}</div>
+    {% endif %}
+    <div class="gift">{{ tshirtsize }}</div>
     <div class='name'>{{ profile.name }}</div>
     <div class='org'>{{ profile.organization }}</div>
   </div>
