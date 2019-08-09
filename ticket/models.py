@@ -196,6 +196,13 @@ class Ticket(TransactionMixin, models.Model):
             return self.owner.profile.organization
         return ''
 
+    def set_issue(self):
+        registration, created = Registration.objects.update_or_create(
+            ticket=self, registered_at=timezone.now()
+        )
+
+        return registration
+
 
 class Registration(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)

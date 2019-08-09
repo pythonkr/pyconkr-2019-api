@@ -23,7 +23,11 @@ def issue(request, global_id):
     profile = ticket.owner.profile
 
     if request.method == "POST":
-        return HttpResponse('')
+        try:
+            ticket.set_issue()
+            return HttpResponse('')
+        except Exception as e:
+            return HttpResponse(status=401)
 
     additional_keys = {
         'is_patron': '개인후원 버튼을 전달',

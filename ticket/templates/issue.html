@@ -291,7 +291,8 @@ $(document).ready( function () {
     max: 100,
     width: 283,
   });
-  $('#ticket_issue').click(function(){
+  $('#ticket_issue').click(function(e){
+    e.preventDefault();
     window.print();
     issueTicketConfirm();
   });
@@ -306,10 +307,10 @@ function issueTicketConfirm() {
       xhr.setRequestHeader("X-CSRFToken", csrftoken);
     },
     success: function(data) {
-      $('#issue_status').val('발권처리 기록 되었습니다.');
+      $('#issue_status').text('발권처리 기록 되었습니다.');
     },
     error: function(data) {
-      $('#issue_status').val('발권처리 기록에 실패 하였습니다.');
+      $('#issue_status').text('발권처리 기록에 실패 하였습니다.');
     }
   });
 }
