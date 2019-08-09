@@ -6,24 +6,52 @@
   <title>티켓 출력하기</title>
   <style>
 @import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
-.name-tag {
-  position:relative;
+.gift-box {
+  position:absolute;
+  background-color: antiquewhite;
+  border-style: solid;
+  border-width: 1px;
+  top: 12mm;
+  left: 128mm;
+  width: 29mm;
+  height: 29mm;
 }
-.name-tag .product {
+.name-box {
+  position:absolute;
+  background-color: antiquewhite;
+  border-style: solid;
+  border-width: 1px;
+  top: 72mm;
+  left: 51mm;
+  width: 109mm;
+  height: 66mm;
+}
+.message-box {
+  position:absolute;
+  background-color: antiquewhite;
+  border-style: solid;
+  border-width: 1px;
+  top: 239mm;
+  height: 45mm;
+  left: 46mm;
+  width: 117mm;
+}
+.name-box .product {
   font-family: 'Jeju Gothic', serif;
   position:relative;
-  font-size: 15mm;
+  font-size: 8mm;
   top: 15mm;
   text-align: center;
 }
-.name-tag .name {
+.name-box .name {
   font-family: 'Jeju Gothic', serif;
   position:relative;
-  font-size: 30mm;
-  top: 80mm;
+  width: 95mm;
+  margin: 0 auto;
+  top: 20mm;
   text-align: center;
 }
-.name-tag .org {
+.name-box .org {
   font-family: 'Jeju Gothic', serif;
   color: gray;
   font-size: 10mm;
@@ -34,10 +62,10 @@
 .name-tag .gift {
   font-family: 'Jeju Gothic', serif;
   color: gray;
-  font-size: 10mm;
-  position:relative;
-  top: 10mm;
-  left: 125mm;
+  font-size: 7.5mm;
+  position:absolute;
+  top: 15mm;
+  left: 130mm;
   width: 40mm;
 }
 
@@ -49,7 +77,7 @@
 @media print {
   html, body {
     width: 210mm;
-    height: 297mm;
+    height: 295mm;
   }
   .no-print {display:none}
 }
@@ -75,15 +103,19 @@
   <button id='ticket_issue' class='btn'>발권</button>
 </div>
 <div class="aera-print">
-  <div class='preview-border name-tag'>
+  <div class="gift-box">
+    {{ tshirtsize }}
+  </div>
+  <div class='preview-border name-box'>
     {% if product %}
       <div class="product">{{ product }}</div>
     {% endif %}
-    <div class="gift">{{ tshirtsize }}</div>
     <div class='name'>{{ profile.name }}</div>
     <div class='org'>{{ profile.organization }}</div>
   </div>
+  <div class="message-box">
 
+  </div>
 </div>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script>
