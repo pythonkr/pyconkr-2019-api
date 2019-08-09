@@ -29,16 +29,6 @@
   width: 109mm;
   height: 66mm;
 }
-.message-box {
-  position:absolute;
-  background-color: antiquewhite;
-  border-style: solid;
-  border-width: 1px;
-  top: 239mm;
-  height: 45mm;
-  left: 46mm;
-  width: 117mm;
-}
 .name-box .product {
   font-family: 'Jeju Gothic', serif;
   position:relative;
@@ -62,6 +52,15 @@
   top: 80mm;
   text-align: center;
 }
+.message-box {
+  position:absolute;
+  font-size: 6mm;
+  top: 239mm;
+  height: 45mm;
+  left: 46mm;
+  width: 117mm;
+}
+
 
 @page {
   size: A4;
@@ -108,7 +107,9 @@
     <div class='org'>{{ profile.organization }}</div>
   </div>
   <div class="message-box">
-
+    {% for message in additional_message %}
+      {{ message }}<br>
+    {% endfor %}
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
