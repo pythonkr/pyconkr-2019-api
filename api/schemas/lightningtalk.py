@@ -33,7 +33,7 @@ class UpdateLightningTalk(graphene.Mutation):
         data = LightningTalkInput(required=True)
 
     @login_required
-    def mutate(self, info, id, data):
+    def mutate(self, info, data):
         user = info.context.user
         lightning_talk = \
             LightningTalk.objects.get_or_create(owner=user)
