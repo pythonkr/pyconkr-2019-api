@@ -8,13 +8,16 @@
 @import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
 .gift-box {
   position:absolute;
-  background-color: antiquewhite;
-  border-style: solid;
-  border-width: 1px;
   top: 12mm;
   left: 128mm;
   width: 29mm;
   height: 29mm;
+  text-align: center;
+}
+.gift-box .tshirt {
+  font-size: 5mm;
+  position: relative;
+  top: 3mm;
 }
 .name-box {
   position:absolute;
@@ -59,15 +62,6 @@
   top: 80mm;
   text-align: center;
 }
-.name-tag .gift {
-  font-family: 'Jeju Gothic', serif;
-  color: gray;
-  font-size: 7.5mm;
-  position:absolute;
-  top: 15mm;
-  left: 130mm;
-  width: 40mm;
-}
 
 @page {
   size: A4;
@@ -104,7 +98,7 @@
 </div>
 <div class="aera-print">
   <div class="gift-box">
-    {{ tshirtsize }}
+    <span class="tshirt">{{ tshirtsize }}</span>
   </div>
   <div class='preview-border name-box'>
     {% if product %}
