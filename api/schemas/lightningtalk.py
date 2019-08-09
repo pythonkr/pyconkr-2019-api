@@ -36,7 +36,7 @@ class UpdateLightningTalk(graphene.Mutation):
     @login_required
     def mutate(self, info, data):
         user = info.context.user
-        lightning_talk = \
+        lightning_talk, _ = \
             LightningTalk.objects.get_or_create(owner=user)
         for k, v in data.items():
             setattr(lightning_talk, k, v)
@@ -54,7 +54,7 @@ class UploadLightningTalkMaterial(graphene.Mutation):
     @login_required
     def mutate(self, info, file, **kwargs):
         user = info.context.user
-        lightning_talk = \
+        lightning_talk, _ = \
             LightningTalk.objects.get_or_create(owner=user)
         if lightning_talk.material:
             lightning_talk.material.delete()
@@ -76,7 +76,5 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_my_lightning_talk(self, info):
-        try:
-            return LightningTalk.objects.get(owner=info.context.user)
-        except LightningTalk.DoesNotExist:
-            return None
+        lightning_talk, _ = LightningTalk.objects.get_or_create(owner=info.context.user)
+        return lightning_talk
