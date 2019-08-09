@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from graphql_relay import from_global_id
 
@@ -20,6 +21,9 @@ def issue(request, global_id):
     _, pk = from_global_id(global_id)
     ticket = get_object_or_404(Ticket, id=pk)
     profile = ticket.owner.profile
+
+    if request.method == "POST":
+        return HttpResponse('')
 
     additional_keys = {
         'is_patron': '개인후원 버튼을 전달',
@@ -81,6 +85,7 @@ def issue(request, global_id):
         product = ''
 
     context = {
+        'global_id': global_id,
         'profile': profile,
         'ticket': ticket,
         'product': product,

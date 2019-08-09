@@ -82,20 +82,17 @@
 
 <div class='no-print'>
   <div>
-    {% if ticket.product.type != 'C' %}
-        <p>{{ ticket.product.name }}</p>
-    {% endif %}
-    <p>{{ profile.name }}님</p>
-    <p>{{ profile.organization }}</p>
-
     <p>
       {% for message in additional_message %}
         {{ message }}
       {% endfor %}
     </p>
   </div>
-  {{ csrf }}
-  <button id='ticket_issue' class='btn'>발권</button>
+  <form id="issue_form">
+    {% csrf_token %}
+    <div id="issue_status">발권 대기중</div>
+    <button id='ticket_issue' class='btn'>발권</button>
+  </form>
 </div>
 <div class="aera-print">
   <div class="gift-box">
@@ -299,8 +296,26 @@ $(document).ready( function () {
   });
   $('#ticket_issue').click(function(){
     window.print();
+    issueTicketConfirm();
   });
 });
+
+function issueTicketConfirm() {
+  let csrftoken = $('#issue_form input[name=csrfmiddlewaretoken]').attr("value");
+
+  $.ajax("{% url 'ticket_issue' global_id %}", {
+    method: 'POST',
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    },
+    success: function(data) {
+      $('#issue_status').val('발권처리 기록 되었습니다.');
+    },
+    error: function(data) {
+      $('#issue_status').val('발권처리 기록에 실패 하였습니다.');
+    }
+  });
+}
 </script>
 
 </body>
