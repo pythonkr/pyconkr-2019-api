@@ -73,10 +73,10 @@ def issue(request, global_id):
         178: 'GluonNLP',
     }
 
-    if ticket.product.type == TicketProduct.TYPE_TUTORIAL:
-        product = tutorial_keys[ticket.product.tutorial_set.first().id]
-    elif ticket.product.type == TicketProduct.TYPE_CONFERENCE:
+    if ticket.product.type in (TicketProduct.TYPE_CONFERENCE, TicketProduct.TYPE_GROUP_CONFERENCE):
         product = 'PYCON KOREA 2019'
+    elif ticket.product.type == TicketProduct.TYPE_TUTORIAL:
+        product = tutorial_keys[ticket.product.tutorial_set.first().id]
     else:
         product = ''
 
