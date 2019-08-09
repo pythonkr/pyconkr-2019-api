@@ -1,7 +1,7 @@
-from django.urls import path
+from django.urls import re_path
 
 from ticket.views import issue
 
 urlpatterns = [
-    path('issue/<slug:global_id>/', issue, name='ticket_issue'),
+    re_path(r'^issue/(?P<global_id>[\w=]+)/', issue, name='ticket_issue'),
 ]
