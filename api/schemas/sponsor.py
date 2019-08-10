@@ -208,4 +208,4 @@ class Query(graphene.ObjectType):
             return None
 
     def resolve_sponsor_levels(self, info):
-        return SponsorLevel.objects.all()
+        return SponsorLevel.objects.order_by('-price')
