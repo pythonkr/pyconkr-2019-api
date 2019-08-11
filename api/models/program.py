@@ -162,13 +162,22 @@ class YoungCoder(Program):
 
 
 class LightningTalk(models.Model):
+    class Meta:
+        ordering = ['accepted_at']
+
     name = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     submitted_at = models.DateTimeField(null=True, blank=True)
-    accepted = models.BooleanField(default=False)
+    accepted_at = models.DateTimeField(null=True, blank=True)
     material = models.FileField(upload_to='lightningtalk', blank=True, default='')
     material_link = models.CharField(max_length=511, null=True)
     comment = models.TextField(blank=True, default='')
 
     def __str__(self):
         return self.name
+
+    @property
+    def accepted(self):
+        if self.accepted_at:
+            return True
+        return False

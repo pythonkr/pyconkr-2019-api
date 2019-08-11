@@ -72,7 +72,7 @@ class Query(graphene.ObjectType):
     my_lightning_talk = graphene.Field(LightningTalkNode)
 
     def resolve_lightning_talks(self, info):
-        return LightningTalk.objects.filter(accepted=True)
+        return LightningTalk.objects.filter(accepted_at__isnull=False)
 
     @login_required
     def resolve_my_lightning_talk(self, info):

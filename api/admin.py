@@ -463,10 +463,15 @@ class LightningTalkResource(resources.ModelResource):
 
 class LightningTalkAdmin(ImportExportModelAdmin):
     resource_class = LightningTalkResource
-    list_display = ('name', 'owner', 'submitted_at', 'accepted', 'material', 'material_link')
+    list_display = ('name', 'owner', 'submitted_at', 'accepted_at', 'accepted', 'material', 'material_link')
     list_filter = (
         ('accepted', admin.BooleanFieldListFilter),
     )
+
+    actions = ['accept']
+
+    def accept(self, request, queryset):
+        queryset.update(accepted_at=timezone.now())
 
 
 admin.site.register(LightningTalk, LightningTalkAdmin)
