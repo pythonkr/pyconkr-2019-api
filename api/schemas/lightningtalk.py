@@ -23,6 +23,7 @@ class LightningTalkNode(DjangoObjectType):
 
 class LightningTalkInput(graphene.InputObjectType):
     name = graphene.String()
+    material_link = graphene.String()
     comment = graphene.String()
 
 
@@ -33,9 +34,9 @@ class UpdateLightningTalk(graphene.Mutation):
         data = LightningTalkInput(required=True)
 
     @login_required
-    def mutate(self, info, id, data):
+    def mutate(self, info, data):
         user = info.context.user
-        lightning_talk = \
+        lightning_talk, _ = \
             LightningTalk.objects.get_or_create(owner=user)
         for k, v in data.items():
             setattr(lightning_talk, k, v)
@@ -53,7 +54,7 @@ class UploadLightningTalkMaterial(graphene.Mutation):
     @login_required
     def mutate(self, info, file, **kwargs):
         user = info.context.user
-        lightning_talk = \
+        lightning_talk, _ = \
             LightningTalk.objects.get_or_create(owner=user)
         if lightning_talk.material:
             lightning_talk.material.delete()
@@ -71,11 +72,9 @@ class Query(graphene.ObjectType):
     my_lightning_talk = graphene.Field(LightningTalkNode)
 
     def resolve_lightning_talks(self, info):
-        return LightningTalk.objects.filter(accepted=True)
+        return LightningTalk.objects.filter(accepted_at__isnull=False)
 
     @login_required
     def resolve_my_lightning_talk(self, info):
-        try:
-            return LightningTalk.objects.get(owner=info.context.user)
-        except LightningTalk.DoesNotExist:
-            return None
+        lightning_talk, _ = LightningTalk.objects.get_or_create(owner=info.context.user)
+        return lightning_talk
