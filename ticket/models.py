@@ -30,7 +30,7 @@ class TicketProduct(models.Model):
                                 (TYPE_SPRINT, _('스프린트')),
                                 (TYPE_HEALTH_CARE, _('체육시간')),
                             ), default=TYPE_CONFERENCE)
-    name = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255, blank=True, default='')
     desc = models.TextField(blank=True, default='')
     warning = models.TextField(blank=True, default='')
     start_at = models.DateTimeField(null=True, blank=True,
