@@ -84,7 +84,6 @@ class Presentation(Program):
     pdf_url = models.CharField(max_length=255, blank=True, default='')
     video_url = models.CharField(max_length=255, blank=True, default='')
     recordable = models.BooleanField(default=True)
-
     detail_desc = models.TextField(blank=True, default='')
     is_presented_before = models.BooleanField(default=False)
     place_presented_before = models.CharField(
@@ -162,11 +161,15 @@ class YoungCoder(Program):
 
 
 class LightningTalk(models.Model):
+    class Meta:
+        ordering = ['accepted_at',]
+
+    day = models.IntegerField(default=1)
     name = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     submitted_at = models.DateTimeField(null=True, blank=True)
-    accepted = models.BooleanField(default=False)
-    material = models.FileField(upload_to='lightningtalk', blank=True, default='')
+    accepted_at = models.DateTimeField(null=True, blank=True)
+    slide_url = models.CharField(max_length=511, null=True)
     comment = models.TextField(blank=True, default='')
 
     def __str__(self):

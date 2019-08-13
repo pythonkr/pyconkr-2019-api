@@ -23,36 +23,27 @@ def issue(request, global_id):
     profile = ticket.owner.profile
 
     if request.method == "POST":
-        try:
-            ticket.set_issue()
-            return HttpResponse('')
-        except Exception as e:
-            return HttpResponse(status=401)
+        ticket.set_issue()
+        return HttpResponse('')
 
-    additional_keys = {
-        'is_patron': '개인후원 버튼을 전달',
-        'is_open_reviewer': '오픈리뷰어 버튼을 전달',
-        'is_speaker': '발표자 버튼을 전달',
-        'is_tutorial_owner': '튜토리얼 진행자 버튼을 전달',
-        'is_sprint_owner': '스프린트 진행자 버튼을 전달',
-        'has_youngcoder': '영코더 버튼을 전달',
-        'has_childcare': '차일드 케어 내용을 안내',
+    additional_message = get_additional_messages(profile)
+    tshirtsize = get_tshirt_size(ticket)
+
+    product = get_short_product_name(ticket)
+
+    context = {
+        'global_id': global_id,
+        'profile': profile,
+        'ticket': ticket,
+        'product': product,
+        'additional_message': additional_message,
+        'tshirtsize': tshirtsize,
     }
-    additional_message = []
 
-    for key, value in additional_keys.items():
-        try:
-            addition = getattr(profile, key)
-            if addition:
-                additional_message.append(value)
-        except AttributeError:
-            pass
+    return render(request, 'issue.html', context=context)
 
-    if 'tshirtsize' in ticket.options:
-        tshirtsize = ticket.options['tshirtsize']
-    else:
-        tshirtsize = 'XXXX'
 
+def get_short_product_name(ticket):
     tutorial_keys = {
         154: '따릉이 데이터 크롤링',
         155: '따릉이 데이터 분석',
@@ -81,20 +72,35 @@ def issue(request, global_id):
         178: 'GluonNLP',
     }
 
-    if ticket.product.type in (TicketProduct.TYPE_CONFERENCE, TicketProduct.TYPE_GROUP_CONFERENCE):
-        product = 'PYCON KOREA 2019'
-    elif ticket.product.type == TicketProduct.TYPE_TUTORIAL:
-        product = tutorial_keys[ticket.product.tutorial_set.first().id]
+    if ticket.product.type == TicketProduct.TYPE_TUTORIAL:
+        return tutorial_keys[ticket.product.tutorial_set.first().id]
+    return ''
+
+
+def get_tshirt_size(ticket):
+    if 'tshirtsize' in ticket.options:
+        tshirtsize = ticket.options['tshirtsize']
     else:
-        product = ''
+        tshirtsize = 'XXXX'
+    return tshirtsize
 
-    context = {
-        'global_id': global_id,
-        'profile': profile,
-        'ticket': ticket,
-        'product': product,
-        'additional_message': additional_message,
-        'tshirtsize': tshirtsize,
+
+def get_additional_messages(profile):
+    additional_keys = {
+        'is_patron': '개인후원 버튼을 전달',
+        'is_open_reviewer': '오픈리뷰어 버튼을 전달',
+        'is_speaker': '발표자 버튼을 전달',
+        'is_tutorial_owner': '튜토리얼 진행자 버튼을 전달',
+        'is_sprint_owner': '스프린트 진행자 버튼을 전달',
+        'has_youngcoder': '영코더 버튼을 전달',
+        'has_childcare': '차일드 케어 내용을 안내',
     }
-
-    return render(request, 'issue.html', context=context)
+    additional_message = []
+    for key, value in additional_keys.items():
+        try:
+            addition = getattr(profile, key)
+            if addition:
+                additional_message.append(value)
+        except AttributeError:
+            pass
+    return additional_message

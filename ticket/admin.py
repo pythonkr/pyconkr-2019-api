@@ -124,16 +124,16 @@ admin.site.register(Ticket, TicketAdmin)
 
 class TicketForRegistrationAdmin(admin.ModelAdmin):
     autocomplete_fields = ['owner']
-    list_display = ('owner_name_with_reg', 'owner_email', 'product_type', 'status', 'registrations', 'product', )
+    list_display = ('owner_name_with_reg', 'owner_email', 'product_type', 'status', 'registrations', 'product',)
     search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en']
-    list_filter = ('status', 'product__type', )
+    list_filter = ('status', 'product__type',)
     actions = ['register']
 
     def owner_name_with_reg(self, obj):
         global_id = to_global_id('TicketNode', obj.id)
-        url = reverse('ticket_issue', args=[global_id]),
-        # FIXME: reverse return 이 튜플로 됨
-        return format_html(f'<a class="button" href="{url[0]}" target="_blank">{obj.owner_name}</a>')
+        url = reverse('ticket_issue', args=[global_id])
+        return format_html(f'<a class="button" href="{url}" target="_blank">{obj.owner_name}</a>')
+
     owner_name_with_reg.short_description = '이름'
 
     def registrations(self, obj):

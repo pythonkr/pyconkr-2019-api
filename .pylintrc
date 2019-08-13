@@ -73,6 +73,7 @@ disable=
         too-many-arguments,
         no-member,
         bare-except,
+        too-many-ancestors,
         fixme,
         too-many-public-methods,
         redefined-builtin,
