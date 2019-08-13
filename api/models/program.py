@@ -81,11 +81,8 @@ class Presentation(Program):
     difficulty = models.ForeignKey(
         Difficulty, null=True, blank=True, on_delete=models.SET_NULL)
     slide_url = models.CharField(max_length=255, blank=True, default='')
-    pdf_url = models.CharField(max_length=255, blank=True, default='')
     video_url = models.CharField(max_length=255, blank=True, default='')
     recordable = models.BooleanField(default=True)
-    material_link = models.CharField(max_length=511, null=True)
-
     detail_desc = models.TextField(blank=True, default='')
     is_presented_before = models.BooleanField(default=False)
     place_presented_before = models.CharField(

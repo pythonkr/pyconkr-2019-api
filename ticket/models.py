@@ -197,7 +197,7 @@ class Ticket(TransactionMixin, models.Model):
         return ''
 
     def set_issue(self):
-        registration, created = Registration.objects.update_or_create(
+        registration, _ = Registration.objects.update_or_create(
             ticket=self, registered_at=timezone.now()
         )
 

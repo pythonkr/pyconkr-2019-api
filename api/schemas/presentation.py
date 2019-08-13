@@ -8,7 +8,6 @@ from django.db import transaction
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
-from graphene_file_upload.scalars import Upload
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 
@@ -16,7 +15,7 @@ from api.models import CFPReview
 from api.models.program import Category, Difficulty
 from api.models.program import Presentation
 from api.models.schedule import Schedule
-from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode, FileUrl
+from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode
 from api.schemas.user import UserNode
 
 
@@ -104,7 +103,8 @@ class PresentationProposalInput(graphene.InputObjectType):
     desc_en = graphene.String()
     category_id = graphene.ID()
     difficulty_id = graphene.ID()
-    material_link = graphene.String()
+    slide_link = graphene.String()
+    video_link = graphene.String()
     background_desc = graphene.String()
     language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
