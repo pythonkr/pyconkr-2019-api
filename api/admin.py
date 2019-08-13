@@ -463,9 +463,9 @@ class LightningTalkResource(resources.ModelResource):
 
 class LightningTalkAdmin(ImportExportModelAdmin):
     resource_class = LightningTalkResource
-    list_display = ('day', 'name', 'owner', 'submitted_at', 'accepted_at', 'accepted', 'material', 'material_link')
+    list_display = ('day', 'name', 'owner', 'submitted_at', 'accepted_at', 'material', 'material_link')
     list_filter = (
-        ('accepted', admin.BooleanFieldListFilter),
+        'accepted_at',
         'day'
     )
 

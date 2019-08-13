@@ -177,9 +177,3 @@ class LightningTalk(models.Model):
 
     def __str__(self):
         return self.name
-
-    @property
-    def accepted(self):
-        if self.accepted_at:
-            return True
-        return False
