@@ -107,7 +107,7 @@
     <span>표시된 티셔츠 사이즈는 빠른 전달을 위한 참고용입니다.<br>현장 상황에 따라 표시된 사이즈 제공이 어려울 수 있습니다.</span>
   </div>
   <div class='preview-border name-box'>
-    <span class="product">{{ product }}</span>
+    <span class="product">{{ product|default:"&nbsp" }}</span>
     <div style="padding: 3mm;"></div>
     <span class='name'>{{ profile.name }}</span>
     <span class='org'>{{ profile.organization }}</span>
