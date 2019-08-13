@@ -19,10 +19,13 @@
   position: relative;
   top: 3mm;
 }
-.gift-box .warning {
+.gift-warning {
+  position:absolute;
+  top: 30mm;
+  left: 55mm;
+  width: 80mm;
+  height: 15mm;
   font-size: 3mm;
-  position: relative;
-  top: 3mm;
 }
 .name-box {
   position:absolute;
@@ -99,7 +102,9 @@
 <div class="aera-print">
   <div class="gift-box">
     <span class="tshirt">{{ tshirtsize }}</span><br>
-    <span class="warning">티셔츠 사이즈는 빠른 전달을 위한 참고용입니다.<br>상황에 따라 입력한 사이즈 제공이 어려울 수 있습니다</span>
+  </div>
+  <div class="gift-warning">
+    <span>표시된 티셔츠 사이즈는 빠른 전달을 위한 참고용입니다.<br>현장 상황에 따라 표시된 사이즈 제공이 어려울 수 있습니다.</span>
   </div>
   <div class='preview-border name-box'>
     <span class="product">{{ product }}</span>
