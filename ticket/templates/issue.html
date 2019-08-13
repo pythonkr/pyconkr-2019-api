@@ -1,0 +1,326 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>티켓 출력하기</title>
+  <style>
+@import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
+.gift-box {
+  position:absolute;
+  top: 12mm;
+  left: 128mm;
+  width: 29mm;
+  height: 29mm;
+  text-align: center;
+}
+.gift-box .tshirt {
+  font-size: 5mm;
+  position: relative;
+  top: 3mm;
+}
+.gift-box .warning {
+  font-size: 3mm;
+  position: relative;
+  top: 3mm;
+}
+.name-box {
+  position:absolute;
+  top: 72mm;
+  left: 51mm;
+  width: 109mm;
+  height: 66mm;
+  text-align: center;
+}
+.name-box .product {
+  font-family: 'Jeju Gothic', serif;
+  position:relative;
+  display: inline-block;
+  font-size: 6mm;
+  margin-top: 2mm;
+  width: 95%;
+  margin-right: 2mm;
+  text-align: right;
+}
+.name-box .name {
+  font-family: 'Jeju Gothic', serif;
+  position:relative;
+  display: inline-block;
+  width: 105mm;
+}
+.name-box .org {
+  font-family: 'Jeju Gothic', serif;
+  font-size: 6mm;
+  position:relative;
+  display: inline-block;
+  color: gray;
+  top: 5mm;
+}
+.message-box {
+  position:absolute;
+  font-size: 6mm;
+  top: 239mm;
+  height: 45mm;
+  left: 46mm;
+  width: 117mm;
+}
+
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html, body {
+    width: 210mm;
+    height: 295mm;
+  }
+  .no-print {display:none}
+}
+  </style>
+</head>
+<body>
+
+<div class='no-print'>
+  <div>
+    <p>
+      {% for message in additional_message %}
+        {{ message }}
+      {% endfor %}
+    </p>
+  </div>
+  <form id="issue_form">
+    {% csrf_token %}
+    <div id="issue_status">발권 대기중</div>
+    <button id='ticket_issue' class='btn'>발권</button>
+  </form>
+</div>
+<div class="aera-print">
+  <div class="gift-box">
+    <span class="tshirt">{{ tshirtsize }}</span><br>
+    <span class="warning">티셔츠 사이즈는 참고용이며 현장에서 상황에 따라 입력한 사이즈 제공이 어려울 수 있습니다</span>
+  </div>
+  <div class='preview-border name-box'>
+    <span class="product">{{ product }}</span>
+    <div style="padding: 3mm;"></div>
+    <span class='name'>{{ profile.name }}</span>
+    <span class='org'>{{ profile.organization }}</span>
+  </div>
+  <div class="message-box">
+    {% for message in additional_message %}
+      {{ message }}<br>
+    {% endfor %}
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script>
+  // https://github.com/chunksnbits/jquery-quickfit
+  (function ($) {
+  var Quickfit, QuickfitHelper, defaults, pluginName;
+
+  pluginName = 'quickfit';
+
+  defaults = {
+    min: 8,
+    max: 12,
+    tolerance: 0.02,
+    truncate: false,
+    width: null,
+    sampleNumberOfLetters: 10,
+    sampleFontSize: 12
+  };
+  QuickfitHelper = (function () {
+
+    var sharedInstance = null;
+
+    QuickfitHelper.instance = function (options) {
+      if (!sharedInstance) {
+        sharedInstance = new QuickfitHelper(options);
+      }
+      return sharedInstance;
+    };
+
+    function QuickfitHelper(options) {
+      this.options = options;
+
+      this.item = $('<span id="meassure"></span>');
+      this.item.css({
+        position: 'absolute',
+        left: '-1000px',
+        top: '-1000px',
+        'font-size': "" + this.options.sampleFontSize + "px"
+      });
+      $('body').append(this.item);
+
+      this.meassures = {};
+    }
+
+    QuickfitHelper.prototype.getMeassure = function (letter) {
+      var currentMeassure;
+      currentMeassure = this.meassures[letter];
+      if (!currentMeassure) {
+        currentMeassure = this.setMeassure(letter);
+      }
+      return currentMeassure;
+    };
+
+    QuickfitHelper.prototype.setMeassure = function (letter) {
+      var currentMeassure, index, sampleLetter, text, _ref;
+
+      text = '';
+      sampleLetter = letter === ' ' ? '&nbsp;' : letter;
+
+      for (index = 0, _ref = this.options.sampleNumberOfLetters - 1; 0 <= _ref ? index <= _ref : index >= _ref; 0 <= _ref ? index++ : index--) {
+        text += sampleLetter;
+      }
+
+      this.item.html(text);
+      currentMeassure = this.item.width() / this.options.sampleNumberOfLetters / this.options.sampleFontSize;
+      this.meassures[letter] = currentMeassure;
+
+      return currentMeassure;
+    };
+
+    return QuickfitHelper;
+
+  })();
+
+  Quickfit = (function () {
+
+    function Quickfit(element, options) {
+      this.$element = element;
+      this.options = $.extend({}, defaults, options);
+      this.$element = $(this.$element);
+      this._defaults = defaults;
+      this._name = pluginName;
+      this.quickfitHelper = QuickfitHelper.instance(this.options);
+    }
+
+    Quickfit.prototype.fit = function () {
+      var elementWidth;
+      if (!this.options.width) {
+        elementWidth = this.$element.width();
+        this.options.width = elementWidth - this.options.tolerance * elementWidth;
+      }
+      if (this.text = this.$element.attr('data-quickfit')) {
+        this.previouslyTruncated = true;
+      } else {
+        this.text = this.$element.text();
+      }
+      this.calculateFontSize();
+
+      if (this.options.truncate) this.truncate();
+
+      return {
+        $element: this.$element,
+        size: this.fontSize
+      };
+    };
+
+    Quickfit.prototype.calculateFontSize = function () {
+      var letter, textWidth, i;
+
+      textWidth = 0;
+      for (i = 0; i < this.text.length; ++i) {
+        letter = this.text.charAt(i);
+        textWidth += this.quickfitHelper.getMeassure(letter);
+      }
+
+      this.targetFontSize = parseInt(this.options.width / textWidth);
+      return this.fontSize = Math.max(this.options.min, Math.min(this.options.max, this.targetFontSize));
+    };
+
+    Quickfit.prototype.truncate = function () {
+      var index, lastLetter, letter, textToAdd, textWidth;
+
+      if (this.fontSize > this.targetFontSize) {
+        textToAdd = '';
+        textWidth = 3 * this.quickfitHelper.getMeassure('.') * this.fontSize;
+
+        index = 0;
+        while (textWidth < this.options.width && index < this.text.length) {
+          letter = this.text[index++];
+          if (lastLetter) textToAdd += lastLetter;
+          textWidth += this.fontSize * this.quickfitHelper.getMeassure(letter);
+          lastLetter = letter;
+        }
+
+        if (textToAdd.length + 1 === this.text.length) {
+          textToAdd = this.text;
+        } else {
+          textToAdd += '...';
+        }
+        this.textWasTruncated = true;
+
+        return this.$element.attr('data-quickfit', this.text).html(textToAdd);
+
+      } else {
+        if (this.previouslyTruncated) {
+          return this.$element.html(this.text);
+        }
+      }
+    };
+
+    return Quickfit;
+
+  })();
+
+  return $.fn.quickfit = function (options) {
+    var measurements = [];
+
+    // Separate measurements from repaints
+    // First calculate all measurements...
+    var $elements = this.each(function () {
+      var measurement = new Quickfit(this, options).fit();
+      measurements.push(measurement);
+      return measurement.$element;
+    });
+
+    // ... then apply the measurements.
+    for (var i = 0; i < measurements.length; i++) {
+      var measurement = measurements[i];
+
+      measurement.$element.css({ fontSize: measurement.size + 'px' });
+    }
+
+    return $elements;
+  };
+
+})(jQuery, window);
+</script>
+<script type="text/javascript">
+
+$(document).ready( function () {
+  $('.name').quickfit({
+    min: 30,
+    max: 100,
+    width: 283,
+  });
+  $('#ticket_issue').click(function(e){
+    e.preventDefault();
+    window.print();
+    issueTicketConfirm();
+  });
+});
+
+function issueTicketConfirm() {
+  let csrftoken = $('#issue_form input[name=csrfmiddlewaretoken]').attr("value");
+
+  $.ajax("{% url 'ticket_issue' global_id %}", {
+    method: 'POST',
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    },
+    success: function(data) {
+      $('#issue_status').text('발권처리 기록 되었습니다.');
+    },
+    error: function(data) {
+      $('#issue_status').text('발권처리 기록에 실패 하였습니다.');
+    }
+  });
+}
+</script>
+
+</body>
+</html>
