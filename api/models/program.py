@@ -84,6 +84,8 @@ class Presentation(Program):
     pdf_url = models.CharField(max_length=255, blank=True, default='')
     video_url = models.CharField(max_length=255, blank=True, default='')
     recordable = models.BooleanField(default=True)
+    material = models.FileField(upload_to='presentation', blank=True, default='')
+    material_link = models.CharField(max_length=511, null=True)
 
     detail_desc = models.TextField(blank=True, default='')
     is_presented_before = models.BooleanField(default=False)

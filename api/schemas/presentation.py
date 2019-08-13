@@ -8,6 +8,7 @@ from django.db import transaction
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
+from graphene_file_upload.scalars import Upload
 from graphql_extensions.auth.decorators import login_required
 from graphql_extensions.exceptions import GraphQLError
 
@@ -15,7 +16,7 @@ from api.models import CFPReview
 from api.models.program import Category, Difficulty
 from api.models.program import Presentation
 from api.models.schedule import Schedule
-from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode
+from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode, FileUrl
 from api.schemas.user import UserNode
 
 
@@ -62,6 +63,7 @@ class PublicPresentationNode(DjangoObjectType):
     duration = graphene.Field(DurationNode)
     category = graphene.Field(CategoryNode)
     difficulty = graphene.Field(DifficultyNode)
+    material = graphene.Field(FileUrl)
     desc = graphene.String()
 
     def resolve_desc(self, info):
@@ -103,6 +105,7 @@ class PresentationProposalInput(graphene.InputObjectType):
     desc_en = graphene.String()
     category_id = graphene.ID()
     difficulty_id = graphene.ID()
+    material_link = graphene.String()
     background_desc = graphene.String()
     language = graphene.Field(LanguageNode)
     duration = graphene.Field(DurationNode)
@@ -148,6 +151,22 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
         presentation.full_clean()
         presentation.save()
         return CreateOrUpdatePresentationProposal(proposal=presentation)
+
+
+class UploadPresentationMaterial(graphene.Mutation):
+    class Arguments:
+        file = Upload(required=True)
+
+    file = graphene.Field(FileUrl)
+
+    @login_required
+    def mutate(self, info, file, **kwargs):
+        user = info.context.user
+        presentation = Presentation.objects.get(owner=user)
+        if presentation.material:
+            presentation.material.delete()
+        presentation.material.save(f'{user.id}_{file.name}', file)
+        return UploadPresentationMaterial(file=presentation.material)
 
 
 class AssignCFPReviews(graphene.Mutation):
@@ -233,6 +252,7 @@ class Mutations(graphene.ObjectType):
     create_or_update_presentation_proposal = CreateOrUpdatePresentationProposal.Field()
     assign_cfp_reviews = AssignCFPReviews.Field()
     submit_cfp_reviews = SubmitCFPReviews.Field()
+    upload_presentation_material = UploadPresentationMaterial.Field()
 
 
 class Query(graphene.ObjectType):
