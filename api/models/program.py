@@ -169,8 +169,7 @@ class LightningTalk(models.Model):
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     submitted_at = models.DateTimeField(null=True, blank=True)
     accepted_at = models.DateTimeField(null=True, blank=True)
-    material = models.FileField(upload_to='lightningtalk', blank=True, default='')
-    material_link = models.CharField(max_length=511, null=True)
+    slide_url = models.CharField(max_length=511, null=True)
     comment = models.TextField(blank=True, default='')
 
     def __str__(self):
