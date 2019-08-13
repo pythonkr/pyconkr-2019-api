@@ -464,11 +464,12 @@ class LightningTalkResource(resources.ModelResource):
 class LightningTalkAdmin(ImportExportModelAdmin):
     resource_class = LightningTalkResource
     list_display = ('day', 'name', 'owner', 'submitted_at', 'accepted_at', 'material', 'material_link')
+
     list_filter = (
         'accepted_at',
         'day'
     )
-
+    autocomplete_fields = ['owner', ]
     actions = ['accept']
 
     def accept(self, request, queryset):

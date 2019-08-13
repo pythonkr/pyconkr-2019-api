@@ -162,7 +162,7 @@ class YoungCoder(Program):
 
 class LightningTalk(models.Model):
     class Meta:
-        ordering = ['accepted_at']
+        ordering = ['accepted_at',]
 
     day = models.IntegerField(default=1)
     name = models.CharField(max_length=255, null=True)
