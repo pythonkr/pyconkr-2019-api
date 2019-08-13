@@ -63,7 +63,6 @@ class PublicPresentationNode(DjangoObjectType):
     duration = graphene.Field(DurationNode)
     category = graphene.Field(CategoryNode)
     difficulty = graphene.Field(DifficultyNode)
-    material = graphene.Field(FileUrl)
     desc = graphene.String()
 
     def resolve_desc(self, info):
@@ -153,22 +152,6 @@ class CreateOrUpdatePresentationProposal(graphene.Mutation):
         return CreateOrUpdatePresentationProposal(proposal=presentation)
 
 
-class UploadPresentationMaterial(graphene.Mutation):
-    class Arguments:
-        file = Upload(required=True)
-
-    file = graphene.Field(FileUrl)
-
-    @login_required
-    def mutate(self, info, file, **kwargs):
-        user = info.context.user
-        presentation = Presentation.objects.get(owner=user)
-        if presentation.material:
-            presentation.material.delete()
-        presentation.material.save(f'{user.id}_{file.name}', file)
-        return UploadPresentationMaterial(file=presentation.material)
-
-
 class AssignCFPReviews(graphene.Mutation):
     reviews = graphene.List(CFPReviewNode)
 
@@ -252,7 +235,6 @@ class Mutations(graphene.ObjectType):
     create_or_update_presentation_proposal = CreateOrUpdatePresentationProposal.Field()
     assign_cfp_reviews = AssignCFPReviews.Field()
     submit_cfp_reviews = SubmitCFPReviews.Field()
-    upload_presentation_material = UploadPresentationMaterial.Field()
 
 
 class Query(graphene.ObjectType):
