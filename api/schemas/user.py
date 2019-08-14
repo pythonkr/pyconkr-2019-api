@@ -12,7 +12,7 @@ from graphql_extensions.types import Email
 
 from api.models.agreement import Agreement
 from api.models.profile import Profile
-from api.schemas.common import SeoulDateTime, ImageUrl
+from api.schemas.common import SeoulDateTime, ImageUrl, has_owner_permission
 from ticket.models import TicketProduct, Ticket
 
 UserModel = get_user_model()
@@ -42,6 +42,9 @@ class ProfileNode(DjangoObjectType):
 
     oauth_type = graphene.Field(OauthTypeNode)
     image = graphene.String()
+    email = graphene.String()
+    phone = graphene.String()
+    organization = graphene.String()
     is_patron = graphene.Boolean(source='is_patron')
     is_open_reviewer = graphene.Boolean(source='is_open_reviewer')
     is_speaker = graphene.Boolean(source='is_speaker')
@@ -54,6 +57,21 @@ class ProfileNode(DjangoObjectType):
         if self.image.name:
             return self.image.url
         return self.avatar_url
+
+    def resolve_email(self, info):
+        if has_owner_permission(info.context.user, self.user):
+            return self.email
+        return ''
+
+    def resolve_phone(self, info):
+        if has_owner_permission(info.context.user, self.user):
+            return self.phone
+        return ''
+
+    def resolve_organization(self, info):
+        if has_owner_permission(info.context.user, self.user):
+            return self.organization
+        return ''
 
 
 class PatronNode(DjangoObjectType):
