@@ -1,7 +1,5 @@
-import math
-from datetime import timedelta, timezone
+from datetime import timezone
 
-from constance import config
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -18,7 +16,7 @@ from api.models.program import Place, Category, Difficulty, Sprint, Tutorial, Yo
 from api.models.program import Presentation
 from api.models.schedule import Schedule
 from api.models.sponsor import Sponsor, SponsorLevel
-from ticket.models import TicketProduct
+from ticket.models import TicketProduct, Registration
 
 UserModel = get_user_model()
 
@@ -150,7 +148,7 @@ class PresentationResource(resources.ModelResource):
 class PresentationAdmin(ImportExportModelAdmin):
     resource_class = PresentationResource
     actions = ('accept',)
-    list_display = ('id', 'owner_profile', 'name', 'language', 'category', 'difficulty',
+    list_display = ('id', 'owner_profile', 'name', 'speaker_registered_at', 'language', 'category', 'difficulty',
                     'place', 'duration', 'started_at', 'slide_url', 'submitted', 'accepted',)
     autocomplete_fields = ['owner', 'secondary_owner']
     list_filter = (
@@ -171,6 +169,18 @@ class PresentationAdmin(ImportExportModelAdmin):
 
     def accept(self, request, queryset):
         queryset.update(accepted=True)
+
+    def speaker_registered_at(self, obj):
+        if not obj.owner:
+            return ''
+        registrations = Registration.objects.filter(
+            ticket__owner=obj.owner,
+            ticket__product__type=TicketProduct.TYPE_CONFERENCE
+        )
+        registration = registrations.last()
+        if not registration:
+            return ''
+        return registration.registered_at
 
 
 admin.site.register(Presentation, PresentationAdmin)
