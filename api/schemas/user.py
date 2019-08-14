@@ -59,17 +59,17 @@ class ProfileNode(DjangoObjectType):
         return self.avatar_url
 
     def resolve_email(self, info):
-        if has_owner_permission(info.context.user, self.owner):
+        if has_owner_permission(info.context.user, self.user):
             return self.email
         return ''
 
     def resolve_phone(self, info):
-        if has_owner_permission(info.context.user, self.owner):
+        if has_owner_permission(info.context.user, self.user):
             return self.phone
         return ''
 
     def resolve_organization(self, info):
-        if has_owner_permission(info.context.user, self.owner):
+        if has_owner_permission(info.context.user, self.user):
             return self.organization
         return ''
 
