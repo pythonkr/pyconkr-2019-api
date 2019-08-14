@@ -5,6 +5,7 @@ from random import sample
 import graphene
 from constance import config
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from graphene_django import DjangoObjectType
@@ -15,7 +16,7 @@ from api.models import CFPReview
 from api.models.program import Category, Difficulty
 from api.models.program import Presentation
 from api.models.schedule import Schedule
-from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode
+from api.schemas.common import SeoulDateTime, LanguageNode, DifficultyNode, has_owner_permission
 from api.schemas.user import UserNode
 
 
@@ -51,7 +52,7 @@ class PublicPresentationNode(DjangoObjectType):
     class Meta:
         model = Presentation
         exclude_fields = ('detail_desc', 'is_presented_before', 'place_presented_before',
-                          'presented_slide_url_before', 'comment')
+                          'presented_slide_url_before', 'comment', '')
         description = """
         공개되는 발표 정보입니다.
         """
@@ -62,12 +63,20 @@ class PublicPresentationNode(DjangoObjectType):
     duration = graphene.Field(DurationNode)
     category = graphene.Field(CategoryNode)
     difficulty = graphene.Field(DifficultyNode)
+    slide_url = graphene.String()
     desc = graphene.String()
 
     def resolve_desc(self, info):
         if self.desc:
             return self.desc
         return self.detail_desc
+
+    def resolve_slide_url(self, info):
+        if timezone.now() > self.finished_at:
+            return self.slide_url
+        if has_owner_permission(info.context.user, self.owner):
+            return self.slide_url
+        return ''
 
 
 class ProposalForReviewNode(DjangoObjectType):
@@ -92,6 +101,18 @@ class CFPReviewNode(DjangoObjectType):
     presentation = graphene.Field(ProposalForReviewNode)
     submitted_at = graphene.Field(SeoulDateTime)
     submitted = graphene.Boolean()
+    comment = graphene.String()
+    owner = graphene.Field(UserNode)
+
+    def resolve_comment(self, info):
+        if has_owner_permission(info.context.user, self.owner):
+            return self.comment
+        return ''
+
+    def resolve_owner(self, info):
+        if has_owner_permission(info.context.user, self.owner):
+            return self.owner
+        return None
 
 
 class PresentationProposalInput(graphene.InputObjectType):

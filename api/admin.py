@@ -285,18 +285,15 @@ class TutorialAdmin(ImportExportModelAdmin):
                 product.desc_en += f'\nTutor: {tutorial.owner.profile.name_en}'
             product.start_at = tutorial.started_at
             product.finish_at = tutorial.finished_at
-            period_delta = tutorial.finished_at - tutorial.started_at
-            period_hour = math.ceil(period_delta.seconds / 60 / 60)
-            product.price = config.TUTORIAL_PRICE_PER_HOUR * period_hour
-            cancelable_date = tutorial.started_at - timedelta(days=2)
-            KST = timezone(timedelta(hours=9))
-            cancelable_date = cancelable_date.replace(hour=18, minute=0, second=0,
-                                                      microsecond=0, tzinfo=KST)
+            # period_delta = tutorial.finished_at - tutorial.started_at
+            # period_hour = math.ceil(period_delta.seconds / 60 / 60)
+            # product.price = config.TUTORIAL_PRICE_PER_HOUR * period_hour
+            cancelable_date = tutorial.started_at
             product.cancelable_date = cancelable_date
-            product.warning_ko = f'취소, 환불 기한: {cancelable_date.year}년 ' \
-                f'{cancelable_date.month}월 {cancelable_date.day}일 오후 6시까지'
-            product.warning_en = f'Refund due date: {cancelable_date.year}-' \
-                f'{cancelable_date.month}-{cancelable_date.day} 6pm'
+            product.warning_ko = f'취소, 환불 기한: {product.cancelable_date.year}년 ' \
+                f'{product.cancelable_date.month}월 {product.cancelable_date.day}일 오후 6시까지'
+            product.warning_en = f'Refund due date: {product.cancelable_date.year}-' \
+                f'{product.cancelable_date.month}-{product.cancelable_date.day} 6pm'
 
             product.total = tutorial.num_of_participants
             product.ticket_close_at = tutorial.finished_at
@@ -367,10 +364,7 @@ class SprintAdmin(ImportExportModelAdmin):
             product.start_at = sprint.started_at
             product.finish_at = sprint.finished_at
             product.price = 0
-            cancelable_date = sprint.started_at - timedelta(days=2)
-            KST = timezone(timedelta(hours=9))
-            cancelable_date = cancelable_date.replace(hour=18, minute=0, second=0,
-                                                      microsecond=0, tzinfo=KST)
+            cancelable_date = sprint.started_at
             product.cancelable_date = cancelable_date
             product.warning_ko = f'취소, 환불 기한: {cancelable_date.year}년 ' \
                 f'{cancelable_date.month}월 {cancelable_date.day}일 오후 6시까지'
