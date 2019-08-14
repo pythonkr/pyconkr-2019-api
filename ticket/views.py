@@ -71,6 +71,7 @@ def get_short_product_name(ticket):
         177: 'Python Debugging',
         178: 'GluonNLP',
     }
+
     if ticket.product.type == TicketProduct.TYPE_TUTORIAL:
         return tutorial_keys[ticket.product.tutorial_set.first().id]
     return ''

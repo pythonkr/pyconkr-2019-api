@@ -132,7 +132,6 @@ class TicketForRegistrationAdmin(admin.ModelAdmin):
     def owner_name_with_reg(self, obj):
         global_id = to_global_id('TicketNode', obj.id)
         url = reverse('ticket_issue', args=[global_id])
-        # FIXME: reverse return 이 튜플로 됨
         return format_html(f'<a class="button" href="{url}" target="_blank">{obj.owner_name}</a>')
 
     owner_name_with_reg.short_description = '이름'
