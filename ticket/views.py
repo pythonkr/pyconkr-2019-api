@@ -74,6 +74,8 @@ def get_short_product_name(ticket):
 
     if ticket.product.type == TicketProduct.TYPE_TUTORIAL:
         return tutorial_keys[ticket.product.tutorial_set.first().id]
+    if ticket.product.name == TicketProduct.TYPE_SPRINT:
+        return ticket.product.name
     return ''
 
 
