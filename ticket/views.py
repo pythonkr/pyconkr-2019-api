@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from graphql_relay import from_global_id
 
+from api.models import Tutorial, Sprint
 from ticket.models import Ticket, TicketProduct
 
 
@@ -71,11 +72,21 @@ def get_short_product_name(ticket):
         177: 'Python Debugging',
         178: 'GluonNLP',
     }
-
+    place = ''
     if ticket.product.type == TicketProduct.TYPE_TUTORIAL:
-        return tutorial_keys[ticket.product.tutorial_set.first().id]
+        try:
+            tutorial = Tutorial.objects.get(ticket_product=ticket.product)
+            place = f'({tutorial.place.name})'
+        except Tutorial.DoesNotExist:
+            pass
+        return tutorial_keys[ticket.product.tutorial_set.first().id] + place
     if ticket.product.name == TicketProduct.TYPE_SPRINT:
-        return ticket.product.name
+        try:
+            sprint = Sprint.objects.get(ticket_product=ticket.product)
+            place = f'({sprint.place.name})'
+        except Tutorial.DoesNotExist:
+            pass
+        return ticket.product.name + place
     return ''
 
 
