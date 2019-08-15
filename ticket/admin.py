@@ -19,6 +19,8 @@ from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct, TicketForRegistration, Registration
 from ticket.schemas import create_iamport
 
+seoul_timezone = pytz.timezone('Asia/Seoul')
+
 
 class TicketProductResource(resources.ModelResource):
     class Meta:
@@ -64,8 +66,7 @@ class TicketResource(resources.ModelResource):
     updated_at = fields.Field(column_name='created_at', attribute='updated_at')
 
     def dehydrate_registrations(self, ticket):
-        timezone = pytz.timezone('Asia/Seoul')
-        return '\n'.join([r.registered_at.astimezone(tz=timezone).isoformat()
+        return '\n'.join([r.registered_at.astimezone(tz=seoul_timezone).isoformat()
                           for r in ticket.registration_set.all()])
 
 
@@ -97,10 +98,9 @@ class TicketAdmin(ImportExportModelAdmin):
             ticket.registration_set.create(registered_at=timezone.now())
 
     def registrations(self, obj):
-        timezone = pytz.timezone('Asia/Seoul')
         return format_html_join(
             mark_safe('<br>'), '{}',
-            ((r.registered_at.astimezone(tz=timezone).isoformat(),)
+            ((r.registered_at.astimezone(tz=seoul_timezone).isoformat(),)
              for r in obj.registration_set.all()))
 
     def refund(self, request, queryset):
