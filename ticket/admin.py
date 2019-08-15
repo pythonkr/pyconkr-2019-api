@@ -53,7 +53,7 @@ class TicketResource(resources.ModelResource):
     id = fields.Field(column_name='id', attribute='id')
     name = fields.Field(column_name='name', attribute='owner__profile__name')
     email = fields.Field(column_name='email', attribute='owner__profile__email')
-    registrations = fields.Field()
+    # registrations = fields.Field()
     product = fields.Field(column_name='product', attribute='product')
     status = fields.Field(column_name='status', attribute='status')
     is_domestic_card = fields.Field(column_name='is_domestic_card', attribute='is_domestic_card')
@@ -65,9 +65,9 @@ class TicketResource(resources.ModelResource):
     created_at = fields.Field(column_name='created_at', attribute='created_at')
     updated_at = fields.Field(column_name='created_at', attribute='updated_at')
 
-    def dehydrate_registrations(self, ticket):
-        return '\n'.join([r.registered_at.astimezone(tz=timezone).isoformat()
-                          for r in ticket.registration_set.all()])
+    # def dehydrate_registrations(self, ticket):
+    #     return '\n'.join([localize(timezone.localtime(r.registered_at))
+    #                       for r in ticket.registration_set.all()])
 
 
 class TicketAdmin(ImportExportModelAdmin):
