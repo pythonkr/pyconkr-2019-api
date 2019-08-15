@@ -50,6 +50,7 @@ class TicketResource(resources.ModelResource):
     id = fields.Field(column_name='id', attribute='id')
     name = fields.Field(column_name='name', attribute='owner__profile__name')
     email = fields.Field(column_name='email', attribute='owner__profile__email')
+
     product = fields.Field(column_name='product', attribute='product')
     status = fields.Field(column_name='status', attribute='status')
     is_domestic_card = fields.Field(column_name='is_domestic_card', attribute='is_domestic_card')
@@ -60,6 +61,9 @@ class TicketResource(resources.ModelResource):
     receipt_url = fields.Field(column_name='receipt_url', attribute='receipt_url')
     created_at = fields.Field(column_name='created_at', attribute='created_at')
     updated_at = fields.Field(column_name='created_at', attribute='updated_at')
+
+    def dehydrate_registrations(self, ticket):
+        return '\n'.join([localize(r.registered_at) for r in ticket.registration_set.all()])
 
 
 class TicketAdmin(ImportExportModelAdmin):
@@ -85,8 +89,9 @@ class TicketAdmin(ImportExportModelAdmin):
             return obj.options
         return '\n'.join([f'{k}: {v}' for k, v in obj.options.items()])
 
-    def register(self, obj):
-        obj.registration_set.create(registered_at=timezone.now())
+    def register(self, request, queryset):
+        for ticket in queryset:
+            ticket.registration_set.create(registered_at=timezone.now())
 
     def registrations(self, obj):
         return format_html_join(
