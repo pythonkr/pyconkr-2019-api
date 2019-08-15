@@ -50,7 +50,7 @@ class TicketResource(resources.ModelResource):
     id = fields.Field(column_name='id', attribute='id')
     name = fields.Field(column_name='name', attribute='owner__profile__name')
     email = fields.Field(column_name='email', attribute='owner__profile__email')
-
+    registrations = fields.Field()
     product = fields.Field(column_name='product', attribute='product')
     status = fields.Field(column_name='status', attribute='status')
     is_domestic_card = fields.Field(column_name='is_domestic_card', attribute='is_domestic_card')
