@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pytz
 from django.contrib import admin
 from django.contrib import messages
 from django.urls import reverse
@@ -19,7 +18,8 @@ from api.models.profile import Profile
 from ticket.models import Ticket, TicketProduct, TicketForRegistration, Registration
 from ticket.schemas import create_iamport
 
-seoul_timezone = pytz.timezone('Asia/Seoul')
+
+# seoul_timezone = pytz.timezone('Asia/Seoul')
 
 
 class TicketProductResource(resources.ModelResource):
@@ -66,7 +66,7 @@ class TicketResource(resources.ModelResource):
     updated_at = fields.Field(column_name='created_at', attribute='updated_at')
 
     def dehydrate_registrations(self, ticket):
-        return '\n'.join([r.registered_at.astimezone(tz=seoul_timezone).isoformat()
+        return '\n'.join([r.registered_at.astimezone(tz=timezone).isoformat()
                           for r in ticket.registration_set.all()])
 
 
@@ -100,7 +100,7 @@ class TicketAdmin(ImportExportModelAdmin):
     def registrations(self, obj):
         return format_html_join(
             mark_safe('<br>'), '{}',
-            ((r.registered_at.astimezone(tz=seoul_timezone).isoformat(),)
+            ((localize(timezone.localtime(r.registered_at)),)
              for r in obj.registration_set.all()))
 
     def refund(self, request, queryset):
@@ -154,7 +154,7 @@ class TicketForRegistrationAdmin(admin.ModelAdmin):
     def registrations(self, obj):
         return format_html_join(
             mark_safe('<br>'), '{}',
-            ((localize(r.registered_at),) for r in obj.registration_set.all()))
+            ((localize(timezone.localtime(r.registered_at)),) for r in obj.registration_set.all()))
 
     def options_str(self, obj):
         if not obj.options:

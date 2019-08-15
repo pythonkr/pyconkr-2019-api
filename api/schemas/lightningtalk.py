@@ -23,7 +23,7 @@ class LightningTalkNode(DjangoObjectType):
 
 class LightningTalkInput(graphene.InputObjectType):
     name = graphene.String()
-    material_link = graphene.String()
+    slide_url = graphene.String()
     comment = graphene.String()
 
 
