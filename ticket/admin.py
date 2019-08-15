@@ -65,9 +65,9 @@ class TicketResource(resources.ModelResource):
 class TicketAdmin(ImportExportModelAdmin):
     resource_class = TicketResource
     autocomplete_fields = ['owner']
-    list_display = ('id', 'status', 'product_type', 'product', 'owner_oauth_type', 'owner_name', 'owner_email',
-                    'owner_organization', 'is_domestic_card', 'merchant_uid', 'amount', 'imp_uid', 'paid_at',
-                    'options_str', 'cancelled_at', 'reason')
+    list_display = ('id', 'status', 'product_type', 'product', 'registrations', 'owner_oauth_type', 'owner_name',
+                    'owner_email', 'owner_organization', 'is_domestic_card', 'merchant_uid', 'amount', 'imp_uid',
+                    'paid_at', 'options_str', 'cancelled_at', 'reason')
     search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en',
                      'merchant_uid', 'imp_uid', 'reason']
     list_filter = (
@@ -87,6 +87,11 @@ class TicketAdmin(ImportExportModelAdmin):
 
     def register(self, obj):
         obj.registration_set.create(registered_at=timezone.now())
+
+    def registrations(self, obj):
+        return format_html_join(
+            mark_safe('<br>'), '{}',
+            ((localize(r.registered_at),) for r in obj.registration_set.all()))
 
     def refund(self, request, queryset):
         for ticket in queryset:
