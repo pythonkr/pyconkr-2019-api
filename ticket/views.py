@@ -80,11 +80,11 @@ def get_short_product_name(ticket):
         except Tutorial.DoesNotExist:
             pass
         return tutorial_keys[ticket.product.tutorial_set.first().id] + place
-    if ticket.product.name == TicketProduct.TYPE_SPRINT:
+    if ticket.product.type == TicketProduct.TYPE_SPRINT:
         try:
             sprint = Sprint.objects.get(ticket_product=ticket.product)
             place = f'({sprint.place.name})'
-        except Tutorial.DoesNotExist:
+        except Sprint.DoesNotExist:
             pass
         return ticket.product.name + place
     return ''
