@@ -200,7 +200,7 @@ class Ticket(TransactionMixin, models.Model):
     def registered_at(self):
         registrations = Registration.objects.filter(ticket=self)
         if registrations.exists():
-            return registrations.first()
+            return registrations.first().registered_at
         return None
 
     def set_issue(self):
