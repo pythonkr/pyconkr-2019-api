@@ -66,7 +66,7 @@ class TicketResource(resources.ModelResource):
     updated_at = fields.Field(column_name='created_at', attribute='updated_at')
 
     def dehydrate_registrations(self, ticket):
-        return '\n'.join([r.registered_at.astimezone(tz=timezone).isoformat()
+        return '\n'.join([localize(timezone.localtime(r.registered_at))
                           for r in ticket.registration_set.all()])
 
 
