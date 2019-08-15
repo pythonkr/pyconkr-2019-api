@@ -139,7 +139,7 @@ admin.site.register(Ticket, TicketAdmin)
 
 class TicketForRegistrationAdmin(admin.ModelAdmin):
     autocomplete_fields = ['owner']
-    list_display = ('owner_name_with_reg', 'owner_email', 'product_type', 'status', 'registrations', 'product',)
+    list_display = ('owner_name_with_reg', 'id', 'owner_email', 'product_type', 'status', 'registrations', 'product',)
     search_fields = ['id', 'owner__profile__email', 'owner__profile__name_ko', 'owner__profile__name_en']
     list_filter = ('status', 'product__type',)
     actions = ['register']

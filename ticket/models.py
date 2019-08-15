@@ -196,6 +196,13 @@ class Ticket(TransactionMixin, models.Model):
             return self.owner.profile.organization
         return ''
 
+    @property
+    def registered_at(self):
+        registrations = Registration.objects.filter(ticket=self)
+        if registrations.exists():
+            return registrations.first()
+        return None
+
     def set_issue(self):
         return Registration.objects.create(
             ticket=self, registered_at=timezone.now()

@@ -75,7 +75,7 @@ class TicketNode(DjangoObjectType):
         Ticket
         """
 
-    registered_at = graphene.Field(SeoulDateTime)
+    registered_at = graphene.Field(SeoulDateTime, source='registered_at')
     ticket_id = graphene.Int(source='ticket_id')
 
 
