@@ -164,7 +164,7 @@ class LightningTalk(models.Model):
     class Meta:
         ordering = ['accepted_at',]
 
-    day = models.IntegerField(default=1)
+    day = models.IntegerField(default=2)
     name = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     submitted_at = models.DateTimeField(null=True, blank=True)
