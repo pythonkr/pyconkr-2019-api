@@ -183,7 +183,16 @@ class TicketForRegistrationAdmin(admin.ModelAdmin):
 admin.site.register(TicketForRegistration, TicketForRegistrationAdmin)
 
 
-class RegistrationAdmin(admin.ModelAdmin):
+class RegistrationResource(resources.ModelResource):
+    class Meta:
+        model = Registration
+
+    name = fields.Field(column_name='name', attribute='ticket__owner__profile__name')
+    email = fields.Field(column_name='email', attribute='ticket__owner__profile__email')
+
+
+class RegistrationAdmin(ImportExportModelAdmin):
+    resource_class = RegistrationResource
     list_display = ('owner_name', 'owner_email', 'registered_at')
     list_filter = ('ticket__product__type',)
     search_fields = ('ticket__owner__profile__email',
