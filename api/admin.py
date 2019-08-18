@@ -471,7 +471,7 @@ class LightningTalkAdmin(ImportExportModelAdmin):
 
     list_filter = (
         'accepted_at',
-        'day'
+        'day',
         'name'
     )
     autocomplete_fields = ['owner', ]
