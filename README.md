@@ -10,20 +10,24 @@ A git repository for PyCon Korea api.
 
 ## Getting started
 
+설치하거나 도커를 활용하여 postgresql을 설치합니다.
+
+```sh
+$ docker run -d --name postgres postgres
+```
+
+그리고 서비스를 구동합니다.
+
+
 ```bash
+
 $ git clone git@github.com:pythonkr/pyconkr-api.git
-$ cd pyconkr-api
-$ make up
+$ cd pyconkr-api 
+
+$ ./manage.py migrate
+$ ./manage.py runserver
 ```
 
-## How to run with docker-compose
-
-다음 명령어로 배포가 가능합니다.
-
-```
-$ export DJANGO_SETTINGS_MODULE=pyconkr.staging_settings 
-$ docker-compose up -d --build --force-recreate
-```
 
 ## Contribution
 
