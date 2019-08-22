@@ -13,7 +13,8 @@ A git repository for PyCon Korea api.
 설치하거나 도커를 활용하여 postgresql을 설치합니다.
 
 ```sh
-$ docker run -d --name postgres postgres
+$ docker run -d --name postgres -p 5432:5432 postgres
+
 ```
 
 그리고 서비스를 구동합니다.
