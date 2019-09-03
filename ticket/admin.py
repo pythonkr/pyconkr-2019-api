@@ -197,6 +197,7 @@ class RegistrationAdmin(ImportExportModelAdmin):
     list_filter = ('ticket__product__type',)
     search_fields = ('ticket__owner__profile__email',
                      'ticket__owner__profile__name_ko', 'ticket__owner__profile__name_en',)
+    autocomplete_fields = ['ticket', ]
 
 
 admin.site.register(Registration, RegistrationAdmin)
