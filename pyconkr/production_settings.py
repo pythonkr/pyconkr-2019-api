@@ -6,7 +6,7 @@ from pyconkr.settings import *
 DEBUG = False
 ALLOWED_HOSTS = ['*']
 
-FORCE_SCRIPT_NAME = os.environ.get('SCRIPT_NAME', '2019')
+FORCE_SCRIPT_NAME = os.getenv('SCRIPT_NAME', None)
 
 db_env_keys = ['POSTGRES_HOST', 'POSTGRES_NAME', 'POSTGRES_PORT',
                'POSTGRES_USER', 'POSTGRES_PASSWORD']
