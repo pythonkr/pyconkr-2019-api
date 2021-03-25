@@ -80,7 +80,7 @@ pytest==4.4.0
 pytest-django==3.4.8
 python-dateutil==2.8.0
 pytz==2018.7
-PyYAML==4.2b1
+PyYAML==5.4
 requests==2.20.1
 requests-oauthlib==1.2.0
 rope==0.11.0
