@@ -18,7 +18,7 @@ coverage==4.5.2
 cryptography==2.4.2
 defusedxml==0.6.0
 diff-match-patch==20181111
-Django==2.2.2
+Django==2.2.21
 django-constance==2.4.0
 django-cors-headers==2.4.0
 django-crontab==0.7.1
