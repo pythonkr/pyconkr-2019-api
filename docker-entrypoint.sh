@@ -45,8 +45,8 @@ tail -n 0 -f /logs/*.log &
 echo "==== Starting server ====="
 gunicorn pyconkr.wsgi:application \
     --bind=0.0.0.0:8000 \
-    --workers 13 \
-    --threads 256 \
+    --workers 4 \
+    --threads 8 \
     --worker-connections=5000 \
     --max-requests 10000 \
     --max-requests-jitter 5 \
