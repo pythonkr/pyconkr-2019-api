@@ -1,4 +1,4 @@
-FROM python:3.6.8-stretch
+FROM --platform=linux/amd64 python:3.6.15-bullseye
 
 ENV PYTHONUNBUFFERED 1
 WORKDIR /config
